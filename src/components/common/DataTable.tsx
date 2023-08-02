@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { useEffect } from 'react';
 import LiveSearch from './LiveSearch';
+import { useState } from 'react';
 
 const DataTable = ({
   data,
@@ -11,6 +12,7 @@ const DataTable = ({
   onPageChange,
   onChangeItemPerPage,
   onChangeKeyword,
+  onSelectedRows,
 }: {
   data?: any;
   title: string;
@@ -20,20 +22,46 @@ const DataTable = ({
   onPageChange: (item: number) => void;
   onChangeItemPerPage: (item: number) => void;
   onChangeKeyword: (keyword: string) => void;
+  onSelectedRows: (rows: any) => void;
 }) => {
-  console.log(numOfPage);
-  console.log(currentPage);
+  const [selectedRows, setSelectedRows] = useState([]);
+  useEffect(() => {
+    console.log(selectedRows);
+    onSelectedRows(selectedRows);
+  }, [selectedRows]);
+
   const renderData = () => {
     return data.map((item: any, index: number) => (
       <tr key={index}>
         <td>
-          <input type="checkbox" className="form-check-input" />
+          <input
+            type="checkbox"
+            checked={selectedRows.includes(String(item.id)) ? true : false}
+            className="form-check-input"
+            value={item.id}
+            onChange={onClickCheckbox}
+          />
         </td>
         {columns.map((col: any, ind: number) => (
           <td key={ind}>{col.element(item)}</td>
         ))}
       </tr>
     ));
+  };
+
+  const onClickCheckbox = (event: any) => {
+    const checked = event.target.checked;
+    const value = event.target.value;
+    if (checked) {
+      if (!selectedRows.includes(value)) {
+        setSelectedRows([...selectedRows, value]);
+      }
+    } else {
+      const index = selectedRows.indexOf(value);
+      const temp = [...selectedRows];
+      temp.splice(index, 1);
+      setSelectedRows(temp);
+    }
   };
   const renderHeaders = () => {
     return columns.map((col: any, index: number) => (
@@ -71,6 +99,15 @@ const DataTable = ({
       </li>,
     );
     return pagination;
+  };
+
+  const onSelectAll = (event: any) => {
+    if (event.target.checked) {
+      const temp = data.map((item: any) => String(item.id));
+      setSelectedRows(temp);
+    } else {
+      setSelectedRows([]);
+    }
   };
   const onChangeOptionPage = (event: any) => {
     const { value } = event.target;
@@ -112,7 +149,12 @@ const DataTable = ({
           <thead>
             <tr>
               <td>
-                <input type="checkbox" className="form-check-input" />
+                <input
+                  type="checkbox"
+                  checked={selectedRows.length === data.length && data.length > 0 ? true : false}
+                  className="form-check-input"
+                  onChange={onSelectAll}
+                />
               </td>
               {renderHeaders()}
             </tr>
