@@ -38,7 +38,7 @@ const Sidebar = () => {
               data-bs-parent="#sidenavAccordion"
             >
               <nav className="sb-sidenav-menu-nested nav">
-                <Link className="nav-link" to="/users">
+                <Link className="nav-link" to="/user/add">
                   Add User
                 </Link>
                 <Link className="nav-link" to="/users">

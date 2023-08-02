@@ -4,13 +4,14 @@ import { requestApi } from '../../helpers/api';
 import { useDispatch } from 'react-redux';
 import * as actions from '../../Redux/actions';
 import { Modal, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 const UserList = () => {
   const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
   const [numOfPage, setNumOfPage] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [itemsPerPage, setItemPerPage] = useState<number>(1);
+  const [itemsPerPage, setItemPerPage] = useState<number>(10);
   const [keyword, setKeyword] = useState<string>('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [deleteItem, setDeleteItem] = useState(null);
@@ -132,10 +133,10 @@ const UserList = () => {
             <li className="breadcrumb-item active">Tables</li>
           </ol>
           <div className="mb-3">
-            <button className="btn btn-sm btn-success me-2" type="button">
+            <Link to="/user/add" className="btn btn-sm btn-success me-2">
               <i className="fa fa-plus" />
               Add New
-            </button>
+            </Link>
             {selectedRows.length > 0 && (
               <button className="btn btn-sm btn-danger me-2" type="button" onClick={handleMultiDelete}>
                 <i className="fa fa-trash" />
