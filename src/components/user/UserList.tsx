@@ -47,10 +47,14 @@ const UserList = () => {
       name: 'Actions',
       element: (row: any) => (
         <>
-          <button type="button" className="btn btn-sm btn-warning me-1">
+          {/* <button type="button" className="btn btn-sm btn-warning me-1">
             <i className="fa fa-pencil-alt" />
             Edit
-          </button>
+          </button> */}
+          <Link className="btn btn-sm btn-warning me-1" to={`/user/edit/${row.id}`}>
+            <i className="fa fa-pencil-alt" />
+            Edit
+          </Link>
           <button type="button" className="btn btn-sm btn-danger me-1" onClick={() => handleDelete(row.id)}>
             <i className="fa fa-trash" />
             Delete

@@ -1,39 +1,58 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import * as actions from '../../Redux/actions/index';
 import { requestApi } from '../../helpers/api';
 import { toast } from 'react-toastify';
 
-const UserAdd = () => {
+const UserUpdate = () => {
+  const params = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  console.log('----------------', params.id);
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
 
-  const handleSubmitFormAdd = async (data: any) => {
+  const handleSubmitFormUpdate = async (data: any) => {
     console.log(data);
     dispatch(actions.controlLoading(true));
     try {
-      await requestApi('/users', 'POST', data);
+      const res = await requestApi(`/users/${params.id}`, 'PUT', data);
       dispatch(actions.controlLoading(false));
-      toast.success('User has been created successfully !', { position: 'top-center', autoClose: 2000 });
+      toast.success('User has been updated successfully !', { position: 'top-center', autoClose: 2000 });
       setTimeout(() => {
         navigate('/users');
       }, 3000);
     } catch (error) {
+      console.log(error);
       dispatch(actions.controlLoading(false));
     }
   };
+  useEffect(() => {
+    dispatch(actions.controlLoading(true));
+    try {
+      const getDetailUser = async () => {
+        const res = await requestApi(`/users/${params.id}`, 'GET');
+        dispatch(actions.controlLoading(false));
+        const fields = ['first_name', 'last_name', 'status'];
+        fields.forEach((field) => setValue(field, res.data[field]));
+      };
+      getDetailUser();
+    } catch (error) {
+      console.error(error);
+      dispatch(actions.controlLoading(false));
+    }
+  }, []);
   return (
     <div id="layoutSidenav_content">
       <main>
         <div className="container-fluid px-4">
-          <h1 className="mt-4"> New User</h1>
+          <h1 className="mt-4"> Update User</h1>
           <ol className="breadcrumb mb-4">
             <li className="breadcrumb-item">
               <Link to="/">Dashboard</Link>
@@ -42,12 +61,12 @@ const UserAdd = () => {
               {' '}
               <Link to="/users">Users</Link>
             </li>
-            <li className="breadcrumb-item active">Add new</li>
+            <li className="breadcrumb-item active">Update</li>
           </ol>
           <div className="card mb-4">
             <div className="card-header">
               <i className="fas fa-plus me-1"></i>
-              Add
+              Update
             </div>
             <div className="card-body">
               <div className="row mb-3">
@@ -73,32 +92,7 @@ const UserAdd = () => {
                       />
                       {errors.last_name && <p style={{ color: 'red' }}>{errors.last_name.message}</p>}
                     </div>
-                    <div className="mb-3 mt-3">
-                      <label className="form-label">Email:</label>
-                      <input
-                        type="email"
-                        {...register('email', {
-                          required: 'Email is required !',
-                          pattern: {
-                            value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/,
-                            message: 'Invalid email address',
-                          },
-                        })}
-                        className="form-control"
-                        placeholder="Enter email"
-                      />
-                      {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
-                    </div>
-                    <div className="mb-3">
-                      <label className="form-label">Password:</label>
-                      <input
-                        type="password"
-                        {...register('password', { required: 'Password is required !' })}
-                        className="form-control"
-                        placeholder="Enter password"
-                      />
-                      {errors.password && <p style={{ color: 'red' }}>{errors.password.message}</p>}
-                    </div>
+
                     <div className="mt-3 mb-3">
                       <label className="form-label">Status:</label>
                       <select {...register('status')} className="form-select">
@@ -106,7 +100,7 @@ const UserAdd = () => {
                         <option value="2">Inactive</option>
                       </select>
                     </div>
-                    <button type="button" onClick={handleSubmit(handleSubmitFormAdd)} className="btn btn-success">
+                    <button type="button" onClick={handleSubmit(handleSubmitFormUpdate)} className="btn btn-success">
                       Submit
                     </button>
                   </div>
@@ -120,4 +114,4 @@ const UserAdd = () => {
   );
 };
 
-export default UserAdd;
+export default UserUpdate;
