@@ -132,10 +132,14 @@ const UserList = () => {
           <h1 className="mt-4">Tables</h1>
           <ol className="breadcrumb mb-4">
             <li className="breadcrumb-item">
-              <a href="index.html">Dashboard</a>
+              <Link to="/">Dashboard</Link>
             </li>
-            <li className="breadcrumb-item active">Tables</li>
+            <li className="breadcrumb-item">
+              <Link to="/users">Users</Link>
+            </li>
+            <li className="breadcrumb-item active">List Users</li>
           </ol>
+
           <div className="mb-3">
             <Link to="/user/add" className="btn btn-sm btn-success me-2">
               <i className="fa fa-plus" />
