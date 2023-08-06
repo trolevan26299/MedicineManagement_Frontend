@@ -155,7 +155,7 @@ const PostList = () => {
           </ol>
 
           <div className="mb-3">
-            <Link to="/user/add" className="btn btn-sm btn-success me-2">
+            <Link to="/post/add" className="btn btn-sm btn-success me-2">
               <i className="fa fa-plus" />
               Add New
             </Link>
