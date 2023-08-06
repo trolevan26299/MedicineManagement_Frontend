@@ -13,6 +13,8 @@ const DataTable = ({
   onChangeItemPerPage,
   onChangeKeyword,
   onSelectedRows,
+  itemsPerPage,
+  keywordSearch,
 }: {
   data?: any;
   title: string;
@@ -23,6 +25,8 @@ const DataTable = ({
   onChangeItemPerPage: (item: number) => void;
   onChangeKeyword: (keyword: string) => void;
   onSelectedRows: (rows: any) => void;
+  itemsPerPage?: number;
+  keywordSearch?: string;
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   useEffect(() => {
@@ -114,7 +118,7 @@ const DataTable = ({
     onChangeItemPerPage(value);
   };
   return (
-    <div className="card mb-4">
+    <div className="card mb-4" style={{ height: '650px' }}>
       <div className="card-header">
         <i className="fas fa-table me-1"></i>
         {title}
@@ -128,6 +132,7 @@ const DataTable = ({
                 name="example_length"
                 className="form-select form-select-sm ms-1 me-1"
                 onChange={onChangeOptionPage}
+                value={itemsPerPage}
               >
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -141,7 +146,7 @@ const DataTable = ({
           <div className="col-sm-12 col-md-6 ">
             <label htmlFor="b" className="d-inline-flex float-end">
               Search:
-              <LiveSearch onChangeKeyword={onChangeKeyword} />
+              <LiveSearch onChangeKeyword={onChangeKeyword} keywordSearch={keywordSearch} />
             </label>
           </div>
         </div>
@@ -161,14 +166,14 @@ const DataTable = ({
           </thead>
           <tbody>{renderData()}</tbody>
         </table>
-        {numOfPage > 1 && (
-          <div className="row">
-            <div className="col-sm-12 col-md-7">
-              <ul className="pagination justify-content-end">{renderPagination()}</ul>
-            </div>
-          </div>
-        )}
       </div>
+      {numOfPage > 1 && (
+        <div className="row">
+          <div className="col-sm-12 col-md-7">
+            <ul className="pagination justify-content-end">{renderPagination()}</ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

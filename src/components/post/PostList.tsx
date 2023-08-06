@@ -6,9 +6,9 @@ import * as actions from '../../Redux/actions';
 import { Modal, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const UserList = () => {
+const PostList = () => {
   const dispatch = useDispatch();
-  const [users, setUsers] = useState([]);
+  const [posts, setPosts] = useState([]);
   const [numOfPage, setNumOfPage] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemPerPage] = useState<number>(10);
@@ -23,35 +23,50 @@ const UserList = () => {
       name: 'ID',
       element: (row: any) => row.id,
     },
+
     {
-      name: 'First name',
-      element: (row: any) => row.first_name,
+      name: 'Thumbnail',
+      element: (row: any) => row.thumbnail,
     },
     {
-      name: 'Last name',
-      element: (row: any) => row.last_name,
+      name: 'Name',
+      element: (row: any) => row.title,
+    },
+
+    {
+      name: 'Category',
+      element: (row: any) => (row.category ? row.category.name : ''),
     },
     {
-      name: 'Email',
-      element: (row: any) => row.id,
+      name: 'Quantity',
+      element: (row: any) => row.quantity,
     },
     {
-      name: 'Created at',
-      element: (row: any) => row.created_at,
+      name: 'Price',
+      element: (row: any) => row.price,
     },
     {
-      name: 'Updated at',
-      element: (row: any) => row.updated_at,
+      name: 'Description',
+      element: (row: any) => row.description,
+    },
+    {
+      name: 'Createred',
+      element: (row: any) => (row.user ? row.user.first_name : ''),
+    },
+    {
+      name: 'Status',
+      element: (row: any) =>
+        row.status === 1 ? (
+          <span className="badge rounded-pill bg-success">Active</span>
+        ) : (
+          <span className="badge rounded-pill bg-danger">Inactive</span>
+        ),
     },
     {
       name: 'Actions',
       element: (row: any) => (
         <>
-          {/* <button type="button" className="btn btn-sm btn-warning me-1">
-            <i className="fa fa-pencil-alt" />
-            Edit
-          </button> */}
-          <Link className="btn btn-sm btn-warning me-1" to={`/user/edit/${row.id}`}>
+          <Link className="btn btn-sm btn-warning me-1" to={`/post/edit/${row.id}`}>
             <i className="fa fa-pencil-alt" />
             Edit
           </Link>
@@ -79,7 +94,7 @@ const UserList = () => {
   const requestDeleteApi = () => {
     if (deleteType === 'single') {
       dispatch(actions.controlLoading(true));
-      requestApi(`/users/${deleteItem}`, 'DELETE', [])
+      requestApi(`/posts/${deleteItem}`, 'DELETE', [])
         .then(() => {
           setShowModal(false);
           setRefresh(Date.now());
@@ -92,7 +107,7 @@ const UserList = () => {
         });
     } else {
       dispatch(actions.controlLoading(true));
-      requestApi(`/users/multiple?ids=${selectedRows.toString()}`, 'DELETE', [])
+      requestApi(`/posts/multiple?ids=${selectedRows.toString()}`, 'DELETE', [])
         .then(() => {
           setShowModal(false);
           setRefresh(Date.now());
@@ -109,10 +124,10 @@ const UserList = () => {
   useEffect(() => {
     dispatch(actions.controlLoading(true));
     const query = `?items_per_page=${itemsPerPage}&page=${currentPage}&keyword=${keyword}`;
-    requestApi(`/users${query}`, 'GET', [])
+    requestApi(`/posts${query}`, 'GET', [])
       .then((response) => {
         console.log(response);
-        setUsers(response.data.data);
+        setPosts(response.data.data);
         setNumOfPage(response.data.lastPage);
         setCurrentPage(response.data.currentPage);
         dispatch(actions.controlLoading(false));
@@ -128,15 +143,15 @@ const UserList = () => {
     <div id="layoutSidenav_content">
       <main>
         <div className="container-fluid px-4">
-          <h1 className="mt-4">User</h1>
+          <h1 className="mt-4">Post</h1>
           <ol className="breadcrumb mb-4">
             <li className="breadcrumb-item">
               <Link to="/">Dashboard</Link>
             </li>
             <li className="breadcrumb-item">
-              <Link to="/users">Users</Link>
+              <Link to="/users">Posts</Link>
             </li>
-            <li className="breadcrumb-item active">List Users</li>
+            <li className="breadcrumb-item active">List Post</li>
           </ol>
 
           <div className="mb-3">
@@ -152,8 +167,8 @@ const UserList = () => {
             )}
           </div>
           <DataTable
-            data={users}
-            title="List Users"
+            data={posts}
+            title="List Post"
             columns={columnsTable}
             numOfPage={numOfPage}
             currentPage={currentPage}
@@ -165,7 +180,7 @@ const UserList = () => {
               console.log('selected rows in user list', rows);
               setSelectedRows(rows);
             }}
-            keywordSearch="Name or Email"
+            keywordSearch="Name or Description"
           />
         </div>
       </main>
@@ -185,4 +200,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default PostList;

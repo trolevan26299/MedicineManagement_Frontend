@@ -6,7 +6,7 @@ import * as actions from '../../Redux/actions/index';
 import { requestApi } from '../../helpers/api';
 import { toast } from 'react-toastify';
 
-const UserUpdate = () => {
+const PostUpdate = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -113,4 +113,4 @@ const UserUpdate = () => {
   );
 };
 
-export default UserUpdate;
+export default PostUpdate;

@@ -1,7 +1,13 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 
-const LiveSearch = ({ onChangeKeyword }: { onChangeKeyword: (keyword: string) => void }) => {
+const LiveSearch = ({
+  onChangeKeyword,
+  keywordSearch,
+}: {
+  onChangeKeyword: (keyword: string) => void;
+  keywordSearch?: string;
+}) => {
   const [keyword, setKeyword] = useState<string>('');
   const onTyping = (event: any) => {
     setKeyword(event.target.value);
@@ -18,7 +24,7 @@ const LiveSearch = ({ onChangeKeyword }: { onChangeKeyword: (keyword: string) =>
       type="search"
       onChange={onTyping}
       className="form-control form-control-sm ms-1"
-      placeholder="Email or Name"
+      placeholder={keywordSearch || 'Please Search'}
     />
   );
 };

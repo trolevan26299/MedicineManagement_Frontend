@@ -64,10 +64,10 @@ const Sidebar = () => {
             </a>
             <div className="collapse" id="collapsePost" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
               <nav className="sb-sidenav-menu-nested nav">
-                <Link className="nav-link" to="/users">
+                <Link className="nav-link" to="/post/add">
                   Add Post
                 </Link>
-                <Link className="nav-link" to="/users">
+                <Link className="nav-link" to="/posts">
                   List Posts
                 </Link>
               </nav>
