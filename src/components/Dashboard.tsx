@@ -16,7 +16,11 @@ const Dashboard = () => {
     Promise.all([promiseUser, promisePost])
       .then((res) => {
         dispatch(actions.controlLoading(false));
-        setDashboardData({ ...dashboardData, totalUser: res[0].data.totalCount, totalPost: res[1].data.totalCount });
+        setDashboardData({
+          ...dashboardData,
+          totalUser: res[0].data.totalCount,
+          totalMedicine: res[1].data.totalCount,
+        });
       })
       .catch((err) => {
         console.error(err);
@@ -54,15 +58,15 @@ const Dashboard = () => {
             <div className="col-xl-3 col-md-6">
               <div className="card bg-warning text-white mb-4">
                 <div className="card-body">
-                  Total Posts
-                  {dashboardData.totalPost && (
+                  Total Medicines
+                  {dashboardData.totalMedicine && (
                     <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                      {dashboardData.totalPost}
+                      {dashboardData.totalMedicine}
                     </span>
                   )}
                 </div>
                 <div className="card-footer d-flex align-items-center justify-content-between">
-                  <Link to="/users" className="small text-white stretched-link">
+                  <Link to="/medicines" className="small text-white stretched-link">
                     View Details
                   </Link>
                   <div className="small text-white">

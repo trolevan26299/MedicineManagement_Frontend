@@ -57,18 +57,18 @@ const Sidebar = () => {
               <div className="sb-nav-link-icon">
                 <i className="fas fa-columns" />
               </div>
-              Posts
+              Medicine
               <div className="sb-sidenav-collapse-arrow">
                 <i className="fas fa-angle-down" />
               </div>
             </a>
             <div className="collapse" id="collapsePost" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
               <nav className="sb-sidenav-menu-nested nav">
-                <Link className="nav-link" to="/post/add">
-                  Add Post
+                <Link className="nav-link" to="/medicine/add">
+                  Add Medicine
                 </Link>
-                <Link className="nav-link" to="/posts">
-                  List Posts
+                <Link className="nav-link" to="/medicines">
+                  List Medicines
                 </Link>
               </nav>
             </div>

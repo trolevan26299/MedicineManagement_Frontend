@@ -6,7 +6,7 @@ import * as actions from '../../Redux/actions';
 import { Modal, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const PostList = () => {
+const MedicineList = () => {
   const dispatch = useDispatch();
   const [posts, setPosts] = useState([]);
   const [numOfPage, setNumOfPage] = useState<number>(1);
@@ -25,8 +25,9 @@ const PostList = () => {
     },
 
     {
-      name: 'Thumbnail',
-      element: (row: any) => row.thumbnail,
+      name: 'Image',
+      element: (row: any) =>
+        <img style={{ width: '100px', height: '100px' }} src={`http://localhost:8080/${row.thumbnail}`} alt="" /> || '',
     },
     {
       name: 'Name',
@@ -66,7 +67,7 @@ const PostList = () => {
       name: 'Actions',
       element: (row: any) => (
         <>
-          <Link className="btn btn-sm btn-warning me-1" to={`/post/edit/${row.id}`}>
+          <Link className="btn btn-sm btn-warning me-1" to={`/medicine/edit/${row.id}`}>
             <i className="fa fa-pencil-alt" />
             Edit
           </Link>
@@ -143,19 +144,19 @@ const PostList = () => {
     <div id="layoutSidenav_content">
       <main>
         <div className="container-fluid px-4">
-          <h1 className="mt-4">Post</h1>
+          <h1 className="mt-4">Medicine List</h1>
           <ol className="breadcrumb mb-4">
             <li className="breadcrumb-item">
               <Link to="/">Dashboard</Link>
             </li>
             <li className="breadcrumb-item">
-              <Link to="/users">Posts</Link>
+              <Link to="/medicines">Medicine</Link>
             </li>
-            <li className="breadcrumb-item active">List Post</li>
+            <li className="breadcrumb-item active">List Medicine</li>
           </ol>
 
           <div className="mb-3">
-            <Link to="/post/add" className="btn btn-sm btn-success me-2">
+            <Link to="/medicine/add" className="btn btn-sm btn-success me-2">
               <i className="fa fa-plus" />
               Add New
             </Link>
@@ -168,7 +169,7 @@ const PostList = () => {
           </div>
           <DataTable
             data={posts}
-            title="List Post"
+            title="List Medicine"
             columns={columnsTable}
             numOfPage={numOfPage}
             currentPage={currentPage}
@@ -200,4 +201,4 @@ const PostList = () => {
   );
 };
 
-export default PostList;
+export default MedicineList;

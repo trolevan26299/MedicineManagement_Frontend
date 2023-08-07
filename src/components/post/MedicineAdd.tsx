@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
@@ -6,19 +6,24 @@ import * as actions from '../../Redux/actions/index';
 import { requestApi, requestApiFormData } from '../../helpers/api';
 import { toast } from 'react-toastify';
 
-const PostAdd = () => {
+const MedicineAdd = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
+  const [category, setCategory] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+
   const handleFileChange = (event: any) => {
     setSelectedFile(event.target.files[0]);
-    console.log('file', event.target.files[0]);
   };
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const handleCategoryChange = (event: any) => {
+    setSelectedCategory(event.target.value);
+  };
 
   const handleSubmitFormAdd = async (data: any) => {
     const formData = new FormData();
@@ -26,7 +31,7 @@ const PostAdd = () => {
       formData.append('thumbnail', selectedFile);
     }
     formData.append('title', data.title);
-    formData.append('category', data.category);
+    formData.append('category', selectedCategory || category[0].id);
     formData.append('quantity', data.quantity);
     formData.append('price', data.price);
     formData.append('description', data.description);
@@ -44,6 +49,17 @@ const PostAdd = () => {
       dispatch(actions.controlLoading(false));
     }
   };
+
+  useEffect(() => {
+    requestApi('/category', 'GET')
+      .then((response) => {
+        setCategory(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <div id="layoutSidenav_content">
       <main>
@@ -55,7 +71,7 @@ const PostAdd = () => {
             </li>
             <li className="breadcrumb-item">
               {' '}
-              <Link to="/posts">Mediacines</Link>
+              <Link to="/medicines">Mediacine</Link>
             </li>
             <li className="breadcrumb-item active">Add New Medicine</li>
           </ol>
@@ -92,15 +108,20 @@ const PostAdd = () => {
 
                     <div className="mb-3 mt-3">
                       <label className="form-label">Category:</label>
-                      <input
-                        type="number"
-                        {...register('category', {
-                          required: 'Category is required !',
+                      <select
+                        className="form-select"
+                        aria-label="Default select example"
+                        onChange={handleCategoryChange}
+                        value={selectedCategory}
+                      >
+                        {category.map((category: any) => {
+                          return (
+                            <option key={category.id} value={category.id}>
+                              {category.name}
+                            </option>
+                          );
                         })}
-                        className="form-control"
-                        placeholder="Enter Category"
-                      />
-                      {errors.category && <p style={{ color: 'red' }}>{errors.category.message}</p>}
+                      </select>
                     </div>
                     <div className="mb-3">
                       <label className="form-label">Quantity:</label>
@@ -153,4 +174,4 @@ const PostAdd = () => {
   );
 };
 
-export default PostAdd;
+export default MedicineAdd;

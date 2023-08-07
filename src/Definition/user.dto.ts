@@ -1,4 +1,4 @@
 export interface DashboardDto {
   totalUser?: number;
-  totalPost?: number;
+  totalMedicine?: number;
 }
