@@ -1,100 +1,125 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import * as actions from '../../Redux/actions/index';
 import { requestApi, requestApiFormData } from '../../helpers/api';
 import { toast } from 'react-toastify';
 
-const MedicineAdd = () => {
+const MedicineUpdate = () => {
+  const params = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [category, setCategory] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
-
-  const handleFileChange = (event: any) => {
-    setSelectedFile(event.target.files[0]);
-  };
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [category, setCategory] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+
+  const handleImageChange = (event: any) => {
+    if (event.target.files && event.target.files[0]) {
+      setSelectedImage(event.target.files[0]);
+    }
+  };
   const handleCategoryChange = (event: any) => {
     setSelectedCategory(event.target.value);
+    setValue('category', event.target.value);
   };
-
-  const handleSubmitFormAdd = async (data: any) => {
+  const handleSubmitFormUpdate = async (data: any) => {
     const formData = new FormData();
-    if (selectedFile) {
-      formData.append('thumbnail', selectedFile);
+    if (selectedImage) {
+      formData.append('thumbnail', selectedImage);
     }
     formData.append('title', data.title);
-    formData.append('category', selectedCategory || category[0].id);
+    formData.append('category', selectedCategory);
     formData.append('quantity', data.quantity);
     formData.append('price', data.price);
     formData.append('description', data.description);
     formData.append('status', data.status);
-    console.log(data);
     dispatch(actions.controlLoading(true));
     try {
-      await requestApiFormData('/posts', 'POST', formData);
+      const res = await requestApiFormData(`/posts/${params.id}`, 'PUT', formData);
       dispatch(actions.controlLoading(false));
-      toast.success('Post has been created successfully !', { position: 'top-center', autoClose: 2000 });
+      toast.success('Medicine has been updated successfully !', { position: 'top-center', autoClose: 2000 });
       setTimeout(() => {
-        navigate('/posts');
+        navigate('/medicines');
       }, 3000);
     } catch (error) {
+      console.log(error);
       dispatch(actions.controlLoading(false));
     }
   };
-
+  useEffect(() => {
+    dispatch(actions.controlLoading(true));
+    try {
+      const getMedicineDetail = async () => {
+        const res = await requestApi(`/posts/${params.id}`, 'GET');
+        dispatch(actions.controlLoading(false));
+        const fields = ['thumbnail', 'title', 'category', 'quantity', 'price', 'description', 'status'];
+        fields.forEach((field) => setValue(field, res.data[field]));
+        setSelectedCategory(res.data.category.id);
+        setSelectedImage(`http://localhost:8080/${res.data.thumbnail}`);
+      };
+      getMedicineDetail();
+    } catch (error) {
+      console.error(error);
+      dispatch(actions.controlLoading(false));
+    }
+  }, []);
   useEffect(() => {
     requestApi('/category', 'GET')
       .then((response) => {
-        setCategory(response.data);
+        setCategory(response.data.data);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
-
   return (
     <div id="layoutSidenav_content">
       <main>
         <div className="container-fluid px-4">
-          <h1 className="mt-4"> New Medicine</h1>
+          <h1 className="mt-4"> Update Medicine</h1>
           <ol className="breadcrumb mb-4">
             <li className="breadcrumb-item">
               <Link to="/">Dashboard</Link>
             </li>
             <li className="breadcrumb-item">
               {' '}
-              <Link to="/medicines">Mediacine</Link>
+              <Link to="/medicines">Medicine</Link>
             </li>
-            <li className="breadcrumb-item active">Add New Medicine</li>
+            <li className="breadcrumb-item active">Update</li>
           </ol>
           <div className="card mb-4">
             <div className="card-header">
               <i className="fas fa-plus me-1"></i>
-              Add
+              Update
             </div>
             <div className="card-body">
               <div className="row mb-3">
                 <form>
                   <div className="col-md-6">
                     <div className="mb-3 ">
-                      <label className="form-label">Image:</label>
-                      <input
-                        type="file"
-                        {...register('thumbnail', { required: 'Thumbnail is required !' })}
-                        className="form-control"
-                        placeholder="Upload thumbnail"
-                        onChange={handleFileChange}
-                      />
-                      {errors.thumbnail && <p style={{ color: 'red' }}>{errors.thumbnail.message}</p>}
+                      <label htmlFor="imageInput" className="form-label">
+                        Chọn ảnh:
+                      </label>
+                      <input type="file" className="form-control" id="imageInput" onChange={handleImageChange} />
                     </div>
+                    <div className="mt-3">
+                      {selectedImage && (
+                        <img
+                          src={selectedImage}
+                          alt="Ảnh"
+                          className="img-fluid"
+                          style={{ width: '200px', height: '200px' }}
+                        />
+                      )}
+                    </div>
+
                     <div className="mb-3 mt-3">
                       <label className="form-label">Name:</label>
                       <input
@@ -160,7 +185,7 @@ const MedicineAdd = () => {
                         <option value="2">Inactive</option>
                       </select>
                     </div>
-                    <button type="button" onClick={handleSubmit(handleSubmitFormAdd)} className="btn btn-success">
+                    <button type="button" onClick={handleSubmit(handleSubmitFormUpdate)} className="btn btn-success">
                       Submit
                     </button>
                   </div>
@@ -174,4 +199,4 @@ const MedicineAdd = () => {
   );
 };
 
-export default MedicineAdd;
+export default MedicineUpdate;

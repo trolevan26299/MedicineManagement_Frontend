@@ -12,9 +12,12 @@ import UserList from './components/user/UserList';
 import UserAdd from './components/user/UserAdd';
 import UserUpdate from './components/user/UserUpdate';
 import PageNotFound from './components/PageNotFound';
-import MedicineList from './components/post/MedicineList';
-import MedicineAdd from './components/post/MedicineAdd';
-import MedicineUpdate from './components/post/MedicineUpdate';
+import MedicineList from './components/medicine/MedicineList';
+import MedicineAdd from './components/medicine/MedicineAdd';
+import MedicineUpdate from './components/medicine/MedicineUpdate';
+import CategoryList from './components/category/CategoryList';
+import CategoryAdd from './components/category/CategoryAdd';
+import CategoryUpdate from './components/category/CategoryUpdate';
 
 function App() {
   return (
@@ -29,6 +32,9 @@ function App() {
             <Route path="/medicines" element={<MedicineList />} />
             <Route path="/medicine/add" element={<MedicineAdd />} />
             <Route path="/medicine/edit/:id" element={<MedicineUpdate />} />
+            <Route path="/categorys" element={<CategoryList />} />
+            <Route path="/category/add" element={<CategoryAdd />} />
+            <Route path="/category/edit/:id" element={<CategoryUpdate />} />
           </Route>
         </Route>
         <Route element={<PublicRoutes />}>
