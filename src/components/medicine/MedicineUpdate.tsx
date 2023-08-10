@@ -62,7 +62,7 @@ const MedicineUpdate = () => {
         const fields = ['thumbnail', 'title', 'category', 'quantity', 'price', 'description', 'status'];
         fields.forEach((field) => setValue(field, res.data[field]));
         setSelectedCategory(res.data.category.id);
-        setSelectedImage(`http://localhost:8080/${res.data.thumbnail}`);
+        setSelectedImage(`${res.data.thumbnail}`);
       };
       getMedicineDetail();
     } catch (error) {
@@ -112,7 +112,7 @@ const MedicineUpdate = () => {
                     <div className="mt-3">
                       {selectedImage && (
                         <img
-                          src={selectedImage}
+                          src={`http://localhost:8080/${selectedImage}`}
                           alt="Ảnh"
                           className="img-fluid"
                           style={{ width: '200px', height: '200px' }}

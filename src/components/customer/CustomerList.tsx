@@ -6,9 +6,9 @@ import * as actions from '../../Redux/actions';
 import { Modal, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const UserList = () => {
+const CustomerList = () => {
   const dispatch = useDispatch();
-  const [users, setUsers] = useState([]);
+  const [customer, setCustomer] = useState([]);
   const [numOfPage, setNumOfPage] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemPerPage] = useState<number>(10);
@@ -24,34 +24,43 @@ const UserList = () => {
       element: (row: any) => row.id,
     },
     {
-      name: 'First name',
-      element: (row: any) => row.first_name,
+      name: 'Full Name',
+      element: (row: any) => row.full_name,
     },
     {
-      name: 'Last name',
-      element: (row: any) => row.last_name,
+      name: 'Birth Day',
+      element: (row: any) => row.birth_day,
+    },
+    {
+      name: 'Phone Number',
+      element: (row: any) => row.phone_number,
+    },
+    {
+      name: 'Address',
+      element: (row: any) => row.address,
     },
     {
       name: 'Email',
       element: (row: any) => row.email,
     },
     {
-      name: 'Created at',
-      element: (row: any) => row.created_at,
+      name: 'Createred',
+      element: (row: any) => (row.user ? row.user.first_name : ''),
     },
     {
-      name: 'Updated at',
-      element: (row: any) => row.updated_at,
+      name: 'Status',
+      element: (row: any) =>
+        row.status === 1 ? (
+          <span className="badge rounded-pill bg-success">Active</span>
+        ) : (
+          <span className="badge rounded-pill bg-danger">Inactive</span>
+        ),
     },
     {
       name: 'Actions',
       element: (row: any) => (
         <>
-          {/* <button type="button" className="btn btn-sm btn-warning me-1">
-            <i className="fa fa-pencil-alt" />
-            Edit
-          </button> */}
-          <Link className="btn btn-sm btn-warning me-1" to={`/user/edit/${row.id}`}>
+          <Link className="btn btn-sm btn-warning me-1" to={`/customer/edit/${row.id}`}>
             <i className="fa fa-pencil-alt" />
             Edit
           </Link>
@@ -79,7 +88,7 @@ const UserList = () => {
   const requestDeleteApi = () => {
     if (deleteType === 'single') {
       dispatch(actions.controlLoading(true));
-      requestApi(`/users/${deleteItem}`, 'DELETE', [])
+      requestApi(`/customer/${deleteItem}`, 'DELETE', [])
         .then(() => {
           setShowModal(false);
           setRefresh(Date.now());
@@ -92,7 +101,7 @@ const UserList = () => {
         });
     } else {
       dispatch(actions.controlLoading(true));
-      requestApi(`/users/multiple?ids=${selectedRows.toString()}`, 'DELETE', [])
+      requestApi(`/customer/multiple?ids=${selectedRows.toString()}`, 'DELETE', [])
         .then(() => {
           setShowModal(false);
           setRefresh(Date.now());
@@ -109,10 +118,10 @@ const UserList = () => {
   useEffect(() => {
     dispatch(actions.controlLoading(true));
     const query = `?items_per_page=${itemsPerPage}&page=${currentPage}&keyword=${keyword}`;
-    requestApi(`/users${query}`, 'GET', [])
+    requestApi(`/customer${query}`, 'GET', [])
       .then((response) => {
         console.log(response);
-        setUsers(response.data.data);
+        setCustomer(response.data.data);
         setNumOfPage(response.data.lastPage);
         setCurrentPage(response.data.currentPage);
         dispatch(actions.controlLoading(false));
@@ -128,19 +137,19 @@ const UserList = () => {
     <div id="layoutSidenav_content">
       <main>
         <div className="container-fluid px-4">
-          <h1 className="mt-4">User</h1>
+          <h1 className="mt-4">Customer List</h1>
           <ol className="breadcrumb mb-4">
             <li className="breadcrumb-item">
               <Link to="/">Dashboard</Link>
             </li>
             <li className="breadcrumb-item">
-              <Link to="/users">Users</Link>
+              <Link to="/customers">Customer</Link>
             </li>
-            <li className="breadcrumb-item active">List Users</li>
+            <li className="breadcrumb-item active">List Customer</li>
           </ol>
 
           <div className="mb-3">
-            <Link to="/user/add" className="btn btn-sm btn-success me-2">
+            <Link to="/customer/add" className="btn btn-sm btn-success me-2">
               <i className="fa fa-plus" />
               Add New
             </Link>
@@ -152,8 +161,8 @@ const UserList = () => {
             )}
           </div>
           <DataTable
-            data={users}
-            title="List Users"
+            data={customer}
+            title="List Customers"
             columns={columnsTable}
             numOfPage={numOfPage}
             currentPage={currentPage}
@@ -165,7 +174,7 @@ const UserList = () => {
               console.log('selected rows in user list', rows);
               setSelectedRows(rows);
             }}
-            keywordSearch="Name or Email"
+            keywordSearch="Name , Phone or Email"
           />
         </div>
       </main>
@@ -185,4 +194,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default CustomerList;

@@ -18,6 +18,9 @@ import MedicineUpdate from './components/medicine/MedicineUpdate';
 import CategoryList from './components/category/CategoryList';
 import CategoryAdd from './components/category/CategoryAdd';
 import CategoryUpdate from './components/category/CategoryUpdate';
+import CustomerList from './components/customer/CustomerList';
+import CustomerAdd from './components/customer/CustomerAdd';
+import CustomerUpdate from './components/customer/CustomerUpdate';
 
 function App() {
   return (
@@ -35,6 +38,9 @@ function App() {
             <Route path="/categorys" element={<CategoryList />} />
             <Route path="/category/add" element={<CategoryAdd />} />
             <Route path="/category/edit/:id" element={<CategoryUpdate />} />
+            <Route path="/customers" element={<CustomerList />} />
+            <Route path="/customer/add" element={<CustomerAdd />} />
+            <Route path="/customer/edit/:id" element={<CustomerUpdate />} />
           </Route>
         </Route>
         <Route element={<PublicRoutes />}>
