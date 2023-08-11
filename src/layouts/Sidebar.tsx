@@ -8,12 +8,12 @@ const Sidebar = () => {
         <div className="sb-sidenav-menu">
           <div className="nav">
             <div className="sb-sidenav-menu-heading">Core</div>
-            <a className="nav-link" href="/">
+            <Link className="nav-link" to="/">
               <div className="sb-nav-link-icon">
                 <i className="fas fa-tachometer-alt" />
               </div>
               Dashboard
-            </a>
+            </Link>
             <div className="sb-sidenav-menu-heading">Interface</div>
             <a
               className="nav-link collapsed"

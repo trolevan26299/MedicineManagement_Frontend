@@ -1,10 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as actions from '../../Redux/actions/index';
 import { requestApi } from '../../helpers/api';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+import CommonDatePicker from '../../utils/CommonDatePicker';
 
 const CustomerUpdate = () => {
   const params = useParams();
@@ -17,10 +20,12 @@ const CustomerUpdate = () => {
     formState: { errors },
   } = useForm();
 
+  const [birthDay, setBirthDay] = useState<Date | undefined>(undefined);
+
   const handleSubmitFormUpdate = async (data: any) => {
     dispatch(actions.controlLoading(true));
     try {
-      await requestApi(`/customer/${params.id}`, 'PUT', data);
+      await requestApi(`/customer/${params.id}`, 'PUT', { ...data, birth_day: birthDay });
       dispatch(actions.controlLoading(false));
       toast.success('Customer has been updated successfully !', { position: 'top-center', autoClose: 2000 });
       setTimeout(() => {
@@ -37,8 +42,9 @@ const CustomerUpdate = () => {
       const getCustomerDetail = async () => {
         const res = await requestApi(`/customer/${params.id}`, 'GET');
         dispatch(actions.controlLoading(false));
-        const fields = ['full_name', 'birth_day', 'phone_number', 'address', 'email', 'status'];
+        const fields = ['full_name', 'phone_number', 'address', 'email', 'status'];
         fields.forEach((field) => setValue(field, res.data[field]));
+        setBirthDay(moment(res.data.birth_day).toDate());
       };
       getCustomerDetail();
     } catch (error) {
@@ -83,13 +89,12 @@ const CustomerUpdate = () => {
                     </div>
                     <div className="mb-3 mt-3">
                       <label className="form-label">Birth Day:</label>
-                      <input
-                        type="date"
-                        {...register('birth_day', { required: 'Birth Day is required !' })}
-                        className="form-control"
-                        placeholder="Enter Birth Day "
+                      <CommonDatePicker
+                        selectedDate={birthDay}
+                        setSelecteDate={setBirthDay as any}
+                        format="dd/MM/yyyy"
+                        placeholder="DD/MM/YYYY"
                       />
-                      {errors.birth_day && <p style={{ color: 'red' }}>{errors.birth_day.message}</p>}
                     </div>
                     <div className="mb-3 mt-3">
                       <label className="form-label">Phone Number:</label>

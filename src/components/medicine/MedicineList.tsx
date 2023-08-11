@@ -167,6 +167,7 @@ const MedicineList = () => {
               </button>
             )}
           </div>
+
           <DataTable
             data={posts}
             title="List Medicine"

@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import * as actions from '../../Redux/actions';
 import { Modal, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 const CustomerList = () => {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ const CustomerList = () => {
     },
     {
       name: 'Birth Day',
-      element: (row: any) => row.birth_day,
+      element: (row: any) => (row.birth_day ? moment(row.birth_day).format('DD/MM/YYYY') : ''),
     },
     {
       name: 'Phone Number',
@@ -55,6 +56,17 @@ const CustomerList = () => {
         ) : (
           <span className="badge rounded-pill bg-danger">Inactive</span>
         ),
+    },
+    {
+      name: 'History Order',
+      element: (row: any) => (
+        <>
+          <Link className="btn btn-sm btn-info me-1" style={{ width: '100%' }} to={`/customer/edit/${row.id}`}>
+            <i className="fa fa-history" style={{ marginRight: '5px' }} />
+            Click
+          </Link>
+        </>
+      ),
     },
     {
       name: 'Actions',

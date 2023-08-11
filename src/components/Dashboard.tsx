@@ -12,14 +12,18 @@ const Dashboard = () => {
   useEffect(() => {
     const promiseUser = requestApi('/users', 'GET');
     const promisePost = requestApi('/posts', 'GET');
+    const promiseCategory = requestApi('/category', 'GET');
+    const promiseCustomer = requestApi('/customer', 'GET');
     dispatch(actions.controlLoading(true));
-    Promise.all([promiseUser, promisePost])
+    Promise.all([promiseUser, promisePost, promiseCategory, promiseCustomer])
       .then((res) => {
         dispatch(actions.controlLoading(false));
         setDashboardData({
           ...dashboardData,
           totalUser: res[0].data.totalCount,
           totalMedicine: res[1].data.totalCount,
+          totalCategory: res[2].data.totalCount,
+          totalCustomer: res[3].data.totalCount,
         });
       })
       .catch((err) => {
@@ -67,6 +71,46 @@ const Dashboard = () => {
                 </div>
                 <div className="card-footer d-flex align-items-center justify-content-between">
                   <Link to="/medicines" className="small text-white stretched-link">
+                    View Details
+                  </Link>
+                  <div className="small text-white">
+                    <i className="fas fa-angle-right" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-xl-3 col-md-6">
+              <div className="card bg-warning text-white mb-4">
+                <div className="card-body">
+                  Total Categorys
+                  {dashboardData.totalCategory && (
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                      {dashboardData.totalCategory}
+                    </span>
+                  )}
+                </div>
+                <div className="card-footer d-flex align-items-center justify-content-between">
+                  <Link to="/categorys" className="small text-white stretched-link">
+                    View Details
+                  </Link>
+                  <div className="small text-white">
+                    <i className="fas fa-angle-right" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-xl-3 col-md-6">
+              <div className="card bg-warning text-white mb-4">
+                <div className="card-body">
+                  Total Customers
+                  {dashboardData.totalCustomer && (
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                      {dashboardData.totalCustomer}
+                    </span>
+                  )}
+                </div>
+                <div className="card-footer d-flex align-items-center justify-content-between">
+                  <Link to="/customers" className="small text-white stretched-link">
                     View Details
                   </Link>
                   <div className="small text-white">

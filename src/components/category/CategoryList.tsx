@@ -32,6 +32,10 @@ const CategoryList = () => {
       element: (row: any) => row.description,
     },
     {
+      name: 'Total Medicine',
+      element: (row: any) => row.posts.length,
+    },
+    {
       name: 'Createred',
       element: (row: any) => (row.user ? row.user.first_name : ''),
     },

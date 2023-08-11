@@ -1,10 +1,11 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as actions from '../../Redux/actions/index';
 import { requestApi } from '../../helpers/api';
-import { format } from 'date-fns';
+import CommonDatePicker from '../../utils/CommonDatePicker';
 
 const CustomerAdd = () => {
   const dispatch = useDispatch();
@@ -15,11 +16,11 @@ const CustomerAdd = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-
+  const [birthDay, setBirthDay] = useState<Date | undefined>(undefined);
   const handleSubmitFormAdd = async (data: any) => {
     dispatch(actions.controlLoading(true));
     try {
-      await requestApi('/customer', 'POST', data);
+      await requestApi('/customer', 'POST', { ...data, birth_day: birthDay });
       dispatch(actions.controlLoading(false));
       toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
       setTimeout(() => {
@@ -66,14 +67,12 @@ const CustomerAdd = () => {
                     </div>
                     <div className="mb-3 mt-3">
                       <label className="form-label">Birth Day:</label>
-                      <input
-                        type="date"
-                        placeholder="dd-mm-yyyy"
-                        {...register('birth_day', { required: 'Birth Day is required !' })}
-                        className="form-control"
-                        placeholder="Enter Birth Day"
+                      <CommonDatePicker
+                        selectedDate={birthDay}
+                        setSelecteDate={setBirthDay as any}
+                        format="dd/MM/yyyy"
+                        placeholder="DD/MM/YYYY"
                       />
-                      {errors.birth_day && <p style={{ color: 'red' }}>{errors.birth_day.message}</p>}
                     </div>
                     <div className="mb-3 mt-3">
                       <label className="form-label">Phone Number:</label>
