@@ -97,7 +97,7 @@ const CustomerAdd = () => {
                             type="number"
                             value={item.quantity}
                             onChange={(e) => {
-                              const updatedRows = [...rows];
+                              const updatedRows = [...medicine];
                               updatedRows[index].quantity = e.target.value;
                               setMedicine(updatedRows);
                             }}
