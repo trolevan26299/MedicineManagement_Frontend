@@ -5,7 +5,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as actions from '../../Redux/actions/index';
 import { requestApi } from '../../helpers/api';
-import CommonDatePicker from '../../utils/CommonDatePicker';
 import Select from 'react-select';
 
 const CustomerAdd = () => {
@@ -86,6 +85,7 @@ const CustomerAdd = () => {
                         <div key={index}>
                           <input
                             type="text"
+                            placeholder="search medicine"
                             value={item.productName}
                             onChange={(e) => {
                               const updatedRows = [...medicine];
@@ -102,51 +102,38 @@ const CustomerAdd = () => {
                               setMedicine(updatedRows);
                             }}
                           />
+                          <input
+                            type="text"
+                            placeholder="Price"
+                            disabled
+                            value={item.productName}
+                            onChange={(e) => {
+                              const updatedRows = [...medicine];
+                              updatedRows[index].productName = e.target.value;
+                              setMedicine(updatedRows);
+                            }}
+                          />
                           <button disabled={index === 0} onClick={() => deleteMedicine(index)}>
                             -
                           </button>
                         </div>
                       ))}
+                      <div className="d-flex ">
+                        <h4>Total Price :</h4>
+                        <h4>1000</h4>
+                      </div>
                     </div>
                     <div className="mb-3 mt-3">
-                      <label className="form-label">Birth Day:</label>
-                      <CommonDatePicker
-                        selectedDate={birthDay}
-                        setSelecteDate={setBirthDay as any}
-                        format="dd/MM/yyyy"
-                        placeholder="DD/MM/YYYY"
-                      />
-                    </div>
-                    <div className="mb-3 mt-3">
-                      <label className="form-label">Phone Number:</label>
+                      <label className="form-label">Description:</label>
                       <input
                         type="text"
-                        {...register('phone_number', { required: 'Phone Number is required !' })}
+                        {...register('description', { required: 'Description is required !' })}
                         className="form-control"
-                        placeholder="Enter Phone Number"
+                        placeholder="Enter Description "
                       />
-                      {errors.phone_number && <p style={{ color: 'red' }}>{errors.phone_number.message}</p>}
+                      {errors.description && <p style={{ color: 'red' }}>{errors.description.message}</p>}
                     </div>
-                    <div className="mb-3 mt-3">
-                      <label className="form-label">Address:</label>
-                      <input
-                        type="text"
-                        {...register('address')}
-                        className="form-control"
-                        placeholder="Enter Address"
-                      />
-                    </div>
-                    <div className="mb-3 mt-3">
-                      <label className="form-label">Email:</label>
-                      <input type="email" {...register('email')} className="form-control" placeholder="Enter Email" />
-                    </div>
-                    <div className="mt-3 mb-3">
-                      <label className="form-label">Status:</label>
-                      <select {...register('status')} className="form-select">
-                        <option value="1">Active</option>
-                        <option value="2">Inactive</option>
-                      </select>
-                    </div>
+
                     <button type="button" onClick={handleSubmit(handleSubmitFormAdd)} className="btn btn-success">
                       Submit
                     </button>
