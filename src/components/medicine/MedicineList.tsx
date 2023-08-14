@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from '../common/DataTable';
-import { requestApi } from '../../helpers/api';
+import { apiUrl, requestApi } from '../../helpers/api';
 import { useDispatch } from 'react-redux';
 import * as actions from '../../Redux/actions';
 import { Modal, Button } from 'react-bootstrap';
@@ -27,7 +27,7 @@ const MedicineList = () => {
     {
       name: 'Image',
       element: (row: any) =>
-        <img style={{ width: '100px', height: '100px' }} src={`http://localhost:8080/${row.thumbnail}`} alt="" /> || '',
+        <img style={{ width: '100px', height: '100px' }} src={`${apiUrl}/${row.thumbnail}`} alt="" /> || '',
     },
     {
       name: 'Name',
