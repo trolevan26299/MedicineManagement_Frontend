@@ -21,6 +21,9 @@ import CategoryUpdate from './components/category/CategoryUpdate';
 import CustomerList from './components/customer/CustomerList';
 import CustomerAdd from './components/customer/CustomerAdd';
 import CustomerUpdate from './components/customer/CustomerUpdate';
+import OrderHistoryList from './components/order/OrderHistoryList';
+import OrderAdd from './components/order/OrderAdd';
+import OrderUpdate from './components/order/OrderUpdate';
 
 function App() {
   return (
@@ -41,6 +44,9 @@ function App() {
             <Route path="/customers" element={<CustomerList />} />
             <Route path="/customer/add" element={<CustomerAdd />} />
             <Route path="/customer/edit/:id" element={<CustomerUpdate />} />
+            <Route path="/order-history-list" element={<OrderHistoryList />} />
+            <Route path="/order/add" element={<OrderAdd />} />
+            <Route path="/order/edit/:id" element={<OrderUpdate />} />
           </Route>
         </Route>
         <Route element={<PublicRoutes />}>
