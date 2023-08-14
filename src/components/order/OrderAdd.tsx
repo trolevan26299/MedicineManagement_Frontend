@@ -18,7 +18,7 @@ const CustomerAdd = () => {
     formState: { errors },
   } = useForm();
   const [birthDay, setBirthDay] = useState<Date | undefined>(undefined);
-  const [medicine, setMedicine] = useState([]);
+  const [medicine, setMedicine] = useState([{ productName: '', quantity: 0 }]);
 
   const options = [
     { value: '01', label: 'Lê Văn Trợ - 0839579012 - 42 đường 2 tháng 2,Hải chẩu ,đà nẵng' },
@@ -78,6 +78,10 @@ const CustomerAdd = () => {
                       <Select options={options} placeholder="Search Customer follow Name,Phone Number" />
                     </div>
                     <div className="mb-3 mt-3">
+                      <label className="form-label">Add Product:</label>
+                      <button type="button" onClick={addMedicine}>
+                        +
+                      </button>
                       {medicine.map((item, index) => (
                         <div key={index}>
                           <input
@@ -98,12 +102,11 @@ const CustomerAdd = () => {
                               setMedicine(updatedRows);
                             }}
                           />
-                          <button onClick={() => deleteMedicine(index)}>-</button>
+                          <button disabled={index === 0} onClick={() => deleteMedicine(index)}>
+                            -
+                          </button>
                         </div>
                       ))}
-                      <button type="button" onClick={addMedicine}>
-                        +
-                      </button>
                     </div>
                     <div className="mb-3 mt-3">
                       <label className="form-label">Birth Day:</label>
