@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-export const requestApi = (endpoint: string, method: string, body = [], responseType = 'json') => {
+const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
+
+export const requestApi = async (endpoint: string, method: string, body: any[] = [], responseType = 'json') => {
   const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
@@ -8,6 +10,7 @@ export const requestApi = (endpoint: string, method: string, body = [], response
   };
 
   const instance = axios.create({ headers });
+
   instance.interceptors.request.use(
     (config) => {
       const token = localStorage.getItem('ACCESS_TOKEN');
@@ -31,7 +34,7 @@ export const requestApi = (endpoint: string, method: string, body = [], response
       if (error.response && error.response.status === 419) {
         try {
           console.log('call refresh token api !');
-          const result = await instance.post('http://localhost:8080/auth/refresh-token', {
+          const result = await instance.post(`${apiUrl}/auth/refresh-token`, {
             refresh_token: localStorage.getItem('REFRESH_TOKEN'),
           });
           const { access_token, refresh_token } = result.data;
@@ -54,14 +57,26 @@ export const requestApi = (endpoint: string, method: string, body = [], response
       return Promise.reject(error);
     },
   );
-  return instance.request({
-    method: method,
-    url: `http://localhost:8080${endpoint}`,
-    data: body,
-    responseType: responseType as any,
-  });
+
+  try {
+    const response = await instance.request({
+      method: method,
+      url: apiUrl + `${endpoint}`,
+      data: body,
+      responseType: responseType as any,
+    });
+    return response;
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
-export const requestApiFormData = (endpoint: string, method: string, body = new FormData(), responseType = 'json') => {
+
+export const requestApiFormData = async (
+  endpoint: string,
+  method: string,
+  body = new FormData(),
+  responseType = 'json',
+) => {
   const headers = {
     Accept: 'application/json',
     'Content-Type': 'multipart/form-data',
@@ -69,6 +84,7 @@ export const requestApiFormData = (endpoint: string, method: string, body = new 
   };
 
   const instance = axios.create({ headers });
+
   instance.interceptors.request.use(
     (config) => {
       const token = localStorage.getItem('ACCESS_TOKEN');
@@ -92,7 +108,7 @@ export const requestApiFormData = (endpoint: string, method: string, body = new 
       if (error.response && error.response.status === 419) {
         try {
           console.log('call refresh token api !');
-          const result = await instance.post('http://localhost:8080/auth/refresh-token', {
+          const result = await instance.post(`${apiUrl}/auth/refresh-token`, {
             refresh_token: localStorage.getItem('REFRESH_TOKEN'),
           });
           const { access_token, refresh_token } = result.data;
@@ -115,10 +131,16 @@ export const requestApiFormData = (endpoint: string, method: string, body = new 
       return Promise.reject(error);
     },
   );
-  return instance.request({
-    method: method,
-    url: `http://localhost:8080${endpoint}`,
-    data: body,
-    responseType: responseType as any,
-  });
+
+  try {
+    const response = await instance.request({
+      method: method,
+      url: apiUrl + `${endpoint}`,
+      data: body,
+      responseType: responseType as any,
+    });
+    return response;
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
