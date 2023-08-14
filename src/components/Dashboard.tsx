@@ -4,6 +4,7 @@ import { DashboardDto } from '../Definition/user.dto';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import * as actions from '../Redux/actions/index';
+import ChartComponent from './chart/chart';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -120,18 +121,9 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+          <ChartComponent />
         </div>
       </main>
-      <footer className="py-4 bg-light mt-auto">
-        <div className="container-fluid px-4">
-          <div className="d-flex align-items-center justify-content-between small">
-            <div className="text-muted">Copyright © Your Website 2021</div>
-            <div>
-              <a href="/">Privacy Policy</a>·<a href="/">Terms &amp; Conditions</a>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
