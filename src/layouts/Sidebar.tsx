@@ -4,17 +4,16 @@ import { Link } from 'react-router-dom';
 const Sidebar = () => {
   return (
     <div id="layoutSidenav_nav">
-      <nav className="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+      <nav className="sb-sidenav accordion sb-sidenav-dark pt-5" id="sidenavAccordion">
         <div className="sb-sidenav-menu">
           <div className="nav">
-            <div className="sb-sidenav-menu-heading">Core</div>
             <Link className="nav-link" to="/">
               <div className="sb-nav-link-icon">
                 <i className="fas fa-tachometer-alt" />
               </div>
               Dashboard
             </Link>
-            <div className="sb-sidenav-menu-heading">Interface</div>
+
             <a
               className="nav-link collapsed"
               href="/"
@@ -24,7 +23,7 @@ const Sidebar = () => {
               aria-controls="collapseLayouts"
             >
               <div className="sb-nav-link-icon">
-                <i className="fas fa-user" />
+                <i className="fa fa-user-nurse"></i>
               </div>
               Users
               <div className="sb-sidenav-collapse-arrow">
@@ -55,7 +54,7 @@ const Sidebar = () => {
               aria-controls="collapseLayouts"
             >
               <div className="sb-nav-link-icon">
-                <i className="fas fa-columns" />
+                <i className="fa fa-capsules"></i>
               </div>
               Medicine
               <div className="sb-sidenav-collapse-arrow">
@@ -81,7 +80,7 @@ const Sidebar = () => {
               aria-controls="collapseLayouts"
             >
               <div className="sb-nav-link-icon">
-                <i className="fas fa-columns" />
+                <i className="fa fa-book-medical"></i>
               </div>
               Category
               <div className="sb-sidenav-collapse-arrow">
@@ -112,7 +111,7 @@ const Sidebar = () => {
               aria-controls="collapseLayouts"
             >
               <div className="sb-nav-link-icon">
-                <i className="fas fa-columns" />
+                <i className="fa fa-users"></i>
               </div>
               Customer
               <div className="sb-sidenav-collapse-arrow">
@@ -143,7 +142,7 @@ const Sidebar = () => {
               aria-controls="collapseLayouts"
             >
               <div className="sb-nav-link-icon">
-                <i className="fas fa-columns" />
+                <i className="fa fa-history"></i>
               </div>
               Order
               <div className="sb-sidenav-collapse-arrow">
