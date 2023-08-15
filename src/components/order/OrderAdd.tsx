@@ -1,12 +1,14 @@
-import { ChangeEvent, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { debounce } from 'lodash';
+import { useState, useEffect } from 'react';
+import { DefaultValues, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import Select from 'react-select';
 import * as actions from '../../Redux/actions/index';
 import { apiUrl, requestApi } from '../../helpers/api';
-import Select, { components } from 'react-select';
-import { debounce } from 'lodash';
+import './styles.css';
+import { formatCurrency } from '../../constant/common';
+import { toast } from 'react-toastify';
 
 export interface IOptions {
   label?: string;
@@ -14,69 +16,93 @@ export interface IOptions {
   [key: string]: any;
 }
 
+interface ISelectValue {
+  id: number;
+  value: string | null;
+  [key: string]: any;
+}
+
+interface ISelectCustomer {
+  customer: number;
+}
+
 interface FormValues {
-  customerId?: number;
-  product?: {
-    medicineId: number;
+  customer?: number;
+  details: {
+    id?: number;
     count: number;
+    price: number;
   }[];
-  totalPrice: number;
+  total_price: number;
   description: string;
 }
 
 const defaultValues: DefaultValues<FormValues> = {
-  totalPrice: 0,
+  total_price: 0,
   description: '',
+  details: [
+    {
+      count: 0,
+      price: 0,
+    },
+  ],
 };
 
 const CustomerAdd = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-    getValue,
+    clearErrors,
   } = useForm<FormValues>({
     defaultValues,
     reValidateMode: 'onSubmit',
   });
-  const [birthDay, setBirthDay] = useState<Date | undefined>(undefined);
-  const [medicine, setMedicine] = useState([{ productId: 0, quantity: 0 }]);
+  const [selectCustomer, setSelectCustomer] = useState<ISelectCustomer>({ customer: 0 });
   const [optionCustomers, setOptionCustomers] = useState<IOptions[]>([]);
-  const [optionMedicines, setOptionMedicines] = useState<IOptions[]>([]);
+  const [selectValues, setSelectValues] = useState<ISelectValue[]>([{ id: 0, value: null }]);
+  const [loadedOptions, setLoadedOptions] = useState<IOptions[]>([]);
+  const navigate = useNavigate();
+
+  const calculateTotalPrice = () => {
+    const totalPrice = selectValues.reduce((acc, item) => acc + item.price, 0);
+    return totalPrice || 0;
+  };
   // hanle add remove medicine0 list
   const addMedicine = () => {
-    setMedicine([...medicine, { productId: 0, quantity: 0 }]);
-  };
-  const deleteMedicine = (index: number) => {
-    const updatedRows = [...medicine];
-    updatedRows.splice(index, 1);
-    setMedicine(updatedRows);
+    setSelectValues([...selectValues, { id: selectValues.length, value: null }]);
   };
 
   const handleSubmitFormAdd = async (data: any) => {
-    console.log('🚀 ~ file: OrderAdd.tsx:58 ~ handleSubmitFormAdd ~ data:', data);
-    // dispatch(actions.controlLoading(true));
-    // try {
-    //   await requestApi('/customer', 'POST', { ...data, birth_day: birthDay });
-    //   dispatch(actions.controlLoading(false));
-    //   toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
-    //   setTimeout(() => {
-    //     navigate('/customers');
-    //   }, 3000);
-    // } catch (error) {
-    //   dispatch(actions.controlLoading(false));
-    // }
+    dispatch(actions.controlLoading(true));
+    const newData = {
+      ...data,
+      total_price: calculateTotalPrice(),
+      details: selectValues.map((item: ISelectValue) => ({
+        id: item.value,
+        count: item.count,
+      })),
+    };
+    try {
+      await requestApi('/order', 'POST', { ...newData });
+      toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
+      setTimeout(() => {
+        navigate('/order-history-list');
+      }, 3000);
+    } catch (error) {
+      dispatch(actions.controlLoading(false));
+    }
   };
 
-  const fetchCustomers = async (searchTerm: string) => {
+  const debouncedFetchCustomers = debounce((searchTerm: string) => {
     const query = `?keyword=${searchTerm}`;
     dispatch(actions.controlLoading(false));
 
-    await requestApi(`/customer${query}`, 'GET', [])
+    requestApi(`/customer${query}`, 'GET', [])
       .then((response) => {
         if (response.data) {
           const newOptions = response.data.data.map((item: any) => ({
@@ -91,60 +117,85 @@ const CustomerAdd = () => {
         console.error(err);
         dispatch(actions.controlLoading(false));
       });
+  }, 300);
+
+  const handleInputChangeCustomers = (value: string, { action }: any) => {
+    if (action === 'input-blur') {
+      return;
+    }
+    if (value === '') {
+      return;
+    } else {
+      debouncedFetchCustomers(value);
+    }
   };
 
-  const fetchMedicines = async (searchTerm: string) => {
+  const handleChangeOptionCustomer = (optionsData: IOptions) => {
+    setValue('customer', optionsData.value, { shouldValidate: false });
+  };
+
+  // medicine
+  const debouncedFetchMedicines = debounce((searchTerm: string, id: number) => {
     const query = `?keyword=${searchTerm}`;
-    await requestApi(`/posts${query}`, 'GET', [])
+    requestApi(`/posts${query}`, 'GET', [])
       .then((response) => {
         const modifiedOptions = response.data.data.map((medicine: any) => ({
           label: medicine.title,
           value: medicine.id,
           price: medicine.price,
           imgUrl: medicine.thumbnail,
+          count: 1,
         }));
-        setOptionMedicines(modifiedOptions);
+        setLoadedOptions((prevOptions) => {
+          const updatedOptions = [...prevOptions];
+          updatedOptions[id] = modifiedOptions;
+          return updatedOptions;
+        });
         dispatch(actions.controlLoading(false));
       })
       .catch((err) => {
         console.log(err);
         dispatch(actions.controlLoading(false));
       });
-  };
+  }, 300);
 
-  const debouncedFetchCustomers = debounce(fetchCustomers, 300);
-  const debouncedFetchMedicines = debounce(fetchMedicines, 300);
-
-  const handleInputChangeCustomers = (value: string, { action }: any) => {
+  const handleInputChangeMedicines = async (value: string, id: number, { action }: any) => {
     if (action === 'input-blur') {
       return;
     }
-    if (!value) {
-      setOptionCustomers([]);
-    } else {
-      debouncedFetchCustomers(value);
-    }
+    if (value === '') return;
+    debouncedFetchMedicines(value, id);
   };
 
-  const handleInputChangeMedicines = (value: string, { action }: any) => {
-    if (action === 'input-blur') {
-      return;
-    }
-    if (!value) {
-      setOptionMedicines([]);
-    } else {
-      debouncedFetchMedicines(value);
-    }
+  const handleChangeMedicines = (value: ISelectValue | null, id: number) => {
+    const updatedValues = [...selectValues];
+    updatedValues[id].value = value?.value as string;
+    updatedValues[id].count = value?.count as number;
+    updatedValues[id].price = value?.price as number;
+    setSelectValues(updatedValues);
   };
 
-  const handleChangeOptionCustomer = (optionsData: IOptions) => {
-    setValue('customerId', optionsData.value);
+  const handleRemoveMedicine = (id: number) => {
+    const updatedValues = selectValues.filter((item) => item.id !== id);
+    setSelectValues(updatedValues);
   };
 
-  const handleChangeOptionMedicines = (optionsData: IOptions) => {
-    console.log('🚀 ~ file: OrderAdd.tsx:139 ~ handleChangeOptionMedicines ~ optionsData:', optionsData);
-    const currentProduct = getValue('product');
-    console.log('🚀 ~ file: OrderAdd.tsx:147 ~ handleChangeOptionMedicines ~ currentProduct:', currentProduct);
+  const handleCountChange = (newValue: string, id: number) => {
+    const updatedValues = [...selectValues];
+    const parsedCount = parseInt(newValue);
+
+    if (!isNaN(parsedCount) && parsedCount > 0) {
+      updatedValues[id].count = parsedCount;
+
+      const selectedOption = loadedOptions[id]?.find((option) => option.value === updatedValues[id].value);
+      if (selectedOption) {
+        updatedValues[id].price = selectedOption.price * parsedCount;
+      } else {
+        updatedValues[id].price = 0;
+      }
+    }
+
+    setSelectValues(updatedValues);
   };
 
   const CustomOption = ({ innerProps, data }: any) => {
@@ -184,62 +235,63 @@ const CustomerAdd = () => {
                     <div className="mb-3 mt-3">
                       <label className="form-label">Customer:</label>
                       <Select
+                        name="customer"
                         options={optionCustomers}
                         placeholder="Search Customer follow Name,Phone Number"
                         onInputChange={handleInputChangeCustomers}
                         isMulti={false}
-                        onChange={handleChangeOptionCustomer}
-                        // isLoading
+                        onChange={(selectedOption) => {
+                          setValue('customer', selectedOption.value);
+                          clearErrors('customer');
+                        }}
+                        {...register('customer', { required: 'Customer is required !' })}
                       />
+                      {errors.customer && <p style={{ color: 'red' }}>{errors.customer.message}</p>}
                     </div>
                     <div className="mb-3 mt-3">
-                      <label className="form-label">Add Product:</label>
-                      <button type="button" onClick={addMedicine}>
+                      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                      <label className="form-label add-product">Add Product:</label>
+                      <button type="button" onClick={addMedicine} className="btn-plus">
                         +
                       </button>
-                      {medicine.map((item, index) => (
-                        <div key={index}>
+                      {selectValues.map((item, index) => (
+                        <div key={item.id} className="all-product">
                           <Select
-                            options={optionMedicines}
                             placeholder="search medicine"
-                            onInputChange={handleInputChangeMedicines}
-                            isMulti={false}
-                            onChange={handleChangeOptionMedicines}
-                            components={{
-                              Option: CustomOption,
+                            className="select-product"
+                            options={loadedOptions[index] || []}
+                            onInputChange={(inputValue, actionMeta) => {
+                              handleInputChangeMedicines(inputValue, index, actionMeta);
                             }}
+                            components={{ Option: CustomOption }}
+                            getOptionLabel={(option) => option.label}
+                            getOptionValue={(option) => option.value}
+                            value={loadedOptions[index]?.find((option: any) => option.value === item.value)}
+                            onChange={(value) => handleChangeMedicines(value || null, index)}
                           />
                           <input
                             type="number"
-                            value={item.quantity}
-                            onChange={(e) => {
-                              const updatedRows = [...medicine];
-                              updatedRows[index].quantity = e.target.value;
-                              setMedicine(updatedRows);
-                            }}
+                            value={item.count || 0}
+                            onChange={(e) => handleCountChange(e.target.value, index)}
+                            className="select-quantity"
                           />
-                          <input
-                            type="text"
-                            placeholder="Price"
-                            disabled
-                            // value={item.productName}
-                            onChange={(e) => {
-                              // const updatedRows = [...medicine];
-                              // updatedRows[index].productName = e.target.value;
-                              // setMedicine(updatedRows);
-                            }}
-                          />
-                          <button disabled={index === 0} onClick={() => deleteMedicine(index)}>
+                          <input type="text" placeholder="Price" disabled value={formatCurrency(item.price || 0)} />
+                          <button
+                            type="button"
+                            disabled={selectValues.length === 1}
+                            onClick={() => handleRemoveMedicine(item.id)}
+                            className="btn-remove"
+                          >
                             -
                           </button>
                         </div>
                       ))}
                       <div className="d-flex ">
-                        <h4>Total Price :</h4>
-                        <h4>1000</h4>
+                        <h4>Total Price : {formatCurrency(calculateTotalPrice())}</h4>
                       </div>
                     </div>
                     <div className="mb-3 mt-3">
+                      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                       <label className="form-label">Description:</label>
                       <input
                         type="text"
