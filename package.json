@@ -12,7 +12,6 @@
   "dependencies": {
     "@types/lodash": "^4.14.197",
     "axios": "^1.4.0",
-    "dotenv": "^16.3.1",
     "highcharts": "^11.1.0",
     "highcharts-react-official": "^3.2.0",
     "lodash": "^4.17.21",
