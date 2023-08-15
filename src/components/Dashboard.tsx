@@ -4,7 +4,10 @@ import { DashboardDto } from '../Definition/user.dto';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import * as actions from '../Redux/actions/index';
-import ChartComponent from './chart/chart';
+import TotalOrderChartComponent from './chart/TotalOrderChart';
+import PieChart from './chart/PieChartcategory';
+import ColumnChart from './chart/NewCustomerChart';
+import LineChart from './chart/RevenueByMonth';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -36,9 +39,7 @@ const Dashboard = () => {
       <main>
         <div className="container-fluid px-4">
           <h1 className="mt-4">Dashboard</h1>
-          <ol className="breadcrumb mb-4">
-            <li className="breadcrumb-item active">Dashboard</li>
-          </ol>
+
           <div className="row">
             <div className="col-xl-3 col-md-6">
               <div className="card bg-primary text-white mb-4">
@@ -121,7 +122,18 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          <ChartComponent />
+          <TotalOrderChartComponent />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', gap: '10px' }}>
+            <div style={{ width: '32%' }}>
+              <PieChart />
+            </div>
+            <div style={{ width: '32%' }}>
+              <ColumnChart />
+            </div>
+            <div style={{ width: '32%' }}>
+              <LineChart />
+            </div>
+          </div>
         </div>
       </main>
     </div>
