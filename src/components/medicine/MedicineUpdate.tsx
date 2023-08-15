@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import * as actions from '../../Redux/actions/index';
 import { requestApi, requestApiFormData } from '../../helpers/api';
 import { toast } from 'react-toastify';
+const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
 
 const MedicineUpdate = () => {
   const params = useParams();
@@ -112,7 +113,7 @@ const MedicineUpdate = () => {
                     <div className="mt-3">
                       {selectedImage && (
                         <img
-                          src={`http://localhost:8080/${selectedImage}`}
+                          src={`${apiUrl}/${selectedImage}`}
                           alt="Ảnh"
                           className="img-fluid"
                           style={{ width: '200px', height: '200px' }}
