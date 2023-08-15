@@ -143,9 +143,9 @@ const CustomerAdd = () => {
     }
   };
 
-  const handleChangeOptionCustomer = (optionsData: IOptions) => {
-    setValue('customer', optionsData.value, { shouldValidate: false });
-    setSelectCustomer({ customer: optionsData?.value as number });
+  const handleChangeOptionCustomer = (optionsData: number) => {
+    setValue('customer', optionsData);
+    setSelectCustomer({ customer: optionsData as number });
     clearErrors('customer');
   };
 
@@ -184,7 +184,6 @@ const CustomerAdd = () => {
 
   const handleChangeMedicines = (value: ISelectValue | null, id: number) => {
     const updatedValues = [...selectValues];
-    console.log('🚀 ~ file: OrderAdd.tsx:188 ~ handleChangeMedicines ~ updatedValues:', updatedValues);
     updatedValues[id].value = value?.value as string;
     updatedValues[id].count = value?.count as number;
     updatedValues[id].price = value?.price as number;
