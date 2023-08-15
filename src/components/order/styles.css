@@ -15,7 +15,6 @@
   width: 100%;
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
 }
 
 .select-product {
@@ -31,4 +30,20 @@
   border-radius: 3px;
   border: solid 1px #5f748d;
   background-color: #fff;
+}
+
+.err-text {
+  color: red;
+  margin-left: 3px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.total-price {
+  margin-top: 15px;
+}
+
+.mb {
+  margin-bottom: 15px;
 }

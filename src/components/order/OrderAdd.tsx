@@ -1,6 +1,6 @@
 import { debounce } from 'lodash';
 import { useState, useEffect } from 'react';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { DefaultValues, FieldErrors, SubmitHandler, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import Select from 'react-select';
@@ -57,6 +57,7 @@ const CustomerAdd = () => {
     handleSubmit,
     formState: { errors },
     setValue,
+    setError,
     clearErrors,
   } = useForm<FormValues>({
     defaultValues,
@@ -87,6 +88,7 @@ const CustomerAdd = () => {
         count: item.count,
       })),
     };
+
     try {
       await requestApi('/order', 'POST', { ...newData });
       toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
@@ -95,6 +97,17 @@ const CustomerAdd = () => {
       }, 3000);
     } catch (error) {
       dispatch(actions.controlLoading(false));
+    }
+  };
+
+  const onError = () => {
+    if (selectCustomer.customer === 0) {
+      setError('customer', { message: 'Customer is required !' });
+    }
+    const hasValidDetails = selectValues.some((item) => item.value === null && item.count === 0);
+
+    if (!hasValidDetails) {
+      setError('details', { message: 'Product is required !' });
     }
   };
 
@@ -132,6 +145,8 @@ const CustomerAdd = () => {
 
   const handleChangeOptionCustomer = (optionsData: IOptions) => {
     setValue('customer', optionsData.value, { shouldValidate: false });
+    setSelectCustomer({ customer: optionsData?.value as number });
+    clearErrors('customer');
   };
 
   // medicine
@@ -169,10 +184,16 @@ const CustomerAdd = () => {
 
   const handleChangeMedicines = (value: ISelectValue | null, id: number) => {
     const updatedValues = [...selectValues];
+    console.log('🚀 ~ file: OrderAdd.tsx:188 ~ handleChangeMedicines ~ updatedValues:', updatedValues);
     updatedValues[id].value = value?.value as string;
     updatedValues[id].count = value?.count as number;
     updatedValues[id].price = value?.price as number;
     setSelectValues(updatedValues);
+    const allValuesNotNull = updatedValues.every((item) => item.value !== null);
+
+    if (allValuesNotNull) {
+      clearErrors('details');
+    }
   };
 
   const handleRemoveMedicine = (id: number) => {
@@ -236,17 +257,14 @@ const CustomerAdd = () => {
                       <label className="form-label">Customer:</label>
                       <Select
                         name="customer"
-                        options={optionCustomers}
+                        options={optionCustomers || []}
                         placeholder="Search Customer follow Name,Phone Number"
                         onInputChange={handleInputChangeCustomers}
                         isMulti={false}
-                        onChange={(selectedOption) => {
-                          setValue('customer', selectedOption.value);
-                          clearErrors('customer');
-                        }}
-                        {...register('customer', { required: 'Customer is required !' })}
+                        onChange={(selectedOption: any) => handleChangeOptionCustomer(selectedOption.value)}
+                        value={optionCustomers?.find((option: any) => option.value === selectCustomer.customer)}
                       />
-                      {errors.customer && <p style={{ color: 'red' }}>{errors.customer.message}</p>}
+                      {errors.customer && <p className="err-text">{errors.customer.message}</p>}
                     </div>
                     <div className="mb-3 mt-3">
                       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -255,38 +273,43 @@ const CustomerAdd = () => {
                         +
                       </button>
                       {selectValues.map((item, index) => (
-                        <div key={item.id} className="all-product">
-                          <Select
-                            placeholder="search medicine"
-                            className="select-product"
-                            options={loadedOptions[index] || []}
-                            onInputChange={(inputValue, actionMeta) => {
-                              handleInputChangeMedicines(inputValue, index, actionMeta);
-                            }}
-                            components={{ Option: CustomOption }}
-                            getOptionLabel={(option) => option.label}
-                            getOptionValue={(option) => option.value}
-                            value={loadedOptions[index]?.find((option: any) => option.value === item.value)}
-                            onChange={(value) => handleChangeMedicines(value || null, index)}
-                          />
-                          <input
-                            type="number"
-                            value={item.count || 0}
-                            onChange={(e) => handleCountChange(e.target.value, index)}
-                            className="select-quantity"
-                          />
-                          <input type="text" placeholder="Price" disabled value={formatCurrency(item.price || 0)} />
-                          <button
-                            type="button"
-                            disabled={selectValues.length === 1}
-                            onClick={() => handleRemoveMedicine(item.id)}
-                            className="btn-remove"
-                          >
-                            -
-                          </button>
-                        </div>
+                        <>
+                          <div key={item.id} className={`all-product mb`}>
+                            <Select
+                              name="details"
+                              placeholder="search medicine"
+                              className="select-product"
+                              options={(loadedOptions[index] || []) as any}
+                              onInputChange={(inputValue, actionMeta) => {
+                                handleInputChangeMedicines(inputValue, index, actionMeta);
+                              }}
+                              components={{ Option: CustomOption }}
+                              getOptionLabel={(option) => option.label}
+                              getOptionValue={(option) => option.value}
+                              value={loadedOptions[index]?.find((option: any) => option.value === item.value)}
+                              onChange={(value) => handleChangeMedicines(value || null, index)}
+                            />
+                            <input
+                              type="number"
+                              value={item.count || 0}
+                              onChange={(e) => handleCountChange(e.target.value, index)}
+                              className="select-quantity"
+                            />
+                            <input type="text" placeholder="Price" disabled value={formatCurrency(item.price || 0)} />
+                            <button
+                              type="button"
+                              disabled={selectValues.length === 1}
+                              onClick={() => handleRemoveMedicine(item.id)}
+                              className="btn-remove"
+                            >
+                              -
+                            </button>
+                          </div>
+
+                          {item.value === null && errors.details && <p className="err-text">Product is required !</p>}
+                        </>
                       ))}
-                      <div className="d-flex ">
+                      <div className="d-flex total-price">
                         <h4>Total Price : {formatCurrency(calculateTotalPrice())}</h4>
                       </div>
                     </div>
@@ -299,10 +322,14 @@ const CustomerAdd = () => {
                         className="form-control"
                         placeholder="Enter Description "
                       />
-                      {errors.description && <p style={{ color: 'red' }}>{errors.description.message}</p>}
+                      {errors.description && <p className="err-text">{errors.description.message}</p>}
                     </div>
 
-                    <button type="button" onClick={handleSubmit(handleSubmitFormAdd)} className="btn btn-success">
+                    <button
+                      type="button"
+                      onClick={handleSubmit(handleSubmitFormAdd, onError)}
+                      className="btn btn-success"
+                    >
                       Submit
                     </button>
                   </div>
