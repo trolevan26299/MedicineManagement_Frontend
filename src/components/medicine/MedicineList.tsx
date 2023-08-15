@@ -5,7 +5,6 @@ import { useDispatch } from 'react-redux';
 import * as actions from '../../Redux/actions';
 import { Modal, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
 
 const MedicineList = () => {
   const dispatch = useDispatch();
