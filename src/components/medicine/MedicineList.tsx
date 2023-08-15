@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from '../common/DataTable';
-import { requestApi } from '../../helpers/api';
+import { apiUrl, requestApi } from '../../helpers/api';
 import { useDispatch } from 'react-redux';
 import * as actions from '../../Redux/actions';
 import { Modal, Button } from 'react-bootstrap';

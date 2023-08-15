@@ -1,11 +1,33 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as actions from '../../Redux/actions/index';
-import { requestApi } from '../../helpers/api';
-import Select from 'react-select';
+import { apiUrl, requestApi } from '../../helpers/api';
+import Select, { components } from 'react-select';
+import { debounce } from 'lodash';
+
+export interface IOptions {
+  label?: string;
+  value?: number;
+  [key: string]: any;
+}
+
+interface FormValues {
+  customerId?: number;
+  product?: {
+    medicineId: number;
+    count: number;
+  }[];
+  totalPrice: number;
+  description: string;
+}
+
+const defaultValues: DefaultValues<FormValues> = {
+  totalPrice: 0,
+  description: '',
+};
 
 const CustomerAdd = () => {
   const dispatch = useDispatch();
@@ -15,18 +37,19 @@ const CustomerAdd = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+    setValue,
+    getValue,
+  } = useForm<FormValues>({
+    defaultValues,
+    reValidateMode: 'onSubmit',
+  });
   const [birthDay, setBirthDay] = useState<Date | undefined>(undefined);
-  const [medicine, setMedicine] = useState([{ productName: '', quantity: 0 }]);
-
-  const options = [
-    { value: '01', label: 'Lê Văn Trợ - 0839579012 - 42 đường 2 tháng 2,Hải chẩu ,đà nẵng' },
-    { value: '02', label: 'Phan Công Huy - 0949191441 - 42 đường 2 tháng 2,Hải chẩu ,đà nẵng' },
-    { value: '03', label: 'Võ Mỹ Yến - 0374071200 - 12 An Thượng 24,Đà Nẵng' },
-  ];
+  const [medicine, setMedicine] = useState([{ productId: 0, quantity: 0 }]);
+  const [optionCustomers, setOptionCustomers] = useState<IOptions[]>([]);
+  const [optionMedicines, setOptionMedicines] = useState<IOptions[]>([]);
   // hanle add remove medicine0 list
   const addMedicine = () => {
-    setMedicine([...medicine, { productName: '', quantity: 0 }]);
+    setMedicine([...medicine, { productId: 0, quantity: 0 }]);
   };
   const deleteMedicine = (index: number) => {
     const updatedRows = [...medicine];
@@ -35,19 +58,105 @@ const CustomerAdd = () => {
   };
 
   const handleSubmitFormAdd = async (data: any) => {
-    dispatch(actions.controlLoading(true));
-    try {
-      await requestApi('/customer', 'POST', { ...data, birth_day: birthDay });
-      dispatch(actions.controlLoading(false));
-      toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
-      setTimeout(() => {
-        navigate('/customers');
-      }, 3000);
-    } catch (error) {
-      dispatch(actions.controlLoading(false));
+    console.log('🚀 ~ file: OrderAdd.tsx:58 ~ handleSubmitFormAdd ~ data:', data);
+    // dispatch(actions.controlLoading(true));
+    // try {
+    //   await requestApi('/customer', 'POST', { ...data, birth_day: birthDay });
+    //   dispatch(actions.controlLoading(false));
+    //   toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
+    //   setTimeout(() => {
+    //     navigate('/customers');
+    //   }, 3000);
+    // } catch (error) {
+    //   dispatch(actions.controlLoading(false));
+    // }
+  };
+
+  const fetchCustomers = async (searchTerm: string) => {
+    const query = `?keyword=${searchTerm}`;
+    dispatch(actions.controlLoading(false));
+
+    await requestApi(`/customer${query}`, 'GET', [])
+      .then((response) => {
+        if (response.data) {
+          const newOptions = response.data.data.map((item: any) => ({
+            value: item.id,
+            label: `${item.full_name} - ${item.phone_number} - ${item.address}`,
+          }));
+          setOptionCustomers(newOptions);
+          dispatch(actions.controlLoading(false));
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        dispatch(actions.controlLoading(false));
+      });
+  };
+
+  const fetchMedicines = async (searchTerm: string) => {
+    const query = `?keyword=${searchTerm}`;
+    await requestApi(`/posts${query}`, 'GET', [])
+      .then((response) => {
+        const modifiedOptions = response.data.data.map((medicine: any) => ({
+          label: medicine.title,
+          value: medicine.id,
+          price: medicine.price,
+          imgUrl: medicine.thumbnail,
+        }));
+        setOptionMedicines(modifiedOptions);
+        dispatch(actions.controlLoading(false));
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch(actions.controlLoading(false));
+      });
+  };
+
+  const debouncedFetchCustomers = debounce(fetchCustomers, 300);
+  const debouncedFetchMedicines = debounce(fetchMedicines, 300);
+
+  const handleInputChangeCustomers = (value: string, { action }: any) => {
+    if (action === 'input-blur') {
+      return;
+    }
+    if (!value) {
+      setOptionCustomers([]);
+    } else {
+      debouncedFetchCustomers(value);
     }
   };
 
+  const handleInputChangeMedicines = (value: string, { action }: any) => {
+    if (action === 'input-blur') {
+      return;
+    }
+    if (!value) {
+      setOptionMedicines([]);
+    } else {
+      debouncedFetchMedicines(value);
+    }
+  };
+
+  const handleChangeOptionCustomer = (optionsData: IOptions) => {
+    setValue('customerId', optionsData.value);
+  };
+
+  const handleChangeOptionMedicines = (optionsData: IOptions) => {
+    console.log('🚀 ~ file: OrderAdd.tsx:139 ~ handleChangeOptionMedicines ~ optionsData:', optionsData);
+    const currentProduct = getValue('product');
+    console.log('🚀 ~ file: OrderAdd.tsx:147 ~ handleChangeOptionMedicines ~ currentProduct:', currentProduct);
+  };
+
+  const CustomOption = ({ innerProps, data }: any) => {
+    return (
+      <div {...innerProps} style={{ display: 'flex', alignItems: 'center' }}>
+        <img style={{ width: '100px', height: '100px', mr: '5px' }} src={`${apiUrl}/${data.imgUrl}`} alt={data.label} />
+        <div>
+          <div>{data.label}</div>
+        </div>
+      </div>
+    );
+  };
   return (
     <div id="layoutSidenav_content">
       <main>
@@ -74,7 +183,14 @@ const CustomerAdd = () => {
                   <div className="col-md-6">
                     <div className="mb-3 mt-3">
                       <label className="form-label">Customer:</label>
-                      <Select options={options} placeholder="Search Customer follow Name,Phone Number" />
+                      <Select
+                        options={optionCustomers}
+                        placeholder="Search Customer follow Name,Phone Number"
+                        onInputChange={handleInputChangeCustomers}
+                        isMulti={false}
+                        onChange={handleChangeOptionCustomer}
+                        // isLoading
+                      />
                     </div>
                     <div className="mb-3 mt-3">
                       <label className="form-label">Add Product:</label>
@@ -83,14 +199,14 @@ const CustomerAdd = () => {
                       </button>
                       {medicine.map((item, index) => (
                         <div key={index}>
-                          <input
-                            type="text"
+                          <Select
+                            options={optionMedicines}
                             placeholder="search medicine"
-                            value={item.productName}
-                            onChange={(e) => {
-                              const updatedRows = [...medicine];
-                              updatedRows[index].productName = e.target.value;
-                              setMedicine(updatedRows);
+                            onInputChange={handleInputChangeMedicines}
+                            isMulti={false}
+                            onChange={handleChangeOptionMedicines}
+                            components={{
+                              Option: CustomOption,
                             }}
                           />
                           <input
@@ -106,11 +222,11 @@ const CustomerAdd = () => {
                             type="text"
                             placeholder="Price"
                             disabled
-                            value={item.productName}
+                            // value={item.productName}
                             onChange={(e) => {
-                              const updatedRows = [...medicine];
-                              updatedRows[index].productName = e.target.value;
-                              setMedicine(updatedRows);
+                              // const updatedRows = [...medicine];
+                              // updatedRows[index].productName = e.target.value;
+                              // setMedicine(updatedRows);
                             }}
                           />
                           <button disabled={index === 0} onClick={() => deleteMedicine(index)}>

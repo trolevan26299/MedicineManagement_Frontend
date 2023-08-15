@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
+export const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
 
 export const requestApi = async (endpoint: string, method: string, body: any[] = [], responseType = 'json') => {
   const headers = {
