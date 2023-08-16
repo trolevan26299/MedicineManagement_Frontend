@@ -67,6 +67,8 @@ const SaleForCategory = () => {
   const [optionCustomers, setOptionCustomers] = useState<IOptions[]>([]);
   const [selectValues, setSelectValues] = useState<ISelectValue[]>([{ id: 0, value: null }]);
   const [loadedOptions, setLoadedOptions] = useState<IOptions[]>([]);
+  const [category, setCategory] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const navigate = useNavigate();
 
   const calculateTotalPrice = () => {
@@ -221,13 +223,30 @@ const SaleForCategory = () => {
   const CustomOption = ({ innerProps, data }: any) => {
     return (
       <div {...innerProps} style={{ display: 'flex', alignItems: 'center' }}>
-        <img style={{ width: '100px', height: '100px', mr: '5px' }} src={`${apiUrl}/${data.imgUrl}`} alt={data.label} />
+        <img
+          style={{ width: '100px', height: '100px', marginRight: '5px' }}
+          src={`${apiUrl}/${data.imgUrl}`}
+          alt={data.label}
+        />
         <div>
           <div>{data.label}</div>
         </div>
       </div>
     );
   };
+  const handleCategoryChange = (event: any) => {
+    setSelectedCategory(event.target.value);
+  };
+
+  useEffect(() => {
+    requestApi('/category', 'GET')
+      .then((response) => {
+        setCategory(response.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   return (
     <div id="layoutSidenav_content">
       <main>
@@ -253,48 +272,39 @@ const SaleForCategory = () => {
                 <form>
                   <div className="col-md-6">
                     <div className="mb-3 mt-3">
-                      <label className="form-label">Customer:</label>
-                      <Select
-                        name="customer"
-                        options={optionCustomers || []}
-                        placeholder="Search Customer follow Name,Phone Number"
-                        onInputChange={handleInputChangeCustomers}
-                        isMulti={false}
-                        onChange={(selectedOption: any) => handleChangeOptionCustomer(selectedOption.value)}
-                        value={optionCustomers?.find((option: any) => option.value === selectCustomer.customer)}
-                      />
-                      {errors.customer && <p className="err-text">{errors.customer.message}</p>}
-                    </div>
-                    <div className="mb-3 mt-3">
                       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                      <label className="form-label add-product">Add Product:</label>
+                      <label className="form-label add-product">Add sale for category:</label>
                       <button type="button" onClick={addMedicine} className="btn-plus">
                         +
                       </button>
+                      <div className="title_detail">
+                        <p className="choose_medicine_category">vui lòng chọn thuốc</p>
+                        <p className="input_sale_category">Nhập % khuyến mãi</p>
+                      </div>
                       {selectValues.map((item, index) => (
                         <>
                           <div key={item.id} className={`all-product mb`}>
-                            <Select
-                              name="details"
-                              placeholder="search medicine"
-                              className="select-product"
-                              options={(loadedOptions[index] || []) as any}
-                              onInputChange={(inputValue, actionMeta) => {
-                                handleInputChangeMedicines(inputValue, index, actionMeta);
-                              }}
-                              components={{ Option: CustomOption }}
-                              getOptionLabel={(option) => option.label}
-                              getOptionValue={(option) => option.value}
-                              value={loadedOptions[index]?.find((option: any) => option.value === item.value)}
-                              onChange={(value) => handleChangeMedicines(value || null, index)}
-                            />
+                            <select
+                              className="form-select"
+                              aria-label="Default select example"
+                              onChange={handleCategoryChange}
+                              value={selectedCategory}
+                            >
+                              {category.map((category: any) => {
+                                return (
+                                  <option key={category.id} value={category.id}>
+                                    {category.name}
+                                  </option>
+                                );
+                              })}
+                            </select>
                             <input
                               type="number"
                               value={item.count || 0}
                               onChange={(e) => handleCountChange(e.target.value, index)}
                               className="select-quantity"
                             />
-                            <input type="text" placeholder="Price" disabled value={formatCurrency(item.price || 0)} />
+
                             <button
                               type="button"
                               disabled={selectValues.length === 1}
@@ -308,20 +318,6 @@ const SaleForCategory = () => {
                           {item.value === null && errors.details && <p className="err-text">Product is required !</p>}
                         </>
                       ))}
-                      <div className="d-flex total-price">
-                        <h4>Total Price : {formatCurrency(calculateTotalPrice())}</h4>
-                      </div>
-                    </div>
-                    <div className="mb-3 mt-3">
-                      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                      <label className="form-label">Description:</label>
-                      <input
-                        type="text"
-                        {...register('description', { required: 'Description is required !' })}
-                        className="form-control"
-                        placeholder="Enter Description "
-                      />
-                      {errors.description && <p className="err-text">{errors.description.message}</p>}
                     </div>
 
                     <button
