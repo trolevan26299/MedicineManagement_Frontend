@@ -1,12 +1,13 @@
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { Button, Modal } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import * as actions from '../../Redux/actions';
 import { requestApi } from '../../helpers/api';
 import DataTable from '../common/DataTable';
 import { IDetailOrder } from '../order/OrderHistoryList';
+import CommonModal from '../common/Modal';
+import CustomerHistoryOrder from './CustomerHistoryOrder';
 
 export interface ICustomer {
   address: string;
@@ -43,41 +44,32 @@ const CustomerList = () => {
     title: string;
     content?: string;
     isShowFooter: boolean;
-    // currentOrderById: IOrder | null;
+    currentOrderHistoryById: IHistoryOrder | null;
+    titleFooter?: string;
   }>({
     isShow: false,
     title: '',
     isShowFooter: false,
-    // currentOrderById: null,
+    currentOrderHistoryById: null,
   });
   const renderModalView = () => {
     return (
-      <Modal
+      <CommonModal
         show={showModal.isShow}
-        onHide={() => setShowModal({ ...showModal, isShow: false })}
+        onHide={() =>
+          setShowModal({ ...showModal, isShow: false, currentOrderHistoryById: null, titleFooter: undefined })
+        }
+        onFnc={requestDeleteApi}
+        titleFooter={showModal.titleFooter}
         size={showModal?.content ? 'sm' : 'lg'}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>{showModal.title}</Modal.Title>
-        </Modal.Header>
-        {showModal.content ? (
-          <Modal.Body>{showModal?.content}</Modal.Body>
-        ) : (
-          <Modal.Body>
-            history order
-            {/* <OrderAdd readonly={true} data={showModal.currentOrderById as IOrder} /> */}
-          </Modal.Body>
-        )}
-        {showModal.isShowFooter && (
-          <Modal.Footer>
-            <Button onClick={() => setShowModal({ ...showModal, isShow: false })}>Close</Button>
-            <Button className="btn-danger" onClick={requestDeleteApi}>
-              Delete
-            </Button>
-          </Modal.Footer>
-        )}
-      </Modal>
+        data={
+          showModal.content ? (
+            showModal.content
+          ) : (
+            <CustomerHistoryOrder data={showModal.currentOrderHistoryById as IHistoryOrder} />
+          )
+        }
+      />
     );
   };
 
@@ -158,8 +150,12 @@ const CustomerList = () => {
   const fetchCustomerOrderById = (id: number) => {
     requestApi(`/customer/order/${id}`, 'GET', [])
       .then((response) => {
-        console.log('res ==========', response);
-
+        setShowModal({
+          isShow: true,
+          title: 'History Customer Order',
+          isShowFooter: false,
+          currentOrderHistoryById: response.data,
+        });
         dispatch(actions.controlLoading(false));
       })
       .catch((error) => {
@@ -175,6 +171,7 @@ const CustomerList = () => {
       content: 'Are yous sure want to delete ?',
       isShowFooter: true,
       isShow: true,
+      titleFooter: 'Delete',
     });
     setDeleteItem(id);
     setDeleteType('single');
@@ -197,27 +194,27 @@ const CustomerList = () => {
       dispatch(actions.controlLoading(true));
       requestApi(`/customer/${deleteItem}`, 'DELETE', [])
         .then(() => {
-          setShowModal({ ...showModal, isShow: false });
+          setShowModal({ ...showModal, isShow: false, currentOrderHistoryById: null, titleFooter: undefined });
           setRefresh(Date.now());
           dispatch(actions.controlLoading(false));
         })
         .catch((error) => {
           console.error(error);
-          setShowModal({ ...showModal, isShow: false });
+          setShowModal({ ...showModal, isShow: false, currentOrderHistoryById: null, titleFooter: undefined });
           dispatch(actions.controlLoading(false));
         });
     } else {
       dispatch(actions.controlLoading(true));
       requestApi(`/customer/multiple?ids=${selectedRows.toString()}`, 'DELETE', [])
         .then(() => {
-          setShowModal({ ...showModal, isShow: false });
+          setShowModal({ ...showModal, isShow: false, currentOrderHistoryById: null, titleFooter: undefined });
           setRefresh(Date.now());
           setSelectedRows([]);
           dispatch(actions.controlLoading(false));
         })
         .catch((error) => {
           console.error(error);
-          setShowModal({ ...showModal, isShow: false });
+          setShowModal({ ...showModal, isShow: false, currentOrderHistoryById: null, titleFooter: undefined });
           dispatch(actions.controlLoading(false));
         });
     }
