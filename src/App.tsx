@@ -46,7 +46,7 @@ function App() {
             <Route path="/customer/edit/:id" element={<CustomerUpdate />} />
             <Route path="/order-history-list" element={<OrderHistoryList />} />
             <Route path="/order/add" element={<OrderAdd />} />
-            <Route path="/order/edit/:id" element={<OrderUpdate />} />
+            <Route path="/order/edit/:id" element={<OrderAdd />} />
           </Route>
         </Route>
         <Route element={<PublicRoutes />}>

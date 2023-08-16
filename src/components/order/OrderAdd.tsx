@@ -2,7 +2,7 @@ import { debounce } from 'lodash';
 import { useState, useEffect } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 import * as actions from '../../Redux/actions/index';
@@ -49,10 +49,10 @@ const defaultValues: DefaultValues<FormValues> = {
   ],
 };
 
-const CustomerAdd = ({ readonly, data }: { readonly: boolean; data?: IOrder }) => {
-  console.log('🚀 ~ data:', data);
+const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => {
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   const {
     register,
@@ -69,9 +69,7 @@ const CustomerAdd = ({ readonly, data }: { readonly: boolean; data?: IOrder }) =
   const [optionCustomers, setOptionCustomers] = useState<IOptions[]>([]);
   const [selectValues, setSelectValues] = useState<ISelectValue[]>([{ id: 0, value: null }]);
   const [loadedOptions, setLoadedOptions] = useState<IOptions[]>([]);
-  console.log('🚀 loadedOptions:', loadedOptions);
-  console.log('🚀 selectValues:', selectValues);
-  const navigate = useNavigate();
+  console.log('🚀 ~ file: OrderAdd.tsx:72 ~ OrderAdd ~ loadedOptions:', loadedOptions);
 
   const calculateTotalPrice = () => {
     const totalPrice = selectValues.reduce((acc, item) => acc + item.price, 0);
@@ -92,13 +90,20 @@ const CustomerAdd = ({ readonly, data }: { readonly: boolean; data?: IOrder }) =
         count: item.count,
       })),
     };
-
     try {
-      await requestApi('/order', 'POST', { ...newData });
-      toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
-      setTimeout(() => {
-        navigate('/order-history-list');
-      }, 3000);
+      if (id) {
+        await requestApi(`/order/${id}`, 'PUT', { ...newData });
+        toast.success('Customer has been updated successfully !', { position: 'top-center', autoClose: 2000 });
+        setTimeout(() => {
+          navigate('/order-history-list');
+        }, 3000);
+      } else {
+        await requestApi('/order', 'POST', { ...newData });
+        toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
+        setTimeout(() => {
+          navigate('/order-history-list');
+        }, 3000);
+      }
     } catch (error) {
       dispatch(actions.controlLoading(false));
     }
@@ -255,15 +260,28 @@ const CustomerAdd = ({ readonly, data }: { readonly: boolean; data?: IOrder }) =
       {
         value: item.post_id,
         label: item.post?.title,
+        price: item.post?.price,
+        imgUrl: item.post?.thumbnail,
       },
     ]);
     setSelectValues(setOptionProducts);
     setLoadedOptions(setLoadOptionProducts);
   };
 
+  const fetchOrderById = (id: number) => {
+    requestApi(`/order/${id}`, 'GET', [])
+      .then((response) => {
+        setDataToForm(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
     if (data) setDataToForm(data);
-  }, [data]);
+    if (id) fetchOrderById(Number(id));
+  }, [data, id]);
   return (
     <div id="layoutSidenav_content">
       <main>
@@ -395,4 +413,4 @@ const CustomerAdd = ({ readonly, data }: { readonly: boolean; data?: IOrder }) =
   );
 };
 
-export default CustomerAdd;
+export default OrderAdd;
