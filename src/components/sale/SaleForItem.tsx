@@ -253,24 +253,16 @@ const SaleForMedicine = () => {
                 <form>
                   <div className="col-md-6">
                     <div className="mb-3 mt-3">
-                      <label className="form-label">Customer:</label>
-                      <Select
-                        name="customer"
-                        options={optionCustomers || []}
-                        placeholder="Search Customer follow Name,Phone Number"
-                        onInputChange={handleInputChangeCustomers}
-                        isMulti={false}
-                        onChange={(selectedOption: any) => handleChangeOptionCustomer(selectedOption.value)}
-                        value={optionCustomers?.find((option: any) => option.value === selectCustomer.customer)}
-                      />
-                      {errors.customer && <p className="err-text">{errors.customer.message}</p>}
-                    </div>
-                    <div className="mb-3 mt-3">
                       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                      <label className="form-label add-product">Add Product:</label>
+                      <label className="form-label add-product">Sale for medicine:</label>
                       <button type="button" onClick={addMedicine} className="btn-plus">
                         +
                       </button>
+                      <div className="title_detail">
+                        <p className="choose_medicine">vui lòng chọn thuốc</p>
+                        <p className="input_sale">Nhập % khuyến mãi</p>
+                        <p className="price_sale">Giá tiền sau khuyến mãi</p>
+                      </div>
                       {selectValues.map((item, index) => (
                         <>
                           <div key={item.id} className={`all-product mb`}>
@@ -288,6 +280,7 @@ const SaleForMedicine = () => {
                               value={loadedOptions[index]?.find((option: any) => option.value === item.value)}
                               onChange={(value) => handleChangeMedicines(value || null, index)}
                             />
+
                             <input
                               type="number"
                               value={item.count || 0}
@@ -308,9 +301,6 @@ const SaleForMedicine = () => {
                           {item.value === null && errors.details && <p className="err-text">Product is required !</p>}
                         </>
                       ))}
-                      <div className="d-flex total-price">
-                        <h4>Total Price : {formatCurrency(calculateTotalPrice())}</h4>
-                      </div>
                     </div>
                     <div className="mb-3 mt-3">
                       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}

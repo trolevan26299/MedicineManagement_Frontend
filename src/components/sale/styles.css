@@ -46,3 +46,24 @@
 .mb {
   margin-bottom: 15px;
 }
+.title_detail {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.choose_medicine {
+  width: 474px;
+  font-size: 16px;
+  font-weight: 500;
+}
+.input_sale {
+  width: 195px;
+  font-size: 16px;
+  font-weight: 500;
+}
+.price_sale {
+  font-size: 16px;
+  font-weight: 500;
+}
