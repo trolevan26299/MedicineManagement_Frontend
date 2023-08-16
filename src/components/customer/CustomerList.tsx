@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import * as actions from '../../Redux/actions';
 import { requestApi } from '../../helpers/api';
 import DataTable from '../common/DataTable';
+import { IDetailOrder } from '../order/OrderHistoryList';
 
 export interface ICustomer {
   address: string;
@@ -23,6 +24,7 @@ export interface IHistoryOrder {
   description: string;
   created_at: string;
   customer: ICustomer;
+  details: IDetailOrder;
 }
 
 const CustomerList = () => {

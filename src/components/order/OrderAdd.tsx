@@ -260,7 +260,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
       {
         value: item.post_id,
         label: item.post?.title,
-        price: item.post?.price,
+        price: item?.post?.price_sale ? item?.post?.price_sale : item.post?.price,
         imgUrl: item.post?.thumbnail,
       },
     ]);
