@@ -1,6 +1,5 @@
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { Button, Modal } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import * as actions from '../../Redux/actions';
@@ -9,6 +8,7 @@ import { requestApi } from '../../helpers/api';
 import DataTable from '../common/DataTable';
 import OrderAdd from './OrderAdd';
 import { ICustomer } from '../customer/CustomerList';
+import CommonModal from '../common/Modal';
 
 export interface IDetailOrder {
   count?: number;
@@ -65,31 +65,21 @@ const CustomerList = () => {
 
   const renderModalView = () => {
     return (
-      <Modal
+      <CommonModal
         show={showModal.isShow}
         onHide={() => setShowModal({ ...showModal, isShow: false, currentOrderById: null })}
-        size={showModal?.content ? 'sm' : 'lg'}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>{showModal.title}</Modal.Title>
-        </Modal.Header>
-        {showModal.content ? (
-          <Modal.Body>{showModal?.content}</Modal.Body>
-        ) : (
-          <Modal.Body>
+        data={
+          showModal.content ? (
+            showModal.content
+          ) : (
             <OrderAdd readonly={true} data={showModal.currentOrderById as IOrder} />
-          </Modal.Body>
-        )}
-        {showModal.isShowFooter && (
-          <Modal.Footer>
-            <Button onClick={() => setShowModal({ ...showModal, isShow: false, currentOrderById: null })}>Close</Button>
-            <Button className="btn-danger" onClick={requestDeleteApi}>
-              Delete
-            </Button>
-          </Modal.Footer>
-        )}
-      </Modal>
+          )
+        }
+        onFnc={showModal.content ? requestDeleteApi : undefined}
+        titleFooter={showModal.content ? 'Delete' : ''}
+        size={showModal?.content ? 'sm' : 'lg'}
+        title={showModal.title}
+      />
     );
   };
   const columnsTable = [
