@@ -6,12 +6,9 @@ import { IDetailOrder } from '../order/OrderHistoryList';
 import { formatCurrency } from '../../constant/common';
 
 function ModalHistoryOrder({ data }: { data: IHistoryOrder[] }) {
-  console.log('🚀 ~ file: ModalHistoryOrder.tsx:6 ~ ModalHistoryOrder ~ data:', data);
   const [numOfPage, setNumOfPage] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemPerPage] = useState<number>(10);
-  const [keyword, setKeyword] = useState<string>('');
-  const [selectedRows, setSelectedRows] = useState([]);
 
   const columnsTable = [
     {
@@ -27,14 +24,14 @@ function ModalHistoryOrder({ data }: { data: IHistoryOrder[] }) {
       element: (row: any) => row.description,
     },
     {
-      name: 'PRODUCT',
+      name: 'DETAILS',
       element: (row: any) =>
         row?.details?.length > 0 &&
         row?.details.map((item: IDetailOrder, index: number) => {
           return (
             // eslint-disable-next-line react/jsx-key
             <div style={{ width: '100%' }}>
-              {index + 1}: {item.post?.title}, Quantity : {item.post?.quantity}
+              {index + 1}: {item?.post?.title}, Quantity : {item?.count}
             </div>
           );
         }),
