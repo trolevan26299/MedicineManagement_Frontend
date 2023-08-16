@@ -79,8 +79,6 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
     setSelectValues([...selectValues, { id: selectValues.length, value: null }]);
   };
 
-  console.log('vao day', errors);
-
   const handleSubmitFormAdd = async (data: any) => {
     dispatch(actions.controlLoading(true));
 
