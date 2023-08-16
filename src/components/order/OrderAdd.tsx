@@ -69,7 +69,6 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
   const [optionCustomers, setOptionCustomers] = useState<IOptions[]>([]);
   const [selectValues, setSelectValues] = useState<ISelectValue[]>([{ id: 0, value: null }]);
   const [loadedOptions, setLoadedOptions] = useState<IOptions[]>([]);
-  console.log('🚀 ~ file: OrderAdd.tsx:72 ~ OrderAdd ~ loadedOptions:', loadedOptions);
 
   const calculateTotalPrice = () => {
     const totalPrice = selectValues.reduce((acc, item) => acc + item.price, 0);
@@ -82,6 +81,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
 
   const handleSubmitFormAdd = async (data: any) => {
     dispatch(actions.controlLoading(true));
+
     const newData = {
       ...data,
       total_price: calculateTotalPrice(),
@@ -113,9 +113,9 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
     if (selectCustomer.customer === 0) {
       setError('customer', { message: 'Customer is required !' });
     }
-    const hasValidDetails = selectValues.some((item) => item.value === null && item.count === 0);
+    const hasValidDetails = selectValues.filter((item) => item.value === null && item.id === 0).length > 0;
 
-    if (!hasValidDetails) {
+    if (hasValidDetails) {
       setError('details', { message: 'Product is required !' });
     }
   };
