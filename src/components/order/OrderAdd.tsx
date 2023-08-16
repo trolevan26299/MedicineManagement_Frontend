@@ -288,7 +288,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
         <div className="container-fluid px-4">
           {!readonly && (
             <>
-              <h1 className="mt-4">New Order</h1>
+              <h1 className="mt-4">{id ? 'Update Order' : 'New Order'}</h1>
               <ol className="breadcrumb mb-4">
                 <li className="breadcrumb-item">
                   <Link to="/">Dashboard</Link>
@@ -297,7 +297,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
                   {' '}
                   <Link to="/order-history-list">Orders</Link>
                 </li>
-                <li className="breadcrumb-item active">Add New Order</li>
+                <li className="breadcrumb-item active">{id ? 'Update order' : 'Add New Order'}</li>
               </ol>
             </>
           )}
@@ -305,7 +305,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
             {!readonly && (
               <div className="card-header">
                 <i className="fas fa-plus me-1"></i>
-                Add Order
+                {id ? 'Update Order' : 'Add Order'}
               </div>
             )}
             <div className="card-body">
