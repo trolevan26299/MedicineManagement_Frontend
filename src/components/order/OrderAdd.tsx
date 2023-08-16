@@ -1,14 +1,15 @@
 import { debounce } from 'lodash';
 import { useState, useEffect } from 'react';
-import { DefaultValues, FieldErrors, SubmitHandler, useForm } from 'react-hook-form';
+import { DefaultValues, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import Select from 'react-select';
+import { toast } from 'react-toastify';
 import * as actions from '../../Redux/actions/index';
+import { formatCurrency } from '../../constant/common';
 import { apiUrl, requestApi } from '../../helpers/api';
 import './styles.css';
-import { formatCurrency } from '../../constant/common';
-import { toast } from 'react-toastify';
+import { IDetailOrder, IOrder } from './OrderHistoryList';
 
 export interface IOptions {
   label?: string;
@@ -48,7 +49,8 @@ const defaultValues: DefaultValues<FormValues> = {
   ],
 };
 
-const CustomerAdd = () => {
+const CustomerAdd = ({ readonly, data }: { readonly: boolean; data?: IOrder }) => {
+  console.log('🚀 ~ data:', data);
   const dispatch = useDispatch();
   // const navigate = useNavigate();
 
@@ -67,6 +69,8 @@ const CustomerAdd = () => {
   const [optionCustomers, setOptionCustomers] = useState<IOptions[]>([]);
   const [selectValues, setSelectValues] = useState<ISelectValue[]>([{ id: 0, value: null }]);
   const [loadedOptions, setLoadedOptions] = useState<IOptions[]>([]);
+  console.log('🚀 loadedOptions:', loadedOptions);
+  console.log('🚀 selectValues:', selectValues);
   const navigate = useNavigate();
 
   const calculateTotalPrice = () => {
@@ -207,7 +211,7 @@ const CustomerAdd = () => {
     if (!isNaN(parsedCount) && parsedCount > 0) {
       updatedValues[id].count = parsedCount;
 
-      const selectedOption = loadedOptions[id]?.find((option) => option.value === updatedValues[id].value);
+      const selectedOption = loadedOptions[id]?.find((option: any) => option.value === updatedValues[id].value);
       if (selectedOption) {
         updatedValues[id].price = selectedOption.price * parsedCount;
       } else {
@@ -228,31 +232,70 @@ const CustomerAdd = () => {
       </div>
     );
   };
+
+  const setDataToForm = (data: IOrder) => {
+    const cloneData = { ...data };
+    const currentOptionCustomer = [
+      {
+        value: cloneData?.customer?.id as number,
+        label: `${cloneData?.customer?.full_name} - ${cloneData?.customer?.phone_number} - ${cloneData?.customer?.address}`,
+      },
+    ];
+    setOptionCustomers(currentOptionCustomer);
+    setSelectCustomer({ customer: cloneData?.customer?.id as number });
+    setValue('description', cloneData?.description as string);
+
+    const setOptionProducts = cloneData?.details?.map((item: IDetailOrder, index: number) => ({
+      id: index,
+      value: item.post_id,
+      count: item?.count,
+      price: (item?.post?.price as number) * (item?.count as number),
+    }));
+    const setLoadOptionProducts = cloneData?.details?.map((item: IDetailOrder) => [
+      {
+        value: item.post_id,
+        label: item.post?.title,
+      },
+    ]);
+    setSelectValues(setOptionProducts);
+    setLoadedOptions(setLoadOptionProducts);
+  };
+
+  useEffect(() => {
+    if (data) setDataToForm(data);
+  }, [data]);
   return (
     <div id="layoutSidenav_content">
       <main>
         <div className="container-fluid px-4">
-          <h1 className="mt-4"> New Order</h1>
-          <ol className="breadcrumb mb-4">
-            <li className="breadcrumb-item">
-              <Link to="/">Dashboard</Link>
-            </li>
-            <li className="breadcrumb-item">
-              {' '}
-              <Link to="/order-history-list">Orders</Link>
-            </li>
-            <li className="breadcrumb-item active">Add New Order</li>
-          </ol>
+          {!readonly && (
+            <>
+              <h1 className="mt-4">New Order</h1>
+              <ol className="breadcrumb mb-4">
+                <li className="breadcrumb-item">
+                  <Link to="/">Dashboard</Link>
+                </li>
+                <li className="breadcrumb-item">
+                  {' '}
+                  <Link to="/order-history-list">Orders</Link>
+                </li>
+                <li className="breadcrumb-item active">Add New Order</li>
+              </ol>
+            </>
+          )}
           <div className="card mb-4">
-            <div className="card-header">
-              <i className="fas fa-plus me-1"></i>
-              Add Order
-            </div>
+            {!readonly && (
+              <div className="card-header">
+                <i className="fas fa-plus me-1"></i>
+                Add Order
+              </div>
+            )}
             <div className="card-body">
               <div className="row mb-3">
                 <form>
-                  <div className="col-md-6">
+                  <div className={`col-md-6 ${readonly ? 'w-100' : ''}`}>
                     <div className="mb-3 mt-3">
+                      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                       <label className="form-label">Customer:</label>
                       <Select
                         name="customer"
@@ -262,13 +305,14 @@ const CustomerAdd = () => {
                         isMulti={false}
                         onChange={(selectedOption: any) => handleChangeOptionCustomer(selectedOption.value)}
                         value={optionCustomers?.find((option: any) => option.value === selectCustomer.customer)}
+                        isDisabled={readonly}
                       />
                       {errors.customer && <p className="err-text">{errors.customer.message}</p>}
                     </div>
                     <div className="mb-3 mt-3">
                       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                       <label className="form-label add-product">Add Product:</label>
-                      <button type="button" onClick={addMedicine} className="btn-plus">
+                      <button type="button" onClick={addMedicine} className="btn-plus" disabled={readonly}>
                         +
                       </button>
                       {selectValues.map((item, index) => (
@@ -287,12 +331,14 @@ const CustomerAdd = () => {
                               getOptionValue={(option) => option.value}
                               value={loadedOptions[index]?.find((option: any) => option.value === item.value)}
                               onChange={(value) => handleChangeMedicines(value || null, index)}
+                              isDisabled={readonly}
                             />
                             <input
                               type="number"
                               value={item.count || 0}
                               onChange={(e) => handleCountChange(e.target.value, index)}
                               className="select-quantity"
+                              disabled={readonly}
                             />
                             <input type="text" placeholder="Price" disabled value={formatCurrency(item.price || 0)} />
                             <button
@@ -319,18 +365,21 @@ const CustomerAdd = () => {
                         type="text"
                         {...register('description', { required: 'Description is required !' })}
                         className="form-control"
-                        placeholder="Enter Description "
+                        placeholder="Enter Description"
+                        onBlur={() => clearErrors('description')}
+                        disabled={readonly}
                       />
                       {errors.description && <p className="err-text">{errors.description.message}</p>}
                     </div>
-
-                    <button
-                      type="button"
-                      onClick={handleSubmit(handleSubmitFormAdd, onError)}
-                      className="btn btn-success"
-                    >
-                      Submit
-                    </button>
+                    {!readonly && (
+                      <button
+                        type="button"
+                        onClick={handleSubmit(handleSubmitFormAdd, onError)}
+                        className="btn btn-success"
+                      >
+                        Submit
+                      </button>
+                    )}
                   </div>
                 </form>
               </div>

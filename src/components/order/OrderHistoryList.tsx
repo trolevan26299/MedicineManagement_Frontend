@@ -1,15 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import DataTable from '../common/DataTable';
-import { requestApi } from '../../helpers/api';
-import { useDispatch } from 'react-redux';
-import * as actions from '../../Redux/actions';
-import { Modal, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { Button, Modal } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import * as actions from '../../Redux/actions';
+import { formatCurrency } from '../../constant/common';
+import { requestApi } from '../../helpers/api';
+import DataTable from '../common/DataTable';
+import OrderAdd from './OrderAdd';
+
+export interface IDetailOrder {
+  count?: number;
+  id?: number;
+  order_id?: number;
+  post_id?: number;
+  post?: {
+    created_at: string;
+    description: string;
+    id: number;
+    price: number;
+    quantity: number;
+    status: number;
+    thumbnail: string;
+    title: string;
+    updated_at: string;
+  };
+}
+
+export interface IOrder {
+  id?: number;
+  created_at?: string;
+  customer?: {
+    id?: number;
+    address?: string;
+    full_name?: string;
+    phone_number?: string;
+  };
+  description?: string;
+  details?: IDetailOrder;
+  total_price?: number;
+  updated_at?: string;
+}
 
 const CustomerList = () => {
   const dispatch = useDispatch();
-  const [customer, setCustomer] = useState([]);
+  const [orderList, setOrderList] = useState([]);
   const [numOfPage, setNumOfPage] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemPerPage] = useState<number>(10);
@@ -17,8 +52,49 @@ const CustomerList = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [deleteItem, setDeleteItem] = useState(null);
   const [deleteType, setDeleteType] = useState('single');
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState<{
+    isShow: boolean;
+    title: string;
+    content?: string;
+    isShowFooter: boolean;
+    currentOrderById: IOrder | null;
+  }>({
+    isShow: false,
+    title: '',
+    isShowFooter: false,
+    currentOrderById: null,
+  });
   const [refresh, setRefresh] = useState(Date.now());
+
+  const renderModalView = () => {
+    return (
+      <Modal
+        show={showModal.isShow}
+        onHide={() => setShowModal({ ...showModal, isShow: false, currentOrderById: null })}
+        size={showModal?.content ? 'sm' : 'lg'}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>{showModal.title}</Modal.Title>
+        </Modal.Header>
+        {showModal.content ? (
+          <Modal.Body>{showModal?.content}</Modal.Body>
+        ) : (
+          <Modal.Body>
+            <OrderAdd readonly={true} data={showModal.currentOrderById as IOrder} />
+          </Modal.Body>
+        )}
+        {showModal.isShowFooter && (
+          <Modal.Footer>
+            <Button onClick={() => setShowModal({ ...showModal, isShow: false, currentOrderById: null })}>Close</Button>
+            <Button className="btn-danger" onClick={requestDeleteApi}>
+              Delete
+            </Button>
+          </Modal.Footer>
+        )}
+      </Modal>
+    );
+  };
   const columnsTable = [
     {
       name: 'ID Order',
@@ -26,31 +102,27 @@ const CustomerList = () => {
     },
     {
       name: 'Customer Name(ID)',
-      element: (row: any) => row.full_name,
+      element: (row: any) => `${row.customer.full_name} (${row.customer.id})`,
     },
     {
       name: 'Phone Number',
-      element: (row: any) => (row.user ? row.user.first_name : ''),
+      element: (row: any) => row.customer.phone_number,
     },
     {
       name: 'Buy Date',
-      element: (row: any) => (row.birth_day ? moment(row.birth_day).format('DD/MM/YYYY') : ''),
-    },
-    {
-      name: 'Detail',
-      element: (row: any) => row.phone_number,
+      element: (row: any) => (row.created_at ? moment(row.created_at).format('DD/MM/YYYY') : ''),
     },
     {
       name: 'Total Price',
-      element: (row: any) => row.address,
+      element: (row: any) => formatCurrency(row.total_price),
     },
     {
       name: 'pharmacist name',
-      element: (row: any) => row.email,
+      element: (row: any) => `${row?.users?.first_name || ''} ${row?.users?.last_name || ''}`,
     },
     {
       name: 'description',
-      element: (row: any) => (row.user ? row.user.first_name : ''),
+      element: (row: any) => row.description,
     },
     {
       name: 'Actions',
@@ -58,25 +130,45 @@ const CustomerList = () => {
         <>
           <Link className="btn btn-sm btn-warning me-1" to={`/order/edit/${row.id}`}>
             <i className="fa fa-pencil-alt" />
-            Edit
+            &nbsp; Edit
           </Link>
           <button type="button" className="btn btn-sm btn-danger me-1" onClick={() => handleDelete(row.id)}>
             <i className="fa fa-trash" />
-            Delete
+            &nbsp; Delete
+          </button>
+          <button type="button" className="btn btn-sm btn btn-info me-1" onClick={() => handleOpenViewModal(row.id)}>
+            <i className="fa fa-eye" />
+            &nbsp; View
           </button>
         </>
       ),
     },
   ];
 
+  const handleOpenViewModal = (id: number) => {
+    fetchOrderById(id);
+  };
+
   const handleDelete = (id: any) => {
-    setShowModal(true);
+    setShowModal({
+      ...showModal,
+      title: 'Confirmation',
+      content: 'Are yous sure want to delete ?',
+      isShowFooter: true,
+      isShow: true,
+    });
     setDeleteItem(id);
     setDeleteType('single');
   };
 
   const handleMultiDelete = () => {
-    setShowModal(true);
+    setShowModal({
+      ...showModal,
+      title: 'Confirmation',
+      content: 'Are yous sure want to delete ?',
+      isShowFooter: true,
+      isShow: true,
+    });
 
     setDeleteType('multi');
   };
@@ -111,13 +203,24 @@ const CustomerList = () => {
         });
     }
   };
+
+  const fetchOrderById = (id: number) => {
+    requestApi(`/order/${id}`, 'GET', [])
+      .then((response) => {
+        setShowModal({ isShow: true, title: 'View Order', isShowFooter: false, currentOrderById: response.data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
     dispatch(actions.controlLoading(true));
     const query = `?items_per_page=${itemsPerPage}&page=${currentPage}&keyword=${keyword}`;
-    requestApi(`/customer${query}`, 'GET', [])
+    requestApi(`/order${query}`, 'GET', [])
       .then((response) => {
         console.log(response);
-        setCustomer(response.data.data);
+        setOrderList(response.data.data);
         setNumOfPage(response.data.lastPage);
         setCurrentPage(response.data.currentPage);
         dispatch(actions.controlLoading(false));
@@ -157,7 +260,7 @@ const CustomerList = () => {
             )}
           </div>
           <DataTable
-            data={customer}
+            data={orderList}
             title="List Orders"
             columns={columnsTable}
             numOfPage={numOfPage}
@@ -174,18 +277,7 @@ const CustomerList = () => {
           />
         </div>
       </main>
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="sm" centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmation</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Are yous sure want to delete ?</Modal.Body>
-        <Modal.Footer>
-          <Button onClick={() => setShowModal(false)}>Close</Button>
-          <Button className="btn-danger" onClick={requestDeleteApi}>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {renderModalView()}
     </div>
   );
 };
