@@ -3,6 +3,7 @@ import { IHistoryOrder } from './CustomerList';
 import DataTable from '../common/DataTable';
 import moment from 'moment';
 import { IDetailOrder } from '../order/OrderHistoryList';
+import { formatCurrency } from '../../constant/common';
 
 function ModalHistoryOrder({ data }: { data: IHistoryOrder[] }) {
   console.log('🚀 ~ file: ModalHistoryOrder.tsx:6 ~ ModalHistoryOrder ~ data:', data);
@@ -40,7 +41,7 @@ function ModalHistoryOrder({ data }: { data: IHistoryOrder[] }) {
     },
     {
       name: 'TOTAL PRICE',
-      element: (row: any) => row.total_price,
+      element: (row: any) => formatCurrency(row.total_price),
     },
   ];
   return (
