@@ -13,7 +13,37 @@ const Sidebar = () => {
               </div>
               Dashboard
             </Link>
-
+            <a
+              className="nav-link collapsed"
+              href="/"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapseOrder"
+              aria-expanded="false"
+              aria-controls="collapseLayouts"
+            >
+              <div className="sb-nav-link-icon">
+                <i className="fa fa-history"></i>
+              </div>
+              Order
+              <div className="sb-sidenav-collapse-arrow">
+                <i className="fas fa-angle-down" />
+              </div>
+            </a>
+            <div
+              className="collapse"
+              id="collapseOrder"
+              aria-labelledby="headingOne"
+              data-bs-parent="#sidenavAccordion"
+            >
+              <nav className="sb-sidenav-menu-nested nav">
+                <Link className="nav-link" to="/order/add">
+                  Add Order
+                </Link>
+                <Link className="nav-link" to="/order-history-list">
+                  Order History List
+                </Link>
+              </nav>
+            </div>
             <a
               className="nav-link collapsed"
               href="/"
@@ -137,30 +167,25 @@ const Sidebar = () => {
               className="nav-link collapsed"
               href="/"
               data-bs-toggle="collapse"
-              data-bs-target="#collapseOrder"
+              data-bs-target="#collapseSale"
               aria-expanded="false"
               aria-controls="collapseLayouts"
             >
               <div className="sb-nav-link-icon">
-                <i className="fa fa-history"></i>
+                <i className="fa fa-donate"></i>
               </div>
-              Order
+              Sale
               <div className="sb-sidenav-collapse-arrow">
                 <i className="fas fa-angle-down" />
               </div>
             </a>
-            <div
-              className="collapse"
-              id="collapseOrder"
-              aria-labelledby="headingOne"
-              data-bs-parent="#sidenavAccordion"
-            >
+            <div className="collapse" id="collapseSale" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
               <nav className="sb-sidenav-menu-nested nav">
-                <Link className="nav-link" to="/order/add">
-                  Add Order
+                <Link className="nav-link" to="/sale-for-medicine">
+                  Medicine Sale
                 </Link>
-                <Link className="nav-link" to="/order-history-list">
-                  Order History List
+                <Link className="nav-link" to="/sale-for-category">
+                  Medicine Sale follow Category
                 </Link>
               </nav>
             </div>

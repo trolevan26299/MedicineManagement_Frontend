@@ -47,6 +47,10 @@ const MedicineList = () => {
       element: (row: any) => row.price,
     },
     {
+      name: 'Sale Price',
+      element: (row: any) => (row.price_sale === 0 ? 'No Sale' : row.price_sale),
+    },
+    {
       name: 'Description',
       element: (row: any) => row.description,
     },
