@@ -284,7 +284,7 @@ const SaleForMedicine = () => {
                             <input
                               type="number"
                               value={item.count || 0}
-                              onChange={(e) => handleCountChange(e.target.value, index)}
+                              onChange={(e) => handleSaleChange(e.target.value, index)}
                               className="select-quantity"
                             />
                             <input type="text" placeholder="Price" disabled value={formatCurrency(item.price || 0)} />
@@ -301,17 +301,6 @@ const SaleForMedicine = () => {
                           {item.value === null && errors.details && <p className="err-text">Product is required !</p>}
                         </>
                       ))}
-                    </div>
-                    <div className="mb-3 mt-3">
-                      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                      <label className="form-label">Description:</label>
-                      <input
-                        type="text"
-                        {...register('description', { required: 'Description is required !' })}
-                        className="form-control"
-                        placeholder="Enter Description "
-                      />
-                      {errors.description && <p className="err-text">{errors.description.message}</p>}
                     </div>
 
                     <button
