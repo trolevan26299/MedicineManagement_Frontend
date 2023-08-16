@@ -308,7 +308,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
               </ol>
             </>
           )}
-          <div className="card mb-4">
+          <div className="card mb-4" style={{ height: '79vh' }}>
             {!readonly && (
               <div className="card-header">
                 <i className="fas fa-plus me-1"></i>

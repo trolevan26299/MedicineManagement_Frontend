@@ -3,14 +3,16 @@
 }
 
 .btn-plus {
-  width: 25px;
-  height: 25px;
+  width: 46px;
+  height: 40px;
   border: none;
   border-radius: 3px;
   background-color: rgba(95, 116, 141, 0.5);
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
-
+.card-body {
+  overflow-y: auto;
+}
 .all-product {
   width: 100%;
   display: flex;
@@ -30,6 +32,7 @@
   border-radius: 3px;
   border: solid 1px #5f748d;
   background-color: #fff;
+  width: 80px;
 }
 
 .err-text {
@@ -54,12 +57,12 @@
   gap: 10px;
 }
 .choose_medicine {
-  width: 474px;
+  width: 450px;
   font-size: 16px;
   font-weight: 500;
 }
 .choose_medicine_category {
-  width: 678px;
+  width: 640px;
   font-size: 16px;
   font-weight: 500;
 }
@@ -69,11 +72,12 @@
   font-weight: 500;
 }
 .input_sale_category {
-  width: 195px;
+  width: 200px;
   font-size: 16px;
   font-weight: 500;
 }
 .price_sale {
   font-size: 16px;
   font-weight: 500;
+  width: 195px;
 }

@@ -163,10 +163,9 @@ const Sidebar = () => {
                 </Link>
               </nav>
             </div>
-            <a
-              className="nav-link collapsed"
-              href="/"
-              data-bs-toggle="collapse"
+            <Link
+              className="nav-link "
+              to="/sale"
               data-bs-target="#collapseSale"
               aria-expanded="false"
               aria-controls="collapseLayouts"
@@ -175,20 +174,7 @@ const Sidebar = () => {
                 <i className="fa fa-donate"></i>
               </div>
               Sale
-              <div className="sb-sidenav-collapse-arrow">
-                <i className="fas fa-angle-down" />
-              </div>
-            </a>
-            <div className="collapse" id="collapseSale" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-              <nav className="sb-sidenav-menu-nested nav">
-                <Link className="nav-link" to="/sale-for-medicine">
-                  Medicine Sale
-                </Link>
-                <Link className="nav-link" to="/sale-for-category">
-                  Medicine Sale follow Category
-                </Link>
-              </nav>
-            </div>
+            </Link>
           </div>
         </div>
       </nav>
