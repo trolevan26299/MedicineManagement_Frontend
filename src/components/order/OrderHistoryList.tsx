@@ -211,6 +211,7 @@ const CustomerList = () => {
       })
       .catch((err) => {
         console.log(err);
+        dispatch(actions.controlLoading(false));
       });
   };
 

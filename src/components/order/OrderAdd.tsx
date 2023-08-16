@@ -166,7 +166,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
         const modifiedOptions = response.data.data.map((medicine: any) => ({
           label: medicine.title,
           value: medicine.id,
-          price: medicine.price,
+          price: medicine.price_sale !== 0 ? medicine.price_sale : medicine.price,
           imgUrl: medicine.thumbnail,
           count: 1,
         }));
