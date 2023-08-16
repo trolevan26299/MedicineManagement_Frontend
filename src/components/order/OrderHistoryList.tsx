@@ -176,29 +176,29 @@ const CustomerList = () => {
   const requestDeleteApi = () => {
     if (deleteType === 'single') {
       dispatch(actions.controlLoading(true));
-      requestApi(`/customer/${deleteItem}`, 'DELETE', [])
+      requestApi(`/order/${deleteItem}`, 'DELETE', [])
         .then(() => {
-          setShowModal(false);
+          setShowModal({ ...showModal, isShow: false });
           setRefresh(Date.now());
           dispatch(actions.controlLoading(false));
         })
         .catch((error) => {
           console.error(error);
-          setShowModal(false);
+          setShowModal({ ...showModal, isShow: false });
           dispatch(actions.controlLoading(false));
         });
     } else {
       dispatch(actions.controlLoading(true));
-      requestApi(`/customer/multiple?ids=${selectedRows.toString()}`, 'DELETE', [])
+      requestApi(`/order/multiple?ids=${selectedRows.toString()}`, 'DELETE', [])
         .then(() => {
-          setShowModal(false);
+          setShowModal({ ...showModal, isShow: false });
           setRefresh(Date.now());
           setSelectedRows([]);
           dispatch(actions.controlLoading(false));
         })
         .catch((error) => {
           console.error(error);
-          setShowModal(false);
+          setShowModal({ ...showModal, isShow: false });
           dispatch(actions.controlLoading(false));
         });
     }
