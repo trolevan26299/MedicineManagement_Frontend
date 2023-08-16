@@ -8,6 +8,7 @@ import { formatCurrency } from '../../constant/common';
 import { requestApi } from '../../helpers/api';
 import DataTable from '../common/DataTable';
 import OrderAdd from './OrderAdd';
+import { ICustomer } from '../customer/CustomerList';
 
 export interface IDetailOrder {
   count?: number;
@@ -19,6 +20,7 @@ export interface IDetailOrder {
     description: string;
     id: number;
     price: number;
+    price_sale: number;
     quantity: number;
     status: number;
     thumbnail: string;
@@ -30,12 +32,7 @@ export interface IDetailOrder {
 export interface IOrder {
   id?: number;
   created_at?: string;
-  customer?: {
-    id?: number;
-    address?: string;
-    full_name?: string;
-    phone_number?: string;
-  };
+  customer?: ICustomer;
   description?: string;
   details?: IDetailOrder;
   total_price?: number;

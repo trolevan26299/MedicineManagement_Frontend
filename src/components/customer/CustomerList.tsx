@@ -7,6 +7,24 @@ import * as actions from '../../Redux/actions';
 import { requestApi } from '../../helpers/api';
 import DataTable from '../common/DataTable';
 
+export interface ICustomer {
+  address: string;
+  birth_day: string;
+  email: string;
+  full_name: string;
+  id: number;
+  phone_number: string;
+}
+
+export interface IHistoryOrder {
+  id: number;
+  total_price: number;
+  updated_at: string;
+  description: string;
+  created_at: string;
+  customer: ICustomer;
+}
+
 const CustomerList = () => {
   const dispatch = useDispatch();
   const [customer, setCustomer] = useState([]);

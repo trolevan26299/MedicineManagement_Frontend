@@ -254,7 +254,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
       id: index,
       value: item.post_id,
       count: item?.count,
-      price: (item?.post?.price as number) * (item?.count as number),
+      price: ((item?.post?.price_sale ? item?.post?.price_sale : item.post?.price) as number) * (item?.count as number),
     }));
     const setLoadOptionProducts = cloneData?.details?.map((item: IDetailOrder) => [
       {
@@ -281,6 +281,13 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
   useEffect(() => {
     if (data) setDataToForm(data);
     if (id) fetchOrderById(Number(id));
+    if (!data && !id) {
+      setSelectCustomer({ customer: 0 });
+      setOptionCustomers([]);
+      setSelectValues([{ id: 0, value: null }]);
+      setLoadedOptions([]);
+      setValue('description', '');
+    }
   }, [data, id]);
   return (
     <div id="layoutSidenav_content">
