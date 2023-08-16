@@ -343,7 +343,7 @@ const CustomerAdd = ({ readonly, data }: { readonly: boolean; data?: IOrder }) =
                             <input type="text" placeholder="Price" disabled value={formatCurrency(item.price || 0)} />
                             <button
                               type="button"
-                              disabled={selectValues.length === 1}
+                              disabled={readonly || selectValues.length === 1}
                               onClick={() => handleRemoveMedicine(item.id)}
                               className="btn-remove"
                             >
