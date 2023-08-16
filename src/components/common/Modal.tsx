@@ -7,6 +7,7 @@ const CommonModal = ({
   onFnc,
   titleFooter,
   size,
+  title,
 }: {
   show: boolean;
   onHide: () => void;
@@ -14,11 +15,12 @@ const CommonModal = ({
   onFnc?: () => void;
   titleFooter?: string;
   size: 'sm' | 'lg' | 'xl';
+  title?: string;
 }) => {
   return (
     <Modal show={show} onHide={onHide} centered size={size}>
       <Modal.Header closeButton>
-        <Modal.Title>Common Modal</Modal.Title>
+        <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
       <Modal.Body>{data}</Modal.Body>
       {onFnc && titleFooter && (

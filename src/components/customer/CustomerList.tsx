@@ -7,7 +7,7 @@ import { requestApi } from '../../helpers/api';
 import DataTable from '../common/DataTable';
 import { IDetailOrder } from '../order/OrderHistoryList';
 import CommonModal from '../common/Modal';
-import CustomerHistoryOrder from './CustomerHistoryOrder';
+import ModalHistoryOrder from './ModalHistoryOrder';
 
 export interface ICustomer {
   address: string;
@@ -44,7 +44,7 @@ const CustomerList = () => {
     title: string;
     content?: string;
     isShowFooter: boolean;
-    currentOrderHistoryById: IHistoryOrder | null;
+    currentOrderHistoryById: IHistoryOrder[] | null;
     titleFooter?: string;
   }>({
     isShow: false,
@@ -66,9 +66,10 @@ const CustomerList = () => {
           showModal.content ? (
             showModal.content
           ) : (
-            <CustomerHistoryOrder data={showModal.currentOrderHistoryById as IHistoryOrder} />
+            <ModalHistoryOrder data={showModal.currentOrderHistoryById as IHistoryOrder[]} />
           )
         }
+        title={showModal.title}
       />
     );
   };
@@ -154,7 +155,7 @@ const CustomerList = () => {
           isShow: true,
           title: 'History Customer Order',
           isShowFooter: false,
-          currentOrderHistoryById: response.data,
+          currentOrderHistoryById: response.data.data,
         });
         dispatch(actions.controlLoading(false));
       })

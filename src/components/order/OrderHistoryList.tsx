@@ -75,9 +75,10 @@ const CustomerList = () => {
             <OrderAdd readonly={true} data={showModal.currentOrderById as IOrder} />
           )
         }
-        onFnc={requestDeleteApi}
-        titleFooter="Delete"
+        onFnc={showModal.content ? requestDeleteApi : undefined}
+        titleFooter={showModal.content ? 'Delete' : ''}
         size={showModal?.content ? 'sm' : 'lg'}
+        title={showModal.title}
       />
     );
   };

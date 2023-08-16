@@ -35,7 +35,7 @@ const DataTable = ({
   }, [selectedRows]);
 
   const renderData = () => {
-    return data.map((item: any, index: number) => (
+    return data?.map((item: any, index: number) => (
       <tr key={index}>
         <td>
           <input
@@ -144,10 +144,12 @@ const DataTable = ({
             </label>
           </div>
           <div className="col-sm-12 col-md-6 ">
-            <label htmlFor="b" className="d-inline-flex float-end">
-              Search:
-              <LiveSearch onChangeKeyword={onChangeKeyword} keywordSearch={keywordSearch} />
-            </label>
+            {keywordSearch && (
+              <label htmlFor="b" className="d-inline-flex float-end">
+                Search:
+                <LiveSearch onChangeKeyword={onChangeKeyword} keywordSearch={keywordSearch} />
+              </label>
+            )}
           </div>
         </div>
         <table className="table table-striped table-bordered" cellSpacing="0" width="100%">
@@ -156,7 +158,7 @@ const DataTable = ({
               <td>
                 <input
                   type="checkbox"
-                  checked={selectedRows.length === data.length && data.length > 0 ? true : false}
+                  checked={selectedRows?.length === data?.length && data?.length > 0 ? true : false}
                   className="form-check-input"
                   onChange={onSelectAll}
                 />
