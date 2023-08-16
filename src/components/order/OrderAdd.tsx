@@ -311,10 +311,12 @@ const CustomerAdd = ({ readonly, data }: { readonly: boolean; data?: IOrder }) =
                     </div>
                     <div className="mb-3 mt-3">
                       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                      <label className="form-label add-product">Add Product:</label>
-                      <button type="button" onClick={addMedicine} className="btn-plus" disabled={readonly}>
-                        +
-                      </button>
+                      <label className="form-label add-product">{!readonly ? 'Add Product:' : 'Detail Order'}</label>
+                      {!readonly && (
+                        <button type="button" onClick={addMedicine} className="btn-plus" disabled={readonly}>
+                          +
+                        </button>
+                      )}
                       {selectValues.map((item, index) => (
                         <>
                           <div key={item.id} className={`all-product mb`}>
@@ -341,14 +343,16 @@ const CustomerAdd = ({ readonly, data }: { readonly: boolean; data?: IOrder }) =
                               disabled={readonly}
                             />
                             <input type="text" placeholder="Price" disabled value={formatCurrency(item.price || 0)} />
-                            <button
-                              type="button"
-                              disabled={readonly || selectValues.length === 1}
-                              onClick={() => handleRemoveMedicine(item.id)}
-                              className="btn-remove"
-                            >
-                              -
-                            </button>
+                            {!readonly && (
+                              <button
+                                type="button"
+                                disabled={selectValues.length === 1}
+                                onClick={() => handleRemoveMedicine(item.id)}
+                                className="btn-remove"
+                              >
+                                -
+                              </button>
+                            )}
                           </div>
 
                           {item.value === null && errors.details && <p className="err-text">Product is required !</p>}
