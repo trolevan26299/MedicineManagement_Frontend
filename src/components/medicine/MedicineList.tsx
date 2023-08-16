@@ -3,6 +3,7 @@ import DataTable from '../common/DataTable';
 import { apiUrl, requestApi } from '../../helpers/api';
 import { useDispatch } from 'react-redux';
 import * as actions from '../../Redux/actions';
+import { formatCurrency } from '../../constant/common';
 import { Modal, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
@@ -44,11 +45,11 @@ const MedicineList = () => {
     },
     {
       name: 'Price',
-      element: (row: any) => row.price,
+      element: (row: any) => formatCurrency(row.price),
     },
     {
       name: 'Sale Price',
-      element: (row: any) => (row.price_sale === 0 ? 'No Sale' : row.price_sale),
+      element: (row: any) => (row.price_sale === 0 ? 'No Sale' : formatCurrency(row.price_sale)),
     },
     {
       name: 'Description',

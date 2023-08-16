@@ -58,7 +58,17 @@
   font-size: 16px;
   font-weight: 500;
 }
+.choose_medicine_category {
+  width: 678px;
+  font-size: 16px;
+  font-weight: 500;
+}
 .input_sale {
+  width: 195px;
+  font-size: 16px;
+  font-weight: 500;
+}
+.input_sale_category {
   width: 195px;
   font-size: 16px;
   font-weight: 500;
