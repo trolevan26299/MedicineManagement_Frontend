@@ -24,6 +24,8 @@ import CustomerUpdate from './components/customer/CustomerUpdate';
 import OrderHistoryList from './components/order/OrderHistoryList';
 import OrderAdd from './components/order/OrderAdd';
 import OrderUpdate from './components/order/OrderUpdate';
+import SaleForMedicine from './components/sale/SaleForItem';
+import SaleForCategory from './components/sale/SaleForCategory';
 
 function App() {
   return (
@@ -47,6 +49,8 @@ function App() {
             <Route path="/order-history-list" element={<OrderHistoryList />} />
             <Route path="/order/add" element={<OrderAdd />} />
             <Route path="/order/edit/:id" element={<OrderUpdate />} />
+            <Route path="/sale-for-medicine" element={<SaleForMedicine />} />
+            <Route path="/sale-for-category" element={<SaleForCategory />} />
           </Route>
         </Route>
         <Route element={<PublicRoutes />}>
