@@ -46,6 +46,7 @@ const Sales = () => {
   });
   const [selectValues, setSelectValues] = useState<ISelectValue[]>([{ id: 0, value: null }]);
   const [selectCategory, setSelectCategory] = useState<ISelectValue[]>([{ id: 0, value: null }]);
+  console.log('🚀 selectCategory:', selectCategory);
 
   const [loadedOptions, setLoadedOptions] = useState<IOptions[]>([]);
   const [typeSalesItem, setTypeSaleItem] = useState<boolean>(true);
@@ -56,7 +57,7 @@ const Sales = () => {
     if (typeSalesItem) {
       setSelectValues([...selectValues, { id: selectValues.length, value: null }]);
     } else {
-      setSelectCategory([...selectCategory, { id: selectCategory.length, value: null }]);
+      setSelectCategory([...selectCategory, { id: selectCategory.length, value: '11', percent_sales: 1 }]);
     }
   };
 
@@ -232,6 +233,8 @@ const Sales = () => {
     requestApi('/category', 'GET')
       .then((response) => {
         setCategory(response.data.data);
+        const newData = [{ ...selectCategory, value: '11', percent_sales: 1 }];
+        setSelectCategory(newData);
       })
       .catch((err) => {
         console.log(err);
