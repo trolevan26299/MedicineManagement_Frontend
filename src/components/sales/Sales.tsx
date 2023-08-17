@@ -17,18 +17,18 @@ interface ISelectValue {
   [key: string]: any;
 }
 
-interface ISelectCustomer {
-  customer: number;
-}
-
 interface FormValues {
-  id_medicine: number;
-  price_sale: number;
+  id_medicine?: number;
+  price_sale?: number;
+  id_category?: number;
+  percent_sales?: number;
 }
 
 const defaultValues: DefaultValues<FormValues> = {
   id_medicine: 0,
   price_sale: 0,
+  id_category: 0,
+  percent_sales: 0,
 };
 
 const Sales = () => {
@@ -44,23 +44,25 @@ const Sales = () => {
     defaultValues,
     reValidateMode: 'onSubmit',
   });
-  const [selectCustomer, setSelectCustomer] = useState<ISelectCustomer>({ customer: 0 });
   const [selectValues, setSelectValues] = useState<ISelectValue[]>([{ id: 0, value: null }]);
+  const [selectCategory, setSelectCategory] = useState<ISelectValue[]>([{ id: 0, value: null }]);
 
   const [loadedOptions, setLoadedOptions] = useState<IOptions[]>([]);
   const [typeSalesItem, setTypeSaleItem] = useState<boolean>(true);
   const [category, setCategory] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
   const navigate = useNavigate();
 
-  // hanle add remove medicine0 list
   const addMedicine = () => {
-    setSelectValues([...selectValues, { id: selectValues.length, value: null }]);
+    if (typeSalesItem) {
+      setSelectValues([...selectValues, { id: selectValues.length, value: null }]);
+    } else {
+      setSelectCategory([...selectCategory, { id: selectCategory.length, value: null }]);
+    }
   };
 
   const handleSubmitFormAdd = async () => {
     if (typeSalesItem) {
-      const hasValidDetails = selectValues.filter((item) => item.value === null && item.id === 0).length > 0;
+      const hasValidDetails = selectValues.filter((item) => item.value === null).length > 0;
       if (hasValidDetails) {
         setError('id_medicine', { message: 'Medicine is required !' });
       } else {
@@ -80,7 +82,25 @@ const Sales = () => {
         }
       }
     } else {
-      console.log('vao day category');
+      const hasValidDetails = selectCategory.filter((item) => item.value === null).length > 0;
+      if (hasValidDetails) {
+        setError('id_category', { message: 'Category is required !' });
+      } else {
+        dispatch(actions.controlLoading(true));
+        const newData = selectCategory.map((item: ISelectValue) => ({
+          id_category: Number(item.value),
+          percent_sales: Number(item.percent_sales),
+        }));
+        try {
+          await requestApi('/posts/sales-category', 'PATCH', newData);
+          toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
+          setTimeout(() => {
+            navigate('/medicines');
+          }, 3000);
+        } catch (error) {
+          dispatch(actions.controlLoading(false));
+        }
+      }
     }
   };
 
@@ -163,25 +183,6 @@ const Sales = () => {
     setSelectValues(updatedValues);
   };
 
-  // category
-  const handleCountChange = (newValue: string, id: number) => {
-    const updatedValues = [...selectValues];
-    const parsedCount = parseInt(newValue);
-
-    if (!isNaN(parsedCount) && parsedCount > 0) {
-      updatedValues[id].count = parsedCount;
-
-      const selectedOption = loadedOptions[id]?.find((option: any) => option.value === updatedValues[id].value);
-      if (selectedOption) {
-        updatedValues[id].price = selectedOption.price * parsedCount;
-      } else {
-        updatedValues[id].price = 0;
-      }
-    }
-
-    setSelectValues(updatedValues);
-  };
-
   const CustomOption = ({ innerProps, data }: any) => {
     return (
       <div {...innerProps} style={{ display: 'flex', alignItems: 'center' }}>
@@ -197,8 +198,34 @@ const Sales = () => {
     );
   };
 
-  const handleCategoryChange = (event: any, id: number) => {
-    setSelectedCategory(event.target.value);
+  // category
+  const handleCountChangeCountCategorySale = (newValue: string, id: number) => {
+    const updateCategory = [...selectCategory];
+    const parsedCount = parseInt(newValue);
+
+    if (!isNaN(parsedCount) && parsedCount > 0) {
+      updateCategory[id].percent_sales = parsedCount;
+    }
+    setSelectCategory(updateCategory);
+  };
+
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>, id: number) => {
+    const cloneSelectCategory = [...selectCategory];
+    cloneSelectCategory[id].value = event.target.value;
+    cloneSelectCategory[id].percent_sales = 1;
+    setSelectCategory(cloneSelectCategory);
+    const allValuesNotNull = cloneSelectCategory.every((item) => item.value !== null);
+
+    if (allValuesNotNull) {
+      clearErrors('id_category');
+    }
+  };
+
+  const handleRemoveCategory = (id: number) => {
+    const cloneSelectCategory = [...selectCategory]
+      .filter((item) => item.id !== id)
+      .map((x, index) => ({ ...x, id: index }));
+    setSelectCategory(cloneSelectCategory);
   };
 
   useEffect(() => {
@@ -333,14 +360,15 @@ const Sales = () => {
                               +
                             </button>
                           </div>
-                          {selectValues.map((item, index) => (
+                          {selectCategory.map((item, index) => (
                             <>
                               <div key={item.id} className={`all-product mb`}>
                                 <select
                                   className="form-select"
                                   aria-label="Default select example"
-                                  onChange={handleCategoryChange}
-                                  value={selectedCategory}
+                                  onChange={(event) => handleCategoryChange(event, item.id)}
+                                  value={item.value || ''}
+                                  placeholder="Search"
                                 >
                                   {category.map((category: any) => {
                                     return (
@@ -350,20 +378,30 @@ const Sales = () => {
                                     );
                                   })}
                                 </select>
-                                <input
-                                  type="number"
-                                  value={item.count || 0}
-                                  onChange={(e) => handleCountChange(e.target.value, index)}
-                                  className="select-quantity"
-                                />
 
-                                <button type="button" disabled={selectValues.length === 1} className="btn-remove">
+                                <div className="percentage-input">
+                                  <input
+                                    type="number"
+                                    value={item.percent_sales || 0}
+                                    onChange={(e) => handleCountChangeCountCategorySale(e.target.value, index)}
+                                    className="select-quantity"
+                                  />
+                                  <span className="percentage-symbol">%</span>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  disabled={selectCategory.length === 1}
+                                  className="btn-remove"
+                                  onClick={() => handleRemoveCategory(item.id)}
+                                  style={{ width: '58px', height: '40px' }}
+                                >
                                   -
                                 </button>
                               </div>
 
-                              {item.value === null && errors.details && (
-                                <p className="err-text">Product is required !</p>
+                              {item.value === null && errors.id_category && (
+                                <p className="err-text">Category is required !</p>
                               )}
                             </>
                           ))}
