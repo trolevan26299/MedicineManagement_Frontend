@@ -81,3 +81,21 @@
   font-weight: 500;
   width: 195px;
 }
+
+.percentage-input {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.input-field {
+  width: 100px;
+  padding: 5px;
+  border: 1px solid #ccc;
+}
+
+.percentage-symbol {
+  margin-left: 5px;
+  position: absolute;
+  right: 20px;
+}

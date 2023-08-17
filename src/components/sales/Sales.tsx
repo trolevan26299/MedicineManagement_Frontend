@@ -1,20 +1,15 @@
 import { debounce } from 'lodash';
-import { useState, useEffect } from 'react';
-import { DefaultValues, FieldErrors, SubmitHandler, useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { DefaultValues, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
-import * as actions from '../../Redux/actions/index';
-import { apiUrl, requestApi } from '../../helpers/api';
-import './styles.css';
-import { formatCurrency } from '../../constant/common';
 import { toast } from 'react-toastify';
-
-export interface IOptions {
-  label?: string;
-  value?: number;
-  [key: string]: any;
-}
+import * as actions from '../../Redux/actions/index';
+import { formatCurrency } from '../../constant/common';
+import { apiUrl, requestApi } from '../../helpers/api';
+import { IOptions } from '../order/OrderAdd';
+import './styles.css';
 
 interface ISelectValue {
   id: number;
@@ -27,25 +22,13 @@ interface ISelectCustomer {
 }
 
 interface FormValues {
-  customer?: number;
-  details: {
-    id?: number;
-    count: number;
-    price: number;
-  }[];
-  total_price: number;
-  description: string;
+  id_medicine: number;
+  price_sale: number;
 }
 
 const defaultValues: DefaultValues<FormValues> = {
-  total_price: 0,
-  description: '',
-  details: [
-    {
-      count: 0,
-      price: 0,
-    },
-  ],
+  id_medicine: 0,
+  price_sale: 0,
 };
 
 const Sales = () => {
@@ -53,10 +36,8 @@ const Sales = () => {
   // const navigate = useNavigate();
 
   const {
-    register,
     handleSubmit,
     formState: { errors },
-    setValue,
     setError,
     clearErrors,
   } = useForm<FormValues>({
@@ -64,7 +45,6 @@ const Sales = () => {
     reValidateMode: 'onSubmit',
   });
   const [selectCustomer, setSelectCustomer] = useState<ISelectCustomer>({ customer: 0 });
-  const [optionCustomers, setOptionCustomers] = useState<IOptions[]>([]);
   const [selectValues, setSelectValues] = useState<ISelectValue[]>([{ id: 0, value: null }]);
 
   const [loadedOptions, setLoadedOptions] = useState<IOptions[]>([]);
@@ -73,45 +53,36 @@ const Sales = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const navigate = useNavigate();
 
-  const calculateTotalPrice = () => {
-    const totalPrice = selectValues.reduce((acc, item) => acc + item.price, 0);
-    return totalPrice || 0;
-  };
   // hanle add remove medicine0 list
   const addMedicine = () => {
     setSelectValues([...selectValues, { id: selectValues.length, value: null }]);
   };
 
-  const handleSubmitFormAdd = async (data: any) => {
+  const handleSubmitFormAdd = async () => {
     dispatch(actions.controlLoading(true));
-    const newData = {
-      ...data,
-      total_price: calculateTotalPrice(),
-      details: selectValues.map((item: ISelectValue) => ({
-        id: item.value,
-        count: item.count,
-      })),
-    };
+    if (typeSalesItem) {
+      const hasValidDetails = selectValues.filter((item) => item.value === null && item.id === 0).length > 0;
+      if (hasValidDetails) {
+        setError('id_medicine', { message: 'Medicine is required !' });
+      } else {
+        const newData = selectValues.map((item: ISelectValue) => ({
+          id_medicine: item.value,
+          price_sale: item.price,
+        }));
+        console.log('🚀 ~ file: Sales.tsx:76 ~ newData ~ newData:', newData);
 
-    try {
-      await requestApi('/order', 'POST', { ...newData });
-      toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
-      setTimeout(() => {
-        navigate('/order-history-list');
-      }, 3000);
-    } catch (error) {
-      dispatch(actions.controlLoading(false));
-    }
-  };
-
-  const onError = () => {
-    if (selectCustomer.customer === 0) {
-      setError('customer', { message: 'Customer is required !' });
-    }
-    const hasValidDetails = selectValues.some((item) => item.value === null && item.count === 0);
-
-    if (!hasValidDetails) {
-      setError('details', { message: 'Product is required !' });
+        try {
+          await requestApi('/posts/sales', 'PATCH', newData);
+          toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
+          setTimeout(() => {
+            navigate('/medicines');
+          }, 3000);
+        } catch (error) {
+          dispatch(actions.controlLoading(false));
+        }
+      }
+    } else {
+      console.log('vao day category');
     }
   };
 
@@ -127,11 +98,17 @@ const Sales = () => {
           imgUrl: medicine.thumbnail,
           count: 1,
         }));
+
         setLoadedOptions((prevOptions) => {
           const updatedOptions = [...prevOptions];
-          updatedOptions[id] = modifiedOptions;
+
+          const selectedValues = selectValues.map((selected) => selected.value);
+
+          updatedOptions[id] = modifiedOptions.filter((option: any) => !selectedValues.includes(option.value));
+
           return updatedOptions;
         });
+
         dispatch(actions.controlLoading(false));
       })
       .catch((err) => {
@@ -152,12 +129,13 @@ const Sales = () => {
     const updatedValues = [...selectValues];
     updatedValues[id].value = value?.value as string;
     updatedValues[id].count = value?.count as number;
-    updatedValues[id].price = value?.price as number;
+    updatedValues[id].price = (value?.price * ((100 - value?.count) / 100)) as number;
     setSelectValues(updatedValues);
+
     const allValuesNotNull = updatedValues.every((item) => item.value !== null);
 
     if (allValuesNotNull) {
-      clearErrors('details');
+      clearErrors('id_medicine');
     }
   };
 
@@ -166,6 +144,25 @@ const Sales = () => {
     setSelectValues(updatedValues);
   };
 
+  const handleChangeCountMedicinesSale = (newValue: string, id: number) => {
+    const updatedValues = [...selectValues];
+    const parsedCount = parseInt(newValue);
+
+    if (!isNaN(parsedCount) && parsedCount > 0) {
+      updatedValues[id].count = parsedCount;
+
+      const selectedOption = loadedOptions[id]?.find((option: any) => option.value === updatedValues[id].value);
+      if (selectedOption) {
+        updatedValues[id].price = selectedOption.price * ((100 - parsedCount) / 100);
+      } else {
+        updatedValues[id].price = 0;
+      }
+    }
+
+    setSelectValues(updatedValues);
+  };
+
+  // category
   const handleCountChange = (newValue: string, id: number) => {
     const updatedValues = [...selectValues];
     const parsedCount = parseInt(newValue);
@@ -173,7 +170,7 @@ const Sales = () => {
     if (!isNaN(parsedCount) && parsedCount > 0) {
       updatedValues[id].count = parsedCount;
 
-      const selectedOption = loadedOptions[id]?.find((option) => option.value === updatedValues[id].value);
+      const selectedOption = loadedOptions[id]?.find((option: any) => option.value === updatedValues[id].value);
       if (selectedOption) {
         updatedValues[id].price = selectedOption.price * parsedCount;
       } else {
@@ -195,9 +192,10 @@ const Sales = () => {
     );
   };
 
-  const handleCategoryChange = (event: any) => {
+  const handleCategoryChange = (event: any, id: number) => {
     setSelectedCategory(event.target.value);
   };
+
   useEffect(() => {
     requestApi('/category', 'GET')
       .then((response) => {
@@ -211,7 +209,7 @@ const Sales = () => {
     <div id="layoutSidenav_content">
       <main>
         <div className="container-fluid px-4">
-          <h1 className="mt-4"> New Sales</h1>
+          <h1 className="mt-4">New Sales</h1>
 
           <div className="card mb-4 mt-4" style={{ height: '82vh' }}>
             <div className="card-header">
@@ -274,7 +272,7 @@ const Sales = () => {
                             <>
                               <div key={item.id} className={`all-product mb`}>
                                 <Select
-                                  name="details"
+                                  name="id_medicine"
                                   placeholder="search medicine"
                                   className="select-product"
                                   options={(loadedOptions[index] || []) as any}
@@ -288,12 +286,15 @@ const Sales = () => {
                                   onChange={(value) => handleChangeMedicines(value || null, index)}
                                 />
 
-                                <input
-                                  type="number"
-                                  value={item.count || 0}
-                                  onChange={(e) => handleCategoryChange(e.target.value, index)}
-                                  className="select-quantity"
-                                />
+                                <div className="percentage-input">
+                                  <input
+                                    type="number"
+                                    value={item.count || 0}
+                                    onChange={(e) => handleChangeCountMedicinesSale(e.target.value, index)}
+                                    className="select-quantity"
+                                  />
+                                  <span className="percentage-symbol">%</span>
+                                </div>
                                 <input
                                   type="text"
                                   placeholder="Price"
@@ -310,8 +311,8 @@ const Sales = () => {
                                 </button>
                               </div>
 
-                              {item.value === null && errors.details && (
-                                <p className="err-text">Product is required !</p>
+                              {item.value === null && errors.id_medicine && (
+                                <p className="err-text">{errors.id_medicine.message}</p>
                               )}
                             </>
                           ))}
@@ -349,12 +350,7 @@ const Sales = () => {
                                   className="select-quantity"
                                 />
 
-                                <button
-                                  type="button"
-                                  disabled={selectValues.length === 1}
-                                  onClick={() => handleRemoveMedicine(item.id)}
-                                  className="btn-remove"
-                                >
+                                <button type="button" disabled={selectValues.length === 1} className="btn-remove">
                                   -
                                 </button>
                               </div>
@@ -368,11 +364,7 @@ const Sales = () => {
                       )}
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={handleSubmit(handleSubmitFormAdd, onError)}
-                      className="btn btn-success"
-                    >
+                    <button type="button" onClick={handleSubmit(handleSubmitFormAdd)} className="btn btn-success">
                       Submit
                     </button>
                   </div>

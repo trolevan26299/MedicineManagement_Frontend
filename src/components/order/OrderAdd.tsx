@@ -1,4 +1,4 @@
-import { debounce } from 'lodash';
+import { debounce, update } from 'lodash';
 import { useState, useEffect } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
@@ -205,7 +205,10 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
   };
 
   const handleRemoveMedicine = (id: number) => {
-    const updatedValues = selectValues.filter((item) => item.id !== id);
+    const updatedValues = selectValues.filter((item) => item.id !== id).map((x, index) => ({ ...x, id: index }));
+    const indexLoadedOptions = selectValues.findIndex((item) => item.id === id);
+    const updateLoadedOptions = loadedOptions.filter((item, index) => index !== indexLoadedOptions);
+    setLoadedOptions(updateLoadedOptions);
     setSelectValues(updatedValues);
   };
 
@@ -230,7 +233,11 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
   const CustomOption = ({ innerProps, data }: any) => {
     return (
       <div {...innerProps} style={{ display: 'flex', alignItems: 'center' }}>
-        <img style={{ width: '100px', height: '100px', mr: '5px' }} src={`${apiUrl}/${data.imgUrl}`} alt={data.label} />
+        <img
+          style={{ width: '120px', height: '120px', marginRight: '5px' }}
+          src={`${apiUrl}/${data.imgUrl}`}
+          alt={data.label}
+        />
         <div>
           <div>{data.label}</div>
         </div>
@@ -349,15 +356,15 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
                               name="details"
                               placeholder="search medicine"
                               className="select-product"
-                              options={(loadedOptions[index] || []) as any}
+                              options={(loadedOptions[item.id] || []) as any}
                               onInputChange={(inputValue, actionMeta) => {
-                                handleInputChangeMedicines(inputValue, index, actionMeta);
+                                handleInputChangeMedicines(inputValue, item.id, actionMeta);
                               }}
                               components={{ Option: CustomOption }}
                               getOptionLabel={(option) => option.label}
                               getOptionValue={(option) => option.value}
-                              value={loadedOptions[index]?.find((option: any) => option.value === item.value)}
-                              onChange={(value) => handleChangeMedicines(value || null, index)}
+                              value={loadedOptions[item.id]?.find((option: any) => option.value === item.value)}
+                              onChange={(value) => handleChangeMedicines(value || null, item.id)}
                               isDisabled={readonly}
                             />
                             <input
