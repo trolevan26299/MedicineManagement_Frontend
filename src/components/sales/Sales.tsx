@@ -46,7 +46,6 @@ const Sales = () => {
   });
   const [selectValues, setSelectValues] = useState<ISelectValue[]>([{ id: 0, value: null }]);
   const [selectCategory, setSelectCategory] = useState<ISelectValue[]>([{ id: 0, value: null }]);
-  console.log('🚀 selectCategory:', selectCategory);
 
   const [loadedOptions, setLoadedOptions] = useState<IOptions[]>([]);
   const [typeSalesItem, setTypeSaleItem] = useState<boolean>(true);
