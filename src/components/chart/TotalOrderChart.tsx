@@ -2,52 +2,32 @@ import React from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-const TotalOrderChartComponent: React.FC = () => {
-  const data = [
-    97, 86, 72, 157, 67, 143, 199, 75, 136, 55, 112, 64, 66, 123, 156, 100, 80, 68, 141, 163, 134, 103, 178, 69, 72,
-    196, 184, 140, 114, 121,
-  ];
+const TotalOrderChartComponent = ({ orders }: { orders: any[] }) => {
+  const dates = [];
+  for (let i = 29; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    dates.push({ date: date.toISOString().slice(0, 10), orderCount: 0 });
+  }
+
+  orders?.forEach((order) => {
+    const createdAt = new Date(order.created_at);
+    const orderDate = createdAt.toISOString().slice(0, 10);
+
+    const index = dates.findIndex((date) => date.date === orderDate);
+    if (index !== -1) {
+      dates[index].orderCount += 1;
+    }
+  });
+  const data = dates.map((date) => date.orderCount);
   const options: Highcharts.Options = {
     title: {
-      text: 'Total number of orders by day in 1 month',
+      text: 'Total number of orders by day in 30 day',
     },
     chart: {
       type: 'column',
     },
-    xAxis: {
-      categories: [
-        'Date 1',
-        'Date 2',
-        'Date 3',
-        'Date 4',
-        'Date 5',
-        'Date 6',
-        'Date 7',
-        'Date 8',
-        'Date 9',
-        'Date 10',
-        'Date 11',
-        'Date 12',
-        'Date 13',
-        'Date 14',
-        'Date 15',
-        'Date 16',
-        'Date 17',
-        'Date 18',
-        'Date 19',
-        'Date 20',
-        'Date 21',
-        'Date 22',
-        'Date 23',
-        'Date 24',
-        'Date 25',
-        'Date 26',
-        'Date 27',
-        'Date 28',
-        'Date 29',
-        'Date 30',
-      ],
-    },
+    xAxis: { categories: dates.map((date) => date.date) },
     yAxis: {
       title: {
         text: 'Number of orders',

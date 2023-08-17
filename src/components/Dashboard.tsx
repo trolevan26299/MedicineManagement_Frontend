@@ -12,14 +12,19 @@ import LineChart from './chart/RevenueByMonth';
 const Dashboard = () => {
   const dispatch = useDispatch();
   const [dashboardData, setDashboardData] = useState<DashboardDto>({});
+  const [category, setCategory] = useState([]);
+  const [customer, setCustomer] = useState([]);
+  const [order, setOrder] = useState([]);
+  // console.log('category', category);
 
   useEffect(() => {
     const promiseUser = requestApi('/users', 'GET');
     const promisePost = requestApi('/posts', 'GET');
     const promiseCategory = requestApi('/category', 'GET');
     const promiseCustomer = requestApi('/customer', 'GET');
+    const promiseOrder = requestApi('/order', 'GET');
     dispatch(actions.controlLoading(true));
-    Promise.all([promiseUser, promisePost, promiseCategory, promiseCustomer])
+    Promise.all([promiseUser, promisePost, promiseCategory, promiseCustomer, promiseOrder])
       .then((res) => {
         dispatch(actions.controlLoading(false));
         setDashboardData({
@@ -29,6 +34,9 @@ const Dashboard = () => {
           totalCategory: res[2].data.totalCount,
           totalCustomer: res[3].data.totalCount,
         });
+        setCategory(res[2].data);
+        setCustomer(res[3].data);
+        setOrder(res[4].data);
       })
       .catch((err) => {
         console.error(err);
@@ -122,16 +130,16 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          <TotalOrderChartComponent />
+          <TotalOrderChartComponent orders={order.data} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', gap: '10px' }}>
             <div style={{ width: '32%' }}>
-              <PieChart />
+              <PieChart category={category.data} />
             </div>
             <div style={{ width: '32%' }}>
-              <ColumnChart />
+              <ColumnChart customer={customer.data} />
             </div>
             <div style={{ width: '32%' }}>
-              <LineChart />
+              <LineChart orders={order.data} />
             </div>
           </div>
         </div>
