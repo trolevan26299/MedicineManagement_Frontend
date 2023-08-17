@@ -138,7 +138,10 @@ const Sales = () => {
   };
 
   const handleRemoveMedicine = (id: number) => {
-    const updatedValues = selectValues.filter((item) => item.id !== id);
+    const updatedValues = selectValues.filter((item) => item.id !== id).map((x, index) => ({ ...x, id: index }));
+    const indexLoadedOptions = selectValues.findIndex((item) => item.id === id);
+    const updateLoadedOptions = loadedOptions.filter((item, index) => index !== indexLoadedOptions);
+    setLoadedOptions(updateLoadedOptions);
     setSelectValues(updatedValues);
   };
 
@@ -277,15 +280,17 @@ const Sales = () => {
                                   name="id_medicine"
                                   placeholder="search medicine"
                                   className="select-product"
-                                  options={(loadedOptions[index] || []) as any}
+                                  options={(loadedOptions[item.id] || []) as any}
                                   onInputChange={(inputValue, actionMeta) => {
-                                    handleInputChangeMedicines(inputValue, index, actionMeta);
+                                    handleInputChangeMedicines(inputValue, item.id, actionMeta);
                                   }}
                                   components={{ Option: CustomOption }}
                                   getOptionLabel={(option) => option.label}
                                   getOptionValue={(option) => option.value}
-                                  value={loadedOptions[index]?.find((option: any) => option.value === item.value)}
-                                  onChange={(value) => handleChangeMedicines(value || null, index)}
+                                  value={
+                                    loadedOptions[item.id]?.find((option: any) => option.value === item.value) || ''
+                                  }
+                                  onChange={(value) => handleChangeMedicines(value || null, item.id)}
                                 />
 
                                 <div className="percentage-input">
@@ -294,7 +299,6 @@ const Sales = () => {
                                     value={item.count || 0}
                                     onChange={(e) => handleChangeCountMedicinesSale(e.target.value, index)}
                                     className="select-quantity"
-                                    // style={{ height: '100%' }}
                                   />
                                   <span className="percentage-symbol">%</span>
                                 </div>
