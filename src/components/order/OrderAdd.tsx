@@ -363,7 +363,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
                               components={{ Option: CustomOption }}
                               getOptionLabel={(option) => option.label}
                               getOptionValue={(option) => option.value}
-                              value={loadedOptions[item.id]?.find((option: any) => option.value === item.value)}
+                              value={loadedOptions[item.id]?.find((option: any) => option?.value === item?.value) || ''}
                               onChange={(value) => handleChangeMedicines(value || null, item.id)}
                               isDisabled={readonly}
                             />
@@ -373,6 +373,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
                               onChange={(e) => handleCountChange(e.target.value, index)}
                               className="select-quantity"
                               disabled={readonly}
+                              style={{ height: '38px' }}
                             />
                             <input type="text" placeholder="Price" disabled value={formatCurrency(item.price || 0)} />
                             {!readonly && (

@@ -59,18 +59,16 @@ const Sales = () => {
   };
 
   const handleSubmitFormAdd = async () => {
-    dispatch(actions.controlLoading(true));
     if (typeSalesItem) {
       const hasValidDetails = selectValues.filter((item) => item.value === null && item.id === 0).length > 0;
       if (hasValidDetails) {
         setError('id_medicine', { message: 'Medicine is required !' });
       } else {
+        dispatch(actions.controlLoading(true));
         const newData = selectValues.map((item: ISelectValue) => ({
           id_medicine: item.value,
           price_sale: item.price,
         }));
-        console.log('🚀 ~ file: Sales.tsx:76 ~ newData ~ newData:', newData);
-
         try {
           await requestApi('/posts/sales', 'PATCH', newData);
           toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
@@ -184,7 +182,11 @@ const Sales = () => {
   const CustomOption = ({ innerProps, data }: any) => {
     return (
       <div {...innerProps} style={{ display: 'flex', alignItems: 'center' }}>
-        <img style={{ width: '100px', height: '100px', mr: '5px' }} src={`${apiUrl}/${data.imgUrl}`} alt={data.label} />
+        <img
+          style={{ width: '100px', height: '100px', marginRight: '5px' }}
+          src={`${apiUrl}/${data.imgUrl}`}
+          alt={data.label}
+        />
         <div>
           <div>{data.label}</div>
         </div>
@@ -292,6 +294,7 @@ const Sales = () => {
                                     value={item.count || 0}
                                     onChange={(e) => handleChangeCountMedicinesSale(e.target.value, index)}
                                     className="select-quantity"
+                                    // style={{ height: '100%' }}
                                   />
                                   <span className="percentage-symbol">%</span>
                                 </div>
