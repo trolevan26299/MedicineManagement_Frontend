@@ -232,7 +232,7 @@ const Sales = () => {
     requestApi('/category', 'GET')
       .then((response) => {
         setCategory(response.data.data);
-        const newData = [{ ...selectCategory, value: '11', percent_sales: 1 }];
+        const newData = [{ id: selectCategory.length, value: '11', percent_sales: 1 }];
         setSelectCategory(newData);
       })
       .catch((err) => {
