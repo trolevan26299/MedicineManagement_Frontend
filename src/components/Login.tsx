@@ -126,28 +126,11 @@ const Login = () => {
                         </div>
                       </form>
                     </div>
-                    <div className="card-footer text-center py-3">
-                      <div className="small">
-                        <Link to="/register">Need an account? Sign up!</Link>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </main>
-        </div>
-        <div id="layoutAuthentication_footer">
-          <footer className="py-4 bg-light mt-auto">
-            <div className="container-fluid px-4">
-              <div className="d-flex align-items-center justify-content-between small">
-                <div className="text-muted">Copyright © Your Website 2021</div>
-                <div>
-                  <a href="/">Privacy Policy</a>·<a href="/">Terms &amp; Conditions</a>
-                </div>
-              </div>
-            </div>
-          </footer>
         </div>
       </div>
     </div>
