@@ -100,6 +100,11 @@ const Login = () => {
                             name="email"
                             onChange={onChange}
                             placeholder="name@example.com"
+                            onKeyPress={(event) => {
+                              if (event.key === 'Enter') {
+                                onSubmit();
+                              }
+                            }}
                           />
                           <label>Email address</label>
                           {formError.email && <p style={{ color: 'red' }}>{formError.email}</p>}
@@ -111,6 +116,11 @@ const Login = () => {
                             onChange={onChange}
                             name="password"
                             placeholder="Password"
+                            onKeyPress={(event) => {
+                              if (event.key === 'Enter') {
+                                onSubmit();
+                              }
+                            }}
                           />
                           <label>Password</label>
                           {formError.password && <p style={{ color: 'red' }}>{formError.password}</p>}
