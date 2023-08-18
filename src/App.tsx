@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import * as actions from './Redux/actions/index';
@@ -28,9 +28,12 @@ import Layout from './layouts/Layout';
 import Main from './layouts/Main';
 import PrivateRoutes from './layouts/PrivateRoutes';
 import PublicRoutes from './layouts/PublicRoutes';
+import { RootState } from './Redux/reducers/globalLoading';
+import { PERMISSIONS } from './constant/common';
 
 function App() {
   const dispatch = useDispatch();
+  const userRole = useSelector((state: RootState) => state.globalLoading.role);
 
   useEffect(() => {
     requestApi('/auth/getUserPermissions', 'GET')
@@ -49,8 +52,8 @@ function App() {
           <Route element={<PrivateRoutes />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/users" element={<UserList />} />
-            <Route path="/user/add" element={<UserAdd />} />
-            <Route path="/user/edit/:id" element={<UserUpdate />} />
+            {userRole === PERMISSIONS.ADMIN && <Route path="/user/add" element={<UserAdd />} />}
+            {userRole === PERMISSIONS.ADMIN && <Route path="/user/edit/:id" element={<UserUpdate />} />}
             <Route path="/medicines" element={<MedicineList />} />
             <Route path="/medicine/add" element={<MedicineAdd />} />
             <Route path="/medicine/edit/:id" element={<MedicineUpdate />} />
