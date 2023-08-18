@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from '../common/DataTable';
 import { requestApi } from '../../helpers/api';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../Redux/actions';
 import { Modal, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { RootState } from '../../Redux/reducers/globalLoading';
+import { PERMISSIONS } from '../../constant/common';
 
 const UserList = () => {
   const dispatch = useDispatch();
+  const userRole = useSelector((state: RootState) => state.globalLoading.role);
   const [users, setUsers] = useState([]);
   const [numOfPage, setNumOfPage] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -22,35 +25,37 @@ const UserList = () => {
     {
       name: 'ID',
       element: (row: any) => row.id,
+      show: true,
     },
     {
       name: 'First name',
       element: (row: any) => row.first_name,
+      show: true,
     },
     {
       name: 'Last name',
       element: (row: any) => row.last_name,
+      show: true,
     },
     {
       name: 'Email',
       element: (row: any) => row.email,
+      show: true,
     },
     {
       name: 'Created at',
       element: (row: any) => row.created_at,
+      show: true,
     },
     {
       name: 'Updated at',
       element: (row: any) => row.updated_at,
+      show: true,
     },
     {
       name: 'Actions',
       element: (row: any) => (
         <>
-          {/* <button type="button" className="btn btn-sm btn-warning me-1">
-            <i className="fa fa-pencil-alt" />
-            Edit
-          </button> */}
           <Link className="btn btn-sm btn-warning me-1" to={`/user/edit/${row.id}`}>
             <i className="fa fa-pencil-alt" />
             Edit
@@ -61,6 +66,7 @@ const UserList = () => {
           </button>
         </>
       ),
+      show: userRole === PERMISSIONS.ADMIN,
     },
   ];
 
@@ -138,23 +144,24 @@ const UserList = () => {
             </li>
             <li className="breadcrumb-item active">List Users</li>
           </ol>
-
-          <div className="mb-3">
-            <Link to="/user/add" className="btn btn-sm btn-success me-2">
-              <i className="fa fa-plus" />
-              Add New
-            </Link>
-            {selectedRows.length > 0 && (
-              <button className="btn btn-sm btn-danger me-2" type="button" onClick={handleMultiDelete}>
-                <i className="fa fa-trash" />
-                Delete
-              </button>
-            )}
-          </div>
+          {userRole === PERMISSIONS.ADMIN && (
+            <div className="mb-3">
+              <Link to="/user/add" className="btn btn-sm btn-success me-2">
+                <i className="fa fa-plus" />
+                Add New
+              </Link>
+              {selectedRows.length > 0 && (
+                <button className="btn btn-sm btn-danger me-2" type="button" onClick={handleMultiDelete}>
+                  <i className="fa fa-trash" />
+                  Delete
+                </button>
+              )}
+            </div>
+          )}
           <DataTable
             data={users}
             title="List Users"
-            columns={columnsTable}
+            columns={columnsTable.filter((column) => column?.show)}
             numOfPage={numOfPage}
             currentPage={currentPage}
             onPageChange={setCurrentPage}
@@ -166,6 +173,7 @@ const UserList = () => {
               setSelectedRows(rows);
             }}
             keywordSearch="Name or Email"
+            roleAdmin={userRole}
           />
         </div>
       </main>
