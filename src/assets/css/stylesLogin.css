@@ -10,7 +10,7 @@ input {
   font-family: 'Poppins', sans-serif;
 }
 
-/* body {
+body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
@@ -34,7 +34,7 @@ input {
   background: linear-gradient(to right, rgba(16, 25, 68, 0.5), rgba(16, 25, 68, 0.8));
   border-radius: 0 0 100% 0;
   transform: translateX(-50%);
-} */
+}
 
 .block {
   position: relative;
@@ -517,3 +517,4 @@ a.social-icon {
   background-color: rgba(0, 0, 0, 0);
   box-shadow: none;
 }
+/*# sourceMappingURL=login.css.map */
