@@ -133,17 +133,18 @@ const DataTable = ({
   const onChangeOptionPage = (event: any) => {
     const { value } = event.target;
     onChangeItemPerPage(value);
+    onPageChange(1 as number);
   };
   return (
-    <div className="card mb-4" style={{ height: '650px' }}>
-      <div className="card-header">
+    <div className="card mb-4" style={{ height: '750px' }}>
+      <div className="card-header" style={{ height: '50px' }}>
         <i className="fas fa-table me-1"></i>
         {title}
       </div>
-      <div className="card-body">
-        <div className="row mb-3">
+      <div className="card-body" style={{ height: '640px' }}>
+        <div className="row mb-3" style={{ height: '50px' }}>
           <div className="col-sm-12 col-md-6">
-            <label htmlFor="a" className="d-inline-flex">
+            <label htmlFor="a" className="d-inline-flex " style={{ alignItems: 'end' }}>
               Show
               <select
                 name="example_length"
@@ -151,18 +152,18 @@ const DataTable = ({
                 onChange={onChangeOptionPage}
                 value={itemsPerPage}
               >
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
                 <option value="5">5</option>
                 <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
               </select>
               entries
             </label>
           </div>
           <div className="col-sm-12 col-md-6 ">
             {keywordSearch && (
-              <label htmlFor="b" className="d-inline-flex float-end">
+              <label htmlFor="b" className="d-inline-flex float-end" style={{ alignItems: 'end' }}>
                 Search:
                 <LiveSearch onChangeKeyword={onChangeKeyword} keywordSearch={keywordSearch} />
               </label>
@@ -200,7 +201,7 @@ const DataTable = ({
         </table>
       </div>
       {numOfPage > 1 && (
-        <div className="row">
+        <div className="row pt-2" style={{ height: '60px' }}>
           <div className="col-sm-12 col-md-7">
             <ul className="pagination justify-content-end">{renderPagination()}</ul>
           </div>

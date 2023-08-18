@@ -7,7 +7,7 @@ const Main = () => {
   return (
     <div>
       <Header />
-      <div id="layoutSidenav">
+      <div id="layoutSidenav" style={{ height: '100vh' }}>
         <Sidebar />
         <Outlet />
       </div>

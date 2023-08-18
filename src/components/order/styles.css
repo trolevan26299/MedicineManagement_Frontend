@@ -18,6 +18,11 @@
   display: flex;
   gap: 10px;
 }
+.add_product {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
 .select-product {
   width: 100%;
@@ -51,4 +56,7 @@
 
 .w-100 {
   width: 100% !important;
+}
+#layoutSidenav_content {
+  margin-top: 56px;
 }

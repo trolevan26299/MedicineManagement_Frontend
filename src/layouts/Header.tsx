@@ -10,7 +10,7 @@ const Header = () => {
     Navigate('/login');
   };
   return (
-    <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark " style={{ position: 'fixed', width: '100%' }}>
       {/* Navbar Brand*/}
       <a className="navbar-brand ps-3" href="/">
         Long Chau Manage
