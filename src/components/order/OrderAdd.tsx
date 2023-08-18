@@ -49,6 +49,19 @@ const defaultValues: DefaultValues<FormValues> = {
   ],
 };
 
+export const customStyles = {
+  control: (provided: any, state: any) => ({
+    ...provided,
+    backgroundColor: state.isDisabled ? '#e9ecef' : provided.backgroundColor,
+    color: state.isDisabled ? 'black' : provided.color,
+    border: state.isDisabled ? '1px solid #ced4da' : provided.border,
+  }),
+  singleValue: (provided: any, state: any) => ({
+    ...provided,
+    color: state.isDisabled ? 'black' : provided.color,
+  }),
+};
+
 const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -337,6 +350,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
                         onChange={(selectedOption: any) => handleChangeOptionCustomer(selectedOption.value)}
                         value={optionCustomers?.find((option: any) => option.value === selectCustomer.customer)}
                         isDisabled={readonly}
+                        styles={customStyles}
                       />
                       {errors.customer && <p className="err-text">{errors.customer.message}</p>}
                     </div>
@@ -366,16 +380,23 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
                               value={loadedOptions[item.id]?.find((option: any) => option?.value === item?.value) || ''}
                               onChange={(value) => handleChangeMedicines(value || null, item.id)}
                               isDisabled={readonly}
+                              styles={customStyles}
                             />
                             <input
                               type="number"
                               value={item.count || 0}
                               onChange={(e) => handleCountChange(e.target.value, index)}
-                              className="select-quantity"
+                              className="select-quantity form-control"
                               disabled={readonly}
                               style={{ height: '38px' }}
                             />
-                            <input type="text" placeholder="Price" disabled value={formatCurrency(item.price || 0)} />
+                            <input
+                              className="form-control"
+                              type="text"
+                              placeholder="Price"
+                              disabled
+                              value={formatCurrency(item.price || 0)}
+                            />
                             {!readonly && (
                               <button
                                 type="button"
