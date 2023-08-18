@@ -1,10 +1,9 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import * as actions from '../../Redux/actions/index';
 import { requestApi } from '../../helpers/api';
-import { toast } from 'react-toastify';
 
 const UserAdd = () => {
   const dispatch = useDispatch();
@@ -26,6 +25,7 @@ const UserAdd = () => {
         navigate('/users');
       }, 3000);
     } catch (error) {
+      toast.error(`${error.response.data.message}`, { position: 'top-center', autoClose: 2000 });
       dispatch(actions.controlLoading(false));
     }
   };
