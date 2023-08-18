@@ -43,11 +43,10 @@ const Dashboard = () => {
       });
   }, []);
   return (
-    <div id="layoutSidenav_content">
+    <div id="layoutSidenav_content" style={{ marginTop: '56px' }}>
       <main>
-        <div className="container-fluid px-4">
-          <h1 className="mt-4">Dashboard</h1>
-
+        <div className="container-fluid px-4 ">
+          <h1 className="mt-2">Dashboard</h1>
           <div className="row">
             <div className="col-xl-3 col-md-6">
               <div className="card bg-primary text-white mb-4">
@@ -130,7 +129,9 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          <TotalOrderChartComponent orders={order.data} />
+          <div style={{ height: '380px' }}>
+            <TotalOrderChartComponent orders={order.data} />
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', gap: '10px' }}>
             <div style={{ width: '32%' }}>
               <PieChart category={category.data} />

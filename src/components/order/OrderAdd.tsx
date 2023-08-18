@@ -308,7 +308,6 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
                   <Link to="/">Dashboard</Link>
                 </li>
                 <li className="breadcrumb-item">
-                  {' '}
                   <Link to="/order-history-list">Orders</Link>
                 </li>
                 <li className="breadcrumb-item active">{id ? 'Update order' : 'Add New Order'}</li>
@@ -341,14 +340,15 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
                       />
                       {errors.customer && <p className="err-text">{errors.customer.message}</p>}
                     </div>
-                    <div className="mb-3 mt-3">
-                      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                      <label className="form-label add-product">{!readonly ? 'Add Product:' : 'Detail Order'}</label>
-                      {!readonly && (
-                        <button type="button" onClick={addMedicine} className="btn-plus" disabled={readonly}>
-                          +
-                        </button>
-                      )}
+                    <div className="mb-3 mt-3 ">
+                      <div className="add_product">
+                        <label className="form-label add-product">{!readonly ? 'Add Medicine:' : 'Detail Order'}</label>
+                        {!readonly && (
+                          <button type="button" onClick={addMedicine} className="btn-plus" disabled={readonly}>
+                            +
+                          </button>
+                        )}
+                      </div>
                       {selectValues.map((item, index) => (
                         <>
                           <div key={item.id} className={`all-product mb`}>

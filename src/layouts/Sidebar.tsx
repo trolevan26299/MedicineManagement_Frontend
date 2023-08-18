@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const Sidebar = () => {
   return (
     <div id="layoutSidenav_nav">
-      <nav className="sb-sidenav accordion sb-sidenav-dark pt-5" id="sidenavAccordion">
+      <nav className="sb-sidenav accordion sb-sidenav-dark " style={{ paddingTop: '30%' }} id="sidenavAccordion">
         <div className="sb-sidenav-menu">
           <div className="nav">
             <Link className="nav-link" to="/">
@@ -14,7 +14,7 @@ const Sidebar = () => {
               Dashboard
             </Link>
             <a
-              className="nav-link collapsed"
+              className="nav-link collapsed pb-3"
               href="/"
               data-bs-toggle="collapse"
               data-bs-target="#collapseOrder"
@@ -45,7 +45,7 @@ const Sidebar = () => {
               </nav>
             </div>
             <a
-              className="nav-link collapsed"
+              className="nav-link collapsed pb-3"
               href="/"
               data-bs-toggle="collapse"
               data-bs-target="#collapseLayouts"
@@ -76,7 +76,7 @@ const Sidebar = () => {
               </nav>
             </div>
             <a
-              className="nav-link collapsed"
+              className="nav-link collapsed pb-3"
               href="/"
               data-bs-toggle="collapse"
               data-bs-target="#collapsePost"
@@ -102,7 +102,7 @@ const Sidebar = () => {
               </nav>
             </div>
             <a
-              className="nav-link collapsed"
+              className="nav-link collapsed pb-3"
               href="/"
               data-bs-toggle="collapse"
               data-bs-target="#collapseCategory"
@@ -133,7 +133,7 @@ const Sidebar = () => {
               </nav>
             </div>
             <a
-              className="nav-link collapsed"
+              className="nav-link collapsed pb-3"
               href="/"
               data-bs-toggle="collapse"
               data-bs-target="#collapseCustomer"

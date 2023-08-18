@@ -21,6 +21,7 @@ const Layout = () => {
           backgroundColor: 'rgb(0 0 0 / 30%)',
           zIndex: '9999',
           paddingTop: '25%',
+          height: '100vh',
         }}
         color="#36d7b7"
       />

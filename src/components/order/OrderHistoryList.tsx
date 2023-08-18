@@ -44,7 +44,7 @@ const CustomerList = () => {
   const [orderList, setOrderList] = useState([]);
   const [numOfPage, setNumOfPage] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [itemsPerPage, setItemPerPage] = useState<number>(10);
+  const [itemsPerPage, setItemPerPage] = useState<number>(5);
   const [keyword, setKeyword] = useState<string>('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [deleteItem, setDeleteItem] = useState(null);
