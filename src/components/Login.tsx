@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { login } from '../Definition/common.dto';
 import * as actions from '../Redux/actions';
 import { requestApi } from '../helpers/api';
+import '../assets/css/stylesLogin.css';
+import signup from '../assets/images/signup.svg';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -78,8 +79,8 @@ const Login = () => {
   }, [loginData]);
 
   return (
-    <div>
-      <div id="layoutAuthentication" className="bg-primary">
+    <div className="header">
+      {/* <div id="layoutAuthentication" className="bg-primary">
         <div id="layoutAuthentication_content">
           <main>
             <div className="container">
@@ -139,6 +140,52 @@ const Login = () => {
               </div>
             </div>
           </main>
+        </div>
+      </div> */}
+      <div className="forms-container">
+        <div className="signin-signup">
+          <form action="#" className="sign-in-form">
+            <h2 className="title">Sign in</h2>
+            <div className="input-field">
+              <i className="fas fa-user" style={{ marginLeft: '10px' }}></i>
+              <input
+                className="form-control"
+                type="email"
+                name="email"
+                onChange={onChange}
+                placeholder="name@example.com"
+                onKeyPress={(event) => {
+                  if (event.key === 'Enter') {
+                    onSubmit();
+                  }
+                }}
+              />
+            </div>
+            <div className="input-field">
+              <i className="fas fa-lock" style={{ marginLeft: '10px' }}></i>
+              <input
+                className="form-control"
+                type="password"
+                onChange={onChange}
+                name="password"
+                placeholder="Password"
+                onKeyPress={(event) => {
+                  if (event.key === 'Enter') {
+                    onSubmit();
+                  }
+                }}
+              />
+            </div>
+            <button className="btn btn-primary" type="button" onClick={onSubmit}>
+              Sign in
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div className="panels-container">
+        <div className="panel left-panel">
+          <img src={signup} className="image" alt="" />
         </div>
       </div>
     </div>
