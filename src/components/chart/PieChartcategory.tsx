@@ -22,6 +22,7 @@ const PieChart = ({ category }: { category: any[] }) => {
   const options = {
     chart: {
       type: 'pie',
+      height: 350,
     },
     title: {
       text: 'Number of Medicines by Category',

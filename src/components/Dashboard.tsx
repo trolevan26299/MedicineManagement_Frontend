@@ -129,17 +129,17 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          <div style={{ height: '380px' }}>
+          <div style={{ height: '320px' }}>
             <TotalOrderChartComponent orders={order.data} />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', gap: '10px' }}>
-            <div style={{ width: '32%' }}>
+            <div style={{ width: '34%' }}>
               <PieChart category={category.data} />
             </div>
-            <div style={{ width: '32%' }}>
+            <div style={{ width: '34%' }}>
               <ColumnChart customer={customer.data} />
             </div>
-            <div style={{ width: '32%' }}>
+            <div style={{ width: '34%' }}>
               <LineChart orders={order.data} />
             </div>
           </div>

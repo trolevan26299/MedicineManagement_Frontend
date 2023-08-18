@@ -49,12 +49,26 @@ const defaultValues: DefaultValues<FormValues> = {
   ],
 };
 
-export const customStyles = {
+export const customStylesCustomer = {
   control: (provided: any, state: any) => ({
     ...provided,
     backgroundColor: state.isDisabled ? '#e9ecef' : provided.backgroundColor,
     color: state.isDisabled ? 'black' : provided.color,
     border: state.isDisabled ? '1px solid #ced4da' : provided.border,
+  }),
+  singleValue: (provided: any, state: any) => ({
+    ...provided,
+    color: state.isDisabled ? 'black' : provided.color,
+  }),
+};
+
+export const customStylesMedicines = {
+  control: (provided: any, state: any) => ({
+    ...provided,
+    backgroundColor: state.isDisabled ? '#e9ecef' : provided.backgroundColor,
+    color: state.isDisabled ? 'black' : provided.color,
+    border: state.isDisabled ? '1px solid #ced4da' : provided.border,
+    width: '400px',
   }),
   singleValue: (provided: any, state: any) => ({
     ...provided,
@@ -350,7 +364,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
                         onChange={(selectedOption: any) => handleChangeOptionCustomer(selectedOption.value)}
                         value={optionCustomers?.find((option: any) => option.value === selectCustomer.customer)}
                         isDisabled={readonly}
-                        styles={customStyles}
+                        styles={customStylesCustomer}
                       />
                       {errors.customer && <p className="err-text">{errors.customer.message}</p>}
                     </div>
@@ -380,7 +394,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
                               value={loadedOptions[item.id]?.find((option: any) => option?.value === item?.value) || ''}
                               onChange={(value) => handleChangeMedicines(value || null, item.id)}
                               isDisabled={readonly}
-                              styles={customStyles}
+                              styles={customStylesMedicines}
                             />
                             <input
                               type="number"

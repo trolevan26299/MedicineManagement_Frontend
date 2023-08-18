@@ -38,6 +38,7 @@ const LineChart = ({ orders }: { orders: any[] }) => {
   const options = {
     chart: {
       type: 'line',
+      height: 350,
     },
     title: {
       text: 'Monthly revenue statistics',

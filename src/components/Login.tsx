@@ -99,7 +99,11 @@ const Login = () => {
                 }}
               />
             </div>
-            {formError.email && <p style={{ color: 'red', width: '45%' }}>{formError.email}</p>}
+            {formError.email && (
+              <div className="input-err">
+                <p style={{ color: 'red' }}>{formError.email}</p>
+              </div>
+            )}
             <div className="input-field">
               <i className="fas fa-lock" style={{ marginLeft: '10px' }}></i>
               <input
@@ -115,7 +119,12 @@ const Login = () => {
                 }}
               />
             </div>
-            {formError.password && <p style={{ color: 'red', width: '45%' }}>{formError.password}</p>}
+            {formError.password && (
+              <div className="input-err">
+                <p style={{ color: 'red' }}>{formError.password}</p>
+              </div>
+            )}
+
             <button className="btn btn-primary btn-sign" type="button" onClick={onSubmit}>
               Sign in
             </button>

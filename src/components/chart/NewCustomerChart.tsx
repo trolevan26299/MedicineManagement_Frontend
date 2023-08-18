@@ -38,6 +38,7 @@ const ColumnChart = ({ customer }: { customer: any[] }) => {
   const options = {
     chart: {
       type: 'spline',
+      height: 350,
     },
     title: {
       text: 'Statistics of new customers in 12 months in 2023',

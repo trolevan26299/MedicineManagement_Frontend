@@ -126,6 +126,12 @@ body {
   position: relative;
 }
 
+.input-err {
+  max-width: 350px;
+  width: 100% !important;
+  height: 55px;
+}
+
 .input-field i {
   text-align: center;
   line-height: 55px;

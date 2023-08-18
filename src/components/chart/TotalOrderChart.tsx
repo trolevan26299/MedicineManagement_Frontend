@@ -26,6 +26,7 @@ const TotalOrderChartComponent = ({ orders }: { orders: any[] }) => {
     },
     chart: {
       type: 'column',
+      height: 300,
     },
     xAxis: { categories: dates.map((date) => date.date) },
     yAxis: {
