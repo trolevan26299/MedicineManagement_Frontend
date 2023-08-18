@@ -100,6 +100,13 @@ const UserAdd = () => {
                       {errors.password && <p style={{ color: 'red' }}>{errors.password.message}</p>}
                     </div>
                     <div className="mt-3 mb-3">
+                      <label className="form-label">Permission:</label>
+                      <select {...register('permission')} className="form-select">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </div>
+                    <div className="mt-3 mb-3">
                       <label className="form-label">Status:</label>
                       <select {...register('status')} className="form-select">
                         <option value="1">Active</option>

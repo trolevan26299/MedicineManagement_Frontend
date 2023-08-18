@@ -38,7 +38,7 @@ const UserUpdate = () => {
       const getDetailUser = async () => {
         const res = await requestApi(`/users/${params.id}`, 'GET');
         dispatch(actions.controlLoading(false));
-        const fields = ['first_name', 'last_name', 'status'];
+        const fields = ['first_name', 'last_name', 'status', 'permission'];
         fields.forEach((field) => setValue(field, res.data[field]));
       };
       getDetailUser();
@@ -90,6 +90,22 @@ const UserUpdate = () => {
                         placeholder="Enter last name"
                       />
                       {errors.last_name && <p style={{ color: 'red' }}>{errors.last_name.message}</p>}
+                    </div>
+                    <div className="mb-3 ">
+                      <label className="form-label">Password:</label>
+                      <input
+                        type="password"
+                        {...register('password')}
+                        className="form-control"
+                        placeholder="Enter password"
+                      />
+                    </div>
+                    <div className="mt-3 mb-3">
+                      <label className="form-label">Permission:</label>
+                      <select {...register('permission')} className="form-select">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                      </select>
                     </div>
 
                     <div className="mt-3 mb-3">

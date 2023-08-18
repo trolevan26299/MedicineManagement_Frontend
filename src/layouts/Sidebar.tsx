@@ -1,14 +1,14 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { PERMISSIONS } from '../constant/common';
-import { RootState } from '../Redux/reducers/globalLoading';
 
 const Sidebar = () => {
-  const userRole = useSelector((state: RootState) => state.globalLoading.role);
   return (
     <div id="layoutSidenav_nav">
-      <nav className="sb-sidenav accordion sb-sidenav-dark " style={{ paddingTop: '30%' }} id="sidenavAccordion">
+      <nav
+        className="sb-sidenav accordion sb-sidenav-dark "
+        style={{ paddingTop: '30%', color: '#ffffff' }}
+        id="sidenavAccordion"
+      >
         <div className="sb-sidenav-menu">
           <div className="nav">
             <Link className="nav-link" to="/">
@@ -18,7 +18,7 @@ const Sidebar = () => {
               Dashboard
             </Link>
             <a
-              className="nav-link collapsed pb-3"
+              className="nav-link collapsed pb-2"
               href="/"
               data-bs-toggle="collapse"
               data-bs-target="#collapseOrder"
@@ -49,7 +49,7 @@ const Sidebar = () => {
               </nav>
             </div>
             <a
-              className="nav-link collapsed pb-3"
+              className="nav-link collapsed pb-2"
               href="/"
               data-bs-toggle="collapse"
               data-bs-target="#collapseLayouts"
@@ -71,18 +71,16 @@ const Sidebar = () => {
               data-bs-parent="#sidenavAccordion"
             >
               <nav className="sb-sidenav-menu-nested nav">
-                {userRole === PERMISSIONS.ADMIN && (
-                  <Link className="nav-link" to="/user/add">
-                    Add User
-                  </Link>
-                )}
+                <Link className="nav-link" to="/user/add">
+                  Add User
+                </Link>
                 <Link className="nav-link" to="/users">
                   List Users
                 </Link>
               </nav>
             </div>
             <a
-              className="nav-link collapsed pb-3"
+              className="nav-link collapsed pb-2"
               href="/"
               data-bs-toggle="collapse"
               data-bs-target="#collapsePost"
@@ -108,7 +106,7 @@ const Sidebar = () => {
               </nav>
             </div>
             <a
-              className="nav-link collapsed pb-3"
+              className="nav-link collapsed pb-2"
               href="/"
               data-bs-toggle="collapse"
               data-bs-target="#collapseCategory"
@@ -139,7 +137,7 @@ const Sidebar = () => {
               </nav>
             </div>
             <a
-              className="nav-link collapsed pb-3"
+              className="nav-link collapsed pb-2"
               href="/"
               data-bs-toggle="collapse"
               data-bs-target="#collapseCustomer"
