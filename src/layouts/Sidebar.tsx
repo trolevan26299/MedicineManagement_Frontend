@@ -1,7 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { RootState } from '../Redux/reducers/globalLoading';
+import { PERMISSIONS } from '../constant/common';
 
 const Sidebar = () => {
+  const userRole = useSelector((state: RootState) => state.globalLoading.role);
   return (
     <div id="layoutSidenav_nav">
       <nav
@@ -71,9 +75,11 @@ const Sidebar = () => {
               data-bs-parent="#sidenavAccordion"
             >
               <nav className="sb-sidenav-menu-nested nav">
-                <Link className="nav-link" to="/user/add">
-                  Add User
-                </Link>
+                {userRole === PERMISSIONS.ADMIN && (
+                  <Link className="nav-link" to="/user/add">
+                    Add User
+                  </Link>
+                )}
                 <Link className="nav-link" to="/users">
                   List Users
                 </Link>

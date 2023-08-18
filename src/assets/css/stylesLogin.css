@@ -10,7 +10,7 @@ input {
   font-family: 'Poppins', sans-serif;
 }
 
-body {
+/* body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
@@ -34,7 +34,7 @@ body {
   background: linear-gradient(to right, rgba(16, 25, 68, 0.5), rgba(16, 25, 68, 0.8));
   border-radius: 0 0 100% 0;
   transform: translateX(-50%);
-}
+} */
 
 .block {
   position: relative;
@@ -206,7 +206,7 @@ a.social-icon {
   border-color: #203181;
 }
 
-.btn {
+.btn-sign {
   width: 150px;
   background-color: #203181;
   border: none;
@@ -222,7 +222,7 @@ a.social-icon {
   transition: 0.5s;
 }
 
-.btn:hover {
+.btn-sign:hover {
   background-color: #4d84e2;
 }
 
@@ -312,7 +312,7 @@ a.social-icon {
   padding: 0.7rem 0;
 }
 
-.btn.transparent {
+.btn-sign.transparent {
   margin: 0;
   background: none;
   border: 2px solid #fff;
@@ -442,7 +442,7 @@ a.social-icon {
     font-size: 0.7rem;
     padding: 0.5rem 0;
   }
-  .btn.transparent {
+  .btn-sign.transparent {
     width: 110px;
     height: 35px;
     font-size: 0.7rem;
@@ -514,7 +514,6 @@ a.social-icon {
 }
 
 .input-field .form-control:focus {
-  background-color: #fff0;
+  background-color: rgba(0, 0, 0, 0);
   box-shadow: none;
 }
-/*# sourceMappingURL=login.css.map */
