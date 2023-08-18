@@ -241,20 +241,19 @@ const CustomerList = () => {
             <li className="breadcrumb-item active">Order history list</li>
           </ol>
 
-          {userRole === PERMISSIONS.ADMIN && (
-            <div className="mb-3">
-              <Link to="/order/add" className="btn btn-sm btn-success me-2">
-                <i className="fa fa-plus" />
-                Add New
-              </Link>
-              {selectedRows.length > 0 && (
-                <button className="btn btn-sm btn-danger me-2" type="button" onClick={handleMultiDelete}>
-                  <i className="fa fa-trash" />
-                  Delete
-                </button>
-              )}
-            </div>
-          )}
+          <div className="mb-3">
+            <Link to="/order/add" className="btn btn-sm btn-success me-2">
+              <i className="fa fa-plus" />
+              Add New
+            </Link>
+            {selectedRows.length > 0 && userRole === PERMISSIONS.ADMIN && (
+              <button className="btn btn-sm btn-danger me-2" type="button" onClick={handleMultiDelete}>
+                <i className="fa fa-trash" />
+                Delete
+              </button>
+            )}
+          </div>
+
           <DataTable
             data={orderList}
             title="List Orders"
