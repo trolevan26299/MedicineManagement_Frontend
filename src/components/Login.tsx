@@ -1,15 +1,13 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useEffect, useState } from 'react';
-import { ChangeEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../Definition/common.dto';
-import { requestApi } from '../helpers/api';
-import { toast } from 'react-toastify';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { login } from '../Definition/common.dto';
 import * as actions from '../Redux/actions';
+import { requestApi } from '../helpers/api';
 
 const Login = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loginData, setLoginData] = useState<login>({});
   const [formError, setFormError] = useState<login>({});
@@ -51,7 +49,7 @@ const Login = () => {
           localStorage.setItem('ACCESS_TOKEN', res.data.access_token);
           localStorage.setItem('REFRESH_TOKEN', res.data.refresh_token);
           dispatch(actions.controlLoading(false));
-          navigate('/');
+          window.location.href = '/';
         })
         .catch((err) => {
           dispatch(actions.controlLoading(false));
@@ -100,6 +98,11 @@ const Login = () => {
                             name="email"
                             onChange={onChange}
                             placeholder="name@example.com"
+                            onKeyPress={(event) => {
+                              if (event.key === 'Enter') {
+                                onSubmit();
+                              }
+                            }}
                           />
                           <label>Email address</label>
                           {formError.email && <p style={{ color: 'red' }}>{formError.email}</p>}
@@ -111,6 +114,11 @@ const Login = () => {
                             onChange={onChange}
                             name="password"
                             placeholder="Password"
+                            onKeyPress={(event) => {
+                              if (event.key === 'Enter') {
+                                onSubmit();
+                              }
+                            }}
                           />
                           <label>Password</label>
                           {formError.password && <p style={{ color: 'red' }}>{formError.password}</p>}
