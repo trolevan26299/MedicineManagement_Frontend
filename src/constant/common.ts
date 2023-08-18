@@ -8,3 +8,20 @@ export const formatCurrency = (amount: number): string => {
 
   return formatter.format(amount);
 };
+
+export const PERMISSIONS = {
+  ADMIN: 'admin',
+  USER: 'user',
+};
+
+export interface ControlLoadingAction {
+  type: 'CONTROL_LOADING';
+  status: boolean;
+}
+
+export interface SetRoleAction {
+  type: 'SET_ROLE';
+  payload: string;
+}
+
+export type Action = ControlLoadingAction | SetRoleAction;

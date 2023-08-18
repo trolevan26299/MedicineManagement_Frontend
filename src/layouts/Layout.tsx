@@ -3,9 +3,10 @@ import { Outlet } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { PropagateLoader } from 'react-spinners';
 import { useSelector } from 'react-redux';
+import { RootState } from '../Redux/reducers/globalLoading';
 
 const Layout = () => {
-  const statusLoading = useSelector((state: any) => state.globalLoading.status);
+  const statusLoading = useSelector((state: RootState) => state.globalLoading.status);
   return (
     <div>
       <PropagateLoader

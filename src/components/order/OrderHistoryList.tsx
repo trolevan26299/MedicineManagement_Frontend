@@ -1,14 +1,15 @@
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import * as actions from '../../Redux/actions';
-import { formatCurrency } from '../../constant/common';
+import { PERMISSIONS, formatCurrency } from '../../constant/common';
 import { requestApi } from '../../helpers/api';
 import DataTable from '../common/DataTable';
 import OrderAdd from './OrderAdd';
 import { ICustomer } from '../customer/CustomerList';
 import CommonModal from '../common/Modal';
+import { RootState } from '../../Redux/reducers/globalLoading';
 
 export interface IDetailOrder {
   count?: number;
@@ -41,6 +42,7 @@ export interface IOrder {
 
 const CustomerList = () => {
   const dispatch = useDispatch();
+  const userRole = useSelector((state: RootState) => state.globalLoading.role);
   const [orderList, setOrderList] = useState([]);
   const [numOfPage, setNumOfPage] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -115,14 +117,18 @@ const CustomerList = () => {
       name: 'Actions',
       element: (row: any) => (
         <>
+          {userRole === PERMISSIONS.ADMIN && (
+            <>
+              <button type="button" className="btn btn-sm btn-danger me-1" onClick={() => handleDelete(row.id)}>
+                <i className="fa fa-trash" />
+                &nbsp; Delete
+              </button>
+            </>
+          )}
           <Link className="btn btn-sm btn-warning me-1" to={`/order/edit/${row.id}`}>
             <i className="fa fa-pencil-alt" />
             &nbsp; Edit
           </Link>
-          <button type="button" className="btn btn-sm btn-danger me-1" onClick={() => handleDelete(row.id)}>
-            <i className="fa fa-trash" />
-            &nbsp; Delete
-          </button>
           <button type="button" className="btn btn-sm btn btn-info me-1" onClick={() => handleOpenViewModal(row.id)}>
             <i className="fa fa-eye" />
             &nbsp; View
@@ -235,18 +241,20 @@ const CustomerList = () => {
             <li className="breadcrumb-item active">Order history list</li>
           </ol>
 
-          <div className="mb-3">
-            <Link to="/order/add" className="btn btn-sm btn-success me-2">
-              <i className="fa fa-plus" />
-              Add New
-            </Link>
-            {selectedRows.length > 0 && (
-              <button className="btn btn-sm btn-danger me-2" type="button" onClick={handleMultiDelete}>
-                <i className="fa fa-trash" />
-                Delete
-              </button>
-            )}
-          </div>
+          {userRole === PERMISSIONS.ADMIN && (
+            <div className="mb-3">
+              <Link to="/order/add" className="btn btn-sm btn-success me-2">
+                <i className="fa fa-plus" />
+                Add New
+              </Link>
+              {selectedRows.length > 0 && (
+                <button className="btn btn-sm btn-danger me-2" type="button" onClick={handleMultiDelete}>
+                  <i className="fa fa-trash" />
+                  Delete
+                </button>
+              )}
+            </div>
+          )}
           <DataTable
             data={orderList}
             title="List Orders"
@@ -262,6 +270,7 @@ const CustomerList = () => {
               setSelectedRows(rows);
             }}
             keywordSearch="ID , Name or Phone Number"
+            roleAdmin={userRole}
           />
         </div>
       </main>

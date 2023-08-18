@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import LiveSearch from './LiveSearch';
 import { useState } from 'react';
+import { PERMISSIONS } from '../../constant/common';
 
 const DataTable = ({
   data,
@@ -15,6 +16,7 @@ const DataTable = ({
   onSelectedRows,
   itemsPerPage,
   keywordSearch,
+  roleAdmin,
 }: {
   data?: any;
   title: string;
@@ -27,6 +29,7 @@ const DataTable = ({
   onSelectedRows: (rows: any) => void;
   itemsPerPage?: number;
   keywordSearch?: string;
+  roleAdmin?: string;
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   useEffect(() => {
@@ -37,15 +40,29 @@ const DataTable = ({
   const renderData = () => {
     return data?.map((item: any, index: number) => (
       <tr key={index}>
-        <td>
-          <input
-            type="checkbox"
-            checked={selectedRows.includes(String(item.id)) ? true : false}
-            className="form-check-input"
-            value={item.id}
-            onChange={onClickCheckbox}
-          />
-        </td>
+        {title === 'List Users' || title === 'List Orders' ? (
+          roleAdmin === PERMISSIONS.ADMIN && (
+            <td>
+              <input
+                type="checkbox"
+                checked={selectedRows.includes(String(item.id)) ? true : false}
+                className="form-check-input"
+                value={item.id}
+                onChange={onClickCheckbox}
+              />
+            </td>
+          )
+        ) : (
+          <td>
+            <input
+              type="checkbox"
+              checked={selectedRows.includes(String(item.id)) ? true : false}
+              className="form-check-input"
+              value={item.id}
+              onChange={onClickCheckbox}
+            />
+          </td>
+        )}
         {columns.map((col: any, ind: number) => (
           <td key={ind}>{col.element(item)}</td>
         ))}
@@ -156,14 +173,27 @@ const DataTable = ({
         <table className="table table-striped table-bordered" cellSpacing="0" width="100%">
           <thead>
             <tr>
-              <td>
-                <input
-                  type="checkbox"
-                  checked={selectedRows?.length === data?.length && data?.length > 0 ? true : false}
-                  className="form-check-input"
-                  onChange={onSelectAll}
-                />
-              </td>
+              {title === 'List Users' || title === 'List Orders' ? (
+                roleAdmin === PERMISSIONS.ADMIN && (
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedRows?.length === data?.length && data?.length > 0 ? true : false}
+                      className="form-check-input"
+                      onChange={onSelectAll}
+                    />
+                  </td>
+                )
+              ) : (
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={selectedRows?.length === data?.length && data?.length > 0 ? true : false}
+                    className="form-check-input"
+                    onChange={onSelectAll}
+                  />
+                </td>
+              )}
               {renderHeaders()}
             </tr>
           </thead>
