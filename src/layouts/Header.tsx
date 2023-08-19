@@ -1,8 +1,13 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { RootState } from '../Redux/reducers/globalLoading';
+import globalLoading from '../Redux/reducers/globalLoading';
 
 const Header = () => {
   const Navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.globalLoading.info);
+  console.log('--------------------', user);
 
   const onHandleLogout = () => {
     localStorage.removeItem('ACCESS_TOKEN');
@@ -24,7 +29,13 @@ const Header = () => {
         <div className="input-group"></div>
       </form>
       {/* Navbar*/}
-      <ul className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+      <ul
+        className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4"
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      >
+        <li style={{ color: '#ffffff', textTransform: 'uppercase' }}>
+          {`${user.last_name} ${user.first_name} (${user.permission})`}{' '}
+        </li>
         <li className="nav-item dropdown">
           <a
             className="nav-link dropdown-toggle"

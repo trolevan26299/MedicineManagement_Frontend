@@ -24,5 +24,10 @@ export interface SetRoleAction {
   type: 'SET_ROLE';
   payload: string;
 }
+export interface UserInfo {
+  type: 'INFO_USER';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  payload: any;
+}
 
-export type Action = ControlLoadingAction | SetRoleAction;
+export type Action = ControlLoadingAction | SetRoleAction | UserInfo;

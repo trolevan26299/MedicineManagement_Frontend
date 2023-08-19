@@ -39,6 +39,7 @@ function App() {
     requestApi('/auth/getUserPermissions', 'GET')
       .then((res) => {
         dispatch(actions.setRole(res.data.permission));
+        dispatch(actions.infoUser(res.data));
       })
       .catch((err) => {
         console.error(err);
