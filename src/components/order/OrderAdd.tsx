@@ -341,7 +341,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
               </ol>
             </>
           )}
-          <div className="card mb-4" style={{ height: '79vh' }}>
+          <div className="card mb-4" style={{ height: '77vh' }}>
             {!readonly && (
               <div className="card-header">
                 <i className="fas fa-plus me-1"></i>
@@ -368,7 +368,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
                       />
                       {errors.customer && <p className="err-text">{errors.customer.message}</p>}
                     </div>
-                    <div className="mb-3 mt-3 ">
+                    <div className="mb-3 mt-3">
                       <div className="add_product">
                         <label className="form-label add-product">{!readonly ? 'Add Medicine:' : 'Detail Order'}</label>
                         {!readonly && (
@@ -417,6 +417,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
                                 disabled={selectValues.length === 1}
                                 onClick={() => handleRemoveMedicine(item.id)}
                                 className="btn-remove"
+                                style={{ width: '255px' }}
                               >
                                 -
                               </button>

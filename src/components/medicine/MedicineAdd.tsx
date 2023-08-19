@@ -62,7 +62,7 @@ const MedicineAdd = () => {
 
   return (
     <div id="layoutSidenav_content">
-      <main>
+      <main style={{ height: '100%' }}>
         <div className="container-fluid px-4">
           <h1 className="mt-4"> New Medicine</h1>
           <ol className="breadcrumb mb-4">

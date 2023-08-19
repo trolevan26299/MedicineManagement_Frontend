@@ -136,7 +136,7 @@ const DataTable = ({
     onPageChange(1 as number);
   };
   return (
-    <div className="card mb-4" style={{ height: '750px' }}>
+    <div className="card mb-4" style={{ height: '665px' }}>
       <div className="card-header" style={{ height: '50px' }}>
         <i className="fas fa-table me-1"></i>
         {title}
