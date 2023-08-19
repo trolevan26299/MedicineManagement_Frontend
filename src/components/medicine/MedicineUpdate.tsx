@@ -43,7 +43,7 @@ const MedicineUpdate = () => {
     formData.append('status', data.status);
     dispatch(actions.controlLoading(true));
     try {
-      const res = await requestApiFormData(`/posts/${params.id}`, 'PUT', formData);
+      const res = await requestApiFormData(`/posts/update/${params.id}`, 'PUT', formData);
       dispatch(actions.controlLoading(false));
       toast.success('Medicine has been updated successfully !', { position: 'top-center', autoClose: 2000 });
       setTimeout(() => {
