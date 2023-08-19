@@ -117,7 +117,7 @@ const CustomerList = () => {
       name: 'Actions',
       element: (row: any) => (
         <>
-          {userRole === PERMISSIONS.ADMIN && (
+          {(userRole === PERMISSIONS.ADMIN || userRole === PERMISSIONS.SUPERADMIN) && (
             <>
               <button type="button" className="btn btn-sm btn-danger me-1" onClick={() => handleDelete(row.id)}>
                 <i className="fa fa-trash" />
@@ -246,7 +246,7 @@ const CustomerList = () => {
               <i className="fa fa-plus" />
               Add New
             </Link>
-            {selectedRows.length > 0 && userRole === PERMISSIONS.ADMIN && (
+            {selectedRows.length > 0 && (userRole === PERMISSIONS.ADMIN || userRole === PERMISSIONS.SUPERADMIN) && (
               <button className="btn btn-sm btn-danger me-2" type="button" onClick={handleMultiDelete}>
                 <i className="fa fa-trash" />
                 Delete
@@ -269,7 +269,7 @@ const CustomerList = () => {
               setSelectedRows(rows);
             }}
             keywordSearch="ID , Name or Phone Number"
-            roleAdmin={userRole}
+            roleAdmin="no-show"
           />
         </div>
       </main>

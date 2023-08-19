@@ -12,6 +12,7 @@ export const formatCurrency = (amount: number): string => {
 export const PERMISSIONS = {
   ADMIN: 'admin',
   USER: 'user',
+  SUPERADMIN: 'superadmin',
 };
 
 export interface ControlLoadingAction {

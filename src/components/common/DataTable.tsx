@@ -41,7 +41,7 @@ const DataTable = ({
     return data?.map((item: any, index: number) => (
       <tr key={index}>
         {title === 'List Users' || title === 'List Orders' ? (
-          roleAdmin === PERMISSIONS.ADMIN && (
+          (roleAdmin === PERMISSIONS.ADMIN || roleAdmin === PERMISSIONS.SUPERADMIN) && (
             <td>
               <input
                 type="checkbox"
@@ -174,7 +174,7 @@ const DataTable = ({
           <thead>
             <tr>
               {title === 'List Users' || title === 'List Orders' ? (
-                roleAdmin === PERMISSIONS.ADMIN && (
+                (roleAdmin === PERMISSIONS.ADMIN || roleAdmin === PERMISSIONS.SUPERADMIN) && (
                   <td>
                     <input
                       type="checkbox"

@@ -1,9 +1,11 @@
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as actions from '../../Redux/actions/index';
 import { requestApi } from '../../helpers/api';
+import { RootState } from '../../Redux/reducers/globalLoading';
+import { PERMISSIONS } from '../../constant/common';
 
 const UserAdd = () => {
   const dispatch = useDispatch();
@@ -13,6 +15,7 @@ const UserAdd = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const userRole = useSelector((state: RootState) => state.globalLoading.role);
 
   const handleSubmitFormAdd = async (data: any) => {
     console.log(data);
@@ -99,13 +102,16 @@ const UserAdd = () => {
                       />
                       {errors.password && <p style={{ color: 'red' }}>{errors.password.message}</p>}
                     </div>
-                    <div className="mt-3 mb-3">
-                      <label className="form-label">Permission:</label>
-                      <select {...register('permission')} className="form-select">
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                      </select>
-                    </div>
+
+                    {userRole === PERMISSIONS.SUPERADMIN && (
+                      <div className="mt-3 mb-3">
+                        <label className="form-label">Permission:</label>
+                        <select {...register('permission')} className="form-select">
+                          <option value="user">User</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      </div>
+                    )}
                     <div className="mt-3 mb-3">
                       <label className="form-label">Status:</label>
                       <select {...register('status')} className="form-select">

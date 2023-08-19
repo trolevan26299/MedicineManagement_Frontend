@@ -66,7 +66,7 @@ const UserList = () => {
           </button>
         </>
       ),
-      show: userRole === PERMISSIONS.ADMIN,
+      show: userRole === PERMISSIONS.ADMIN || userRole === PERMISSIONS.SUPERADMIN,
     },
   ];
 
@@ -144,7 +144,7 @@ const UserList = () => {
             </li>
             <li className="breadcrumb-item active">List Users</li>
           </ol>
-          {userRole === PERMISSIONS.ADMIN && (
+          {(userRole === PERMISSIONS.ADMIN || userRole === PERMISSIONS.SUPERADMIN) && (
             <div className="mb-3">
               <Link to="/user/add" className="btn btn-sm btn-success me-2">
                 <i className="fa fa-plus" />
