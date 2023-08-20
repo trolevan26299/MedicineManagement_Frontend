@@ -75,7 +75,7 @@ const Sidebar = () => {
               data-bs-parent="#sidenavAccordion"
             >
               <nav className="sb-sidenav-menu-nested nav">
-                {userRole === PERMISSIONS.ADMIN && (
+                {(userRole === PERMISSIONS.ADMIN || userRole === PERMISSIONS.SUPERADMIN) && (
                   <Link className="nav-link" to="/user/add">
                     Add User
                   </Link>

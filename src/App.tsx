@@ -39,6 +39,7 @@ function App() {
     requestApi('/auth/getUserPermissions', 'GET')
       .then((res) => {
         dispatch(actions.setRole(res.data.permission));
+        dispatch(actions.infoUser(res.data));
       })
       .catch((err) => {
         console.error(err);
@@ -52,8 +53,12 @@ function App() {
           <Route element={<PrivateRoutes />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/users" element={<UserList />} />
-            {userRole === PERMISSIONS.ADMIN && <Route path="/user/add" element={<UserAdd />} />}
-            {userRole === PERMISSIONS.ADMIN && <Route path="/user/edit/:id" element={<UserUpdate />} />}
+            {(userRole === PERMISSIONS.ADMIN || userRole === PERMISSIONS.SUPERADMIN) && (
+              <Route path="/user/add" element={<UserAdd />} />
+            )}
+            {(userRole === PERMISSIONS.ADMIN || userRole === PERMISSIONS.SUPERADMIN) && (
+              <Route path="/user/edit/:id" element={<UserUpdate />} />
+            )}
             <Route path="/medicines" element={<MedicineList />} />
             <Route path="/medicine/add" element={<MedicineAdd />} />
             <Route path="/medicine/edit/:id" element={<MedicineUpdate />} />
