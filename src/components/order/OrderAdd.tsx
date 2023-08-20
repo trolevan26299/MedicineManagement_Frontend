@@ -10,6 +10,7 @@ import { formatCurrency } from '../../constant/common';
 import { apiUrl, requestApi } from '../../helpers/api';
 import './styles.css';
 import { IDetailOrder, IOrder } from './OrderHistoryList';
+import { IMedicine } from '../../Definition/common.dto';
 
 export interface IOptions {
   label?: string;
@@ -19,7 +20,7 @@ export interface IOptions {
 
 interface ISelectValue {
   id: number;
-  value: string | null;
+  value: string | number | null;
   [key: string]: any;
 }
 
@@ -48,6 +49,11 @@ const defaultValues: DefaultValues<FormValues> = {
     },
   ],
 };
+
+interface checkCountChange {
+  id?: number;
+  changeAmount?: number;
+}
 
 export const customStylesCustomer = {
   control: (provided: any, state: any) => ({
@@ -96,9 +102,11 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
   const [optionCustomers, setOptionCustomers] = useState<IOptions[]>([]);
   const [selectValues, setSelectValues] = useState<ISelectValue[]>([{ id: 0, value: null }]);
   const [loadedOptions, setLoadedOptions] = useState<IOptions[]>([]);
+  const [listMedicine, setListMedicine] = useState<IMedicine[]>([]);
+  const [defaultData, setDefaultData] = useState<IOrder>();
 
   const calculateTotalPrice = () => {
-    const totalPrice = selectValues.reduce((acc, item) => acc + item.price, 0);
+    const totalPrice = selectValues.reduce((acc, item) => acc + (item?.price ? item?.price : 0), 0);
     return totalPrice || 0;
   };
   // hanle add remove medicine0 list
@@ -106,24 +114,61 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
     setSelectValues([...selectValues, { id: selectValues.length, value: null }]);
   };
 
-  const handleSubmitFormAdd = async (data: any) => {
-    dispatch(actions.controlLoading(true));
+  const updateQuantityByListMedicine = (list: IMedicine[], data: ISelectValue[]) => {
+    const updatedList = list.map((item) => ({ ...item }));
 
-    const newData = {
-      ...data,
+    data.forEach((newItem) => {
+      const listItem = updatedList.find((item) => item.id === newItem.value);
+      if (listItem) {
+        listItem.quantity = (listItem.quantity || 0) + newItem.changeAmount;
+      }
+    });
+
+    return updatedList;
+  };
+
+  const handleSubmitFormAdd = async (data: any) => {
+    // dispatch(actions.controlLoading(true));
+
+    const newData: any = {
       total_price: calculateTotalPrice(),
+      description: data?.description,
       details: selectValues.map((item: ISelectValue) => ({
-        id: item.value,
-        count: item.count,
+        id: item?.value,
+        count: item?.count,
       })),
+      customer: selectCustomer.customer,
     };
     try {
       if (id) {
-        await requestApi(`/order/${id}`, 'PUT', { ...newData });
-        toast.success('Customer has been updated successfully !', { position: 'top-center', autoClose: 2000 });
-        setTimeout(() => {
-          navigate('/order-history-list');
-        }, 3000);
+        const transformedSelectValues = {
+          total_price: defaultData?.total_price,
+          description: defaultData?.description,
+          details: defaultData?.details?.map((item: IDetailOrder) => ({ id: item?.post?.id, count: item?.count })),
+          customer: defaultData?.customer?.id,
+        };
+        if (JSON.stringify(transformedSelectValues) === JSON.stringify(newData)) {
+          toast.success('Nothing changed in the form !', { position: 'top-center', autoClose: 2000 });
+        } else {
+          const newListMedicines = updateQuantityByListMedicine(listMedicine, selectValues).map((item) => ({
+            id: item.id,
+            quantity: item.quantity,
+          }));
+          const requestUpdateOrder = await requestApi(`/order/${id}`, 'PUT', { ...newData });
+          const requestUpdateListMedicine = await requestApi('/posts/update-multiple', 'PUT', newListMedicines);
+
+          Promise.all([requestUpdateOrder, requestUpdateListMedicine])
+            .then(([resOrder, resList]) => {
+              toast.success('Order has been updated successfully !', { position: 'top-center', autoClose: 2000 });
+              setTimeout(() => {
+                navigate('/order-history-list');
+              }, 3000);
+            })
+            .catch((err) => {
+              console.log(err);
+              dispatch(actions.controlLoading(false));
+            });
+        }
       } else {
         await requestApi('/order', 'POST', { ...newData });
         toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
@@ -199,7 +244,10 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
         }));
         setLoadedOptions((prevOptions) => {
           const updatedOptions = [...prevOptions];
-          updatedOptions[id] = modifiedOptions;
+          const selectedValues = selectValues.map((selected) => selected.value);
+
+          updatedOptions[id] = modifiedOptions.filter((option: any) => !selectedValues.includes(option.value));
+
           return updatedOptions;
         });
         dispatch(actions.controlLoading(false));
@@ -223,6 +271,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
     updatedValues[id].value = value?.value as string;
     updatedValues[id].count = value?.count as number;
     updatedValues[id].price = value?.price as number;
+    updatedValues[id].changeAmount = -(value?.count as number);
     setSelectValues(updatedValues);
     const allValuesNotNull = updatedValues.every((item) => item.value !== null);
 
@@ -231,17 +280,35 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
     }
   };
 
-  const handleRemoveMedicine = (id: number) => {
+  const handleRemoveMedicine = (id: number, value: ISelectValue) => {
     const updatedValues = selectValues.filter((item) => item.id !== id).map((x, index) => ({ ...x, id: index }));
     const indexLoadedOptions = selectValues.findIndex((item) => item.id === id);
     const updateLoadedOptions = loadedOptions.filter((item, index) => index !== indexLoadedOptions);
     setLoadedOptions(updateLoadedOptions);
     setSelectValues(updatedValues);
+
+    const cloneListMedicine = [...listMedicine];
+    const findItemChange = defaultData?.details?.find((x) => x.post?.id === value.value) as IDetailOrder;
+
+    if (findItemChange) {
+      const updateCount = cloneListMedicine.map((x) => ({
+        ...x,
+        quantity: x.id === value.value ? (x?.quantity as number) + (findItemChange?.count as number) : x.quantity,
+      }));
+
+      setListMedicine(updateCount);
+    } else {
+      setListMedicine(listMedicine);
+    }
   };
 
-  const handleCountChange = (newValue: string, id: number) => {
+  const handleCountChangeMedicine = (newValue: string, id: number, value: ISelectValue) => {
     const updatedValues = [...selectValues];
     const parsedCount = parseInt(newValue);
+
+    const findItemChange = defaultData?.details?.find((x) => x.post?.id === value.value) as IDetailOrder;
+
+    const countUpdated = (findItemChange?.count as number) - parsedCount;
 
     if (!isNaN(parsedCount) && parsedCount > 0) {
       updatedValues[id].count = parsedCount;
@@ -249,8 +316,10 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
       const selectedOption = loadedOptions[id]?.find((option: any) => option.value === updatedValues[id].value);
       if (selectedOption) {
         updatedValues[id].price = selectedOption.price * parsedCount;
+        updatedValues[id].changeAmount = countUpdated || -parsedCount;
       } else {
         updatedValues[id].price = 0;
+        updatedValues[id].changeAmount = 0;
       }
     }
 
@@ -289,6 +358,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
       value: item.post_id,
       count: item?.count,
       price: ((item?.post?.price_sale ? item?.post?.price_sale : item.post?.price) as number) * (item?.count as number),
+      changeAmount: 0,
     }));
     const setLoadOptionProducts = cloneData?.details?.map((item: IDetailOrder) => [
       {
@@ -306,9 +376,20 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
     requestApi(`/order/${id}`, 'GET', [])
       .then((response) => {
         setDataToForm(response.data);
+        setDefaultData(response.data);
       })
       .catch((err) => {
         console.log(err);
+      });
+  };
+
+  const fetchListMedicine = () => {
+    requestApi(`/posts`, 'GET', [])
+      .then((res) => {
+        setListMedicine(res.data.data);
+      })
+      .catch((err) => {
+        console.error(err);
       });
   };
 
@@ -322,6 +403,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
       setLoadedOptions([]);
       setValue('description', '');
     }
+    fetchListMedicine();
   }, [data, id]);
   return (
     <div id="layoutSidenav_content">
@@ -399,7 +481,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
                             <input
                               type="number"
                               value={item.count || 0}
-                              onChange={(e) => handleCountChange(e.target.value, index)}
+                              onChange={(e) => handleCountChangeMedicine(e.target.value, index, item)}
                               className="select-quantity form-control"
                               disabled={readonly}
                               style={{ height: '38px' }}
@@ -415,7 +497,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
                               <button
                                 type="button"
                                 disabled={selectValues.length === 1}
-                                onClick={() => handleRemoveMedicine(item.id)}
+                                onClick={() => handleRemoveMedicine(item.id, item)}
                                 className="btn-remove"
                                 style={{ width: '255px' }}
                               >

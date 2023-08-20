@@ -35,7 +35,7 @@ export interface IOrder {
   created_at?: string;
   customer?: ICustomer;
   description?: string;
-  details?: IDetailOrder;
+  details?: IDetailOrder[];
   total_price?: number;
   updated_at?: string;
 }
