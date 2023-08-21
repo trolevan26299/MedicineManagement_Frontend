@@ -28,7 +28,13 @@ const MedicineList = () => {
     {
       name: 'Image',
       element: (row: any) =>
-        <img style={{ width: '100px', height: '100px' }} src={`${apiUrl}/${row.thumbnail}`} alt="" /> || '',
+        (
+          <img
+            style={{ width: '100px', height: '100px', objectFit: 'contain' }}
+            src={`${apiUrl}/${row.thumbnail}`}
+            alt=""
+          />
+        ) || '',
     },
     {
       name: 'Name',

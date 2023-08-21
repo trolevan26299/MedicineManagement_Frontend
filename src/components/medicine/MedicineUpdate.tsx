@@ -82,7 +82,7 @@ const MedicineUpdate = () => {
   }, []);
   return (
     <div id="layoutSidenav_content">
-      <main>
+      <main style={{ height: '100%' }}>
         <div className="container-fluid px-4">
           <h1 className="mt-4"> Update Medicine</h1>
           <ol className="breadcrumb mb-4">
@@ -102,13 +102,19 @@ const MedicineUpdate = () => {
             </div>
             <div className="card-body">
               <div className="row mb-3">
-                <form>
+                <form style={{ height: 630 }}>
                   <div className="col-md-6">
                     <div className="mb-3 ">
                       <label htmlFor="imageInput" className="form-label">
                         Chọn ảnh:
                       </label>
-                      <input type="file" className="form-control" id="imageInput" onChange={handleImageChange} />
+                      <input
+                        type="file"
+                        className="form-control"
+                        id="imageInput"
+                        onChange={handleImageChange}
+                        accept="image/*"
+                      />
                     </div>
                     <div className="mt-3">
                       {selectedImage && (
@@ -116,7 +122,7 @@ const MedicineUpdate = () => {
                           src={`${apiUrl}/${selectedImage}`}
                           alt="Ảnh"
                           className="img-fluid"
-                          style={{ width: '200px', height: '200px' }}
+                          style={{ width: '200px', height: '200px', objectFit: 'contain' }}
                         />
                       )}
                     </div>
@@ -186,7 +192,12 @@ const MedicineUpdate = () => {
                         <option value="2">Inactive</option>
                       </select>
                     </div>
-                    <button type="button" onClick={handleSubmit(handleSubmitFormUpdate)} className="btn btn-success">
+                    <button
+                      type="button"
+                      onClick={handleSubmit(handleSubmitFormUpdate)}
+                      className="btn btn-success"
+                      style={{ marginBottom: '20px' }}
+                    >
                       Submit
                     </button>
                   </div>

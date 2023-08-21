@@ -92,6 +92,7 @@ const MedicineAdd = () => {
                         className="form-control"
                         placeholder="Upload thumbnail"
                         onChange={handleFileChange}
+                        accept="image/*"
                       />
                       {errors.thumbnail && <p style={{ color: 'red' }}>{errors.thumbnail.message}</p>}
                     </div>
