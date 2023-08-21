@@ -128,7 +128,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
   };
 
   const handleSubmitFormAdd = async (data: any) => {
-    // dispatch(actions.controlLoading(true));
+    dispatch(actions.controlLoading(true));
 
     const newData: any = {
       total_price: calculateTotalPrice(),
@@ -159,6 +159,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
 
           Promise.all([requestUpdateOrder, requestUpdateListMedicine])
             .then(([resOrder, resList]) => {
+              dispatch(actions.controlLoading(false));
               toast.success('Order has been updated successfully !', { position: 'top-center', autoClose: 2000 });
               setTimeout(() => {
                 navigate('/order-history-list');
