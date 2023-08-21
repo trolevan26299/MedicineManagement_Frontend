@@ -7,7 +7,6 @@ import globalLoading from '../Redux/reducers/globalLoading';
 const Header = () => {
   const Navigate = useNavigate();
   const user = useSelector((state: RootState) => state.globalLoading.info);
-  console.log('--------------------', user);
 
   const onHandleLogout = () => {
     localStorage.removeItem('ACCESS_TOKEN');
@@ -18,6 +17,7 @@ const Header = () => {
     <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark " style={{ position: 'fixed', width: '100%' }}>
       {/* Navbar Brand*/}
       <a className="navbar-brand ps-3" href="/">
+        <img src="../assets/images/logo.png" style={{ width: '100px', height: '100px' }} alt="" />
         Long Chau Manage
       </a>
       {/* Sidebar Toggle*/}
