@@ -6,7 +6,7 @@ import { login } from '../Definition/common.dto';
 import * as actions from '../Redux/actions';
 import { requestApi } from '../helpers/api';
 import '../assets/css/stylesLogin.css';
-import signup from '../assets/images/signup.svg';
+import signin from '../assets/images/signup.svg';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -124,17 +124,20 @@ const Login = () => {
                 <p style={{ color: 'red' }}>{formError.password}</p>
               </div>
             )}
-
             <button className="btn btn-primary btn-sign" type="button" onClick={onSubmit}>
               Sign in
             </button>
           </form>
+          <div>
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+            <a style={{ color: 'blue', position: 'absolute', left: '55%', top: '100%' }}>Forget Password ?</a>
+          </div>
         </div>
       </div>
 
       <div className="panels-container">
         <div className="panel left-panel">
-          <img src={signup} className="image" alt="" />
+          <img src={signin} className="image" alt="" />
         </div>
       </div>
     </div>
