@@ -7,7 +7,7 @@ const PieChart = ({ category }: { category: any[] }) => {
 
   category?.forEach((item) => {
     const name = item.name;
-    const quantity = item.posts.length;
+    const quantity = item.medicines.length;
 
     data.push({ name, quantity });
   });
