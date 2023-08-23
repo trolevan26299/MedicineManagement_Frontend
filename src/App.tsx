@@ -30,6 +30,7 @@ import PrivateRoutes from './layouts/PrivateRoutes';
 import PublicRoutes from './layouts/PublicRoutes';
 import { RootState } from './Redux/reducers/globalLoading';
 import { PERMISSIONS } from './constant/common';
+import ForgotPwd from './components/ForgotPwd';
 
 function App() {
   const dispatch = useDispatch();
@@ -77,6 +78,7 @@ function App() {
         <Route element={<PublicRoutes />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-pwd" element={<ForgotPwd />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />

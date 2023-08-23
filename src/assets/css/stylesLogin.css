@@ -519,8 +519,6 @@ a.social-icon {
   }
 }
 
-.input-field .form-control:focus {
-  background-color: rgba(0, 0, 0, 0);
-  box-shadow: none;
+.input-field-forget-pwd {
+  background-color: #fff;
 }
-/*# sourceMappingURL=login.css.map */

@@ -6,7 +6,8 @@ import { login } from '../Definition/common.dto';
 import * as actions from '../Redux/actions';
 import { requestApi } from '../helpers/api';
 import '../assets/css/stylesLogin.css';
-import signup from '../assets/images/signup.svg';
+import signin from '../assets/images/signup.svg';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -124,7 +125,21 @@ const Login = () => {
                 <p style={{ color: 'red' }}>{formError.password}</p>
               </div>
             )}
-
+            <div>
+              <Link
+                style={{
+                  color: '#203181',
+                  marginLeft: '-170px',
+                  cursor: 'pointer',
+                  textDecoration: 'none',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                }}
+                to={'/forgot-pwd'}
+              >
+                Forget Password ?
+              </Link>
+            </div>
             <button className="btn btn-primary btn-sign" type="button" onClick={onSubmit}>
               Sign in
             </button>
@@ -134,7 +149,7 @@ const Login = () => {
 
       <div className="panels-container">
         <div className="panel left-panel">
-          <img src={signup} className="image" alt="" />
+          <img src={signin} className="image" alt="" />
         </div>
       </div>
     </div>
