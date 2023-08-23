@@ -40,29 +40,6 @@ const DataTable = ({
   const renderData = () => {
     return data?.map((item: any, index: number) => (
       <tr key={index}>
-        {title === 'List Users' || title === 'List Orders' ? (
-          (roleAdmin === PERMISSIONS.ADMIN || roleAdmin === PERMISSIONS.SUPERADMIN) && (
-            <td>
-              <input
-                type="checkbox"
-                checked={selectedRows.includes(String(item.id)) ? true : false}
-                className="form-check-input"
-                value={item.id}
-                onChange={onClickCheckbox}
-              />
-            </td>
-          )
-        ) : (
-          <td>
-            <input
-              type="checkbox"
-              checked={selectedRows.includes(String(item.id)) ? true : false}
-              className="form-check-input"
-              value={item.id}
-              onChange={onClickCheckbox}
-            />
-          </td>
-        )}
         {columns.map((col: any, ind: number) => (
           <td key={ind}>{col.element(item)}</td>
         ))}
@@ -172,30 +149,7 @@ const DataTable = ({
         </div>
         <table className="table table-striped table-bordered" cellSpacing="0" width="100%">
           <thead>
-            <tr>
-              {title === 'List Users' || title === 'List Orders' ? (
-                (roleAdmin === PERMISSIONS.ADMIN || roleAdmin === PERMISSIONS.SUPERADMIN) && (
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selectedRows?.length === data?.length && data?.length > 0 ? true : false}
-                      className="form-check-input"
-                      onChange={onSelectAll}
-                    />
-                  </td>
-                )
-              ) : (
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={selectedRows?.length === data?.length && data?.length > 0 ? true : false}
-                    className="form-check-input"
-                    onChange={onSelectAll}
-                  />
-                </td>
-              )}
-              {renderHeaders()}
-            </tr>
+            <tr>{renderHeaders()}</tr>
           </thead>
           <tbody>{renderData()}</tbody>
         </table>
