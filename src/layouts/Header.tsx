@@ -17,7 +17,6 @@ const Header = () => {
     <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark " style={{ position: 'fixed', width: '100%' }}>
       {/* Navbar Brand*/}
       <a className="navbar-brand ps-3" href="/">
-        <img src="../assets/images/logo.png" style={{ width: '100px', height: '100px' }} alt="" />
         Long Chau Manage
       </a>
       {/* Sidebar Toggle*/}
