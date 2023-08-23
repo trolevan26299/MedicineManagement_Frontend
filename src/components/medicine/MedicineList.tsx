@@ -138,7 +138,7 @@ const MedicineList = () => {
   const requestDeleteApi = () => {
     if (deleteType === 'single') {
       dispatch(actions.controlLoading(true));
-      requestApi(`/posts/${deleteItem}`, 'DELETE', [])
+      requestApi(`/medicines/${deleteItem}`, 'DELETE', [])
         .then(() => {
           setShowModal(false);
           setRefresh(Date.now());
@@ -151,7 +151,7 @@ const MedicineList = () => {
         });
     } else {
       dispatch(actions.controlLoading(true));
-      requestApi(`/posts/multiple?ids=${selectedRows.toString()}`, 'DELETE', [])
+      requestApi(`/medicines/multiple?ids=${selectedRows.toString()}`, 'DELETE', [])
         .then(() => {
           setShowModal(false);
           setRefresh(Date.now());
@@ -168,7 +168,7 @@ const MedicineList = () => {
   useEffect(() => {
     dispatch(actions.controlLoading(true));
     const query = `?items_per_page=${itemsPerPage}&page=${currentPage}&keyword=${keyword}`;
-    requestApi(`/posts${query}`, 'GET', [])
+    requestApi(`/medicines${query}`, 'GET', [])
       .then((response) => {
         console.log(response);
         setPosts(response.data.data);

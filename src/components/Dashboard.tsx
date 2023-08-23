@@ -19,7 +19,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const promiseUser = requestApi('/users', 'GET');
-    const promisePost = requestApi('/posts', 'GET');
+    const promisePost = requestApi('/medicines', 'GET');
     const promiseCategory = requestApi('/category', 'GET');
     const promiseCustomer = requestApi('/customer', 'GET');
     const promiseOrder = requestApi('/order', 'GET');

@@ -144,7 +144,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
         const transformedSelectValues = {
           total_price: defaultData?.total_price,
           description: defaultData?.description,
-          details: defaultData?.details?.map((item: IDetailOrder) => ({ id: item?.post?.id, count: item?.count })),
+          details: defaultData?.details?.map((item: IDetailOrder) => ({ id: item?.medicine?.id, count: item?.count })),
           customer: defaultData?.customer?.id,
         };
         if (JSON.stringify(transformedSelectValues) === JSON.stringify(newData)) {
@@ -155,7 +155,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
             quantity: item.quantity,
           }));
           const requestUpdateOrder = await requestApi(`/order/${id}`, 'PUT', { ...newData });
-          const requestUpdateListMedicine = await requestApi('/posts/update-multiple', 'PUT', newListMedicines);
+          const requestUpdateListMedicine = await requestApi('/medicines/update-multiple', 'PUT', newListMedicines);
 
           Promise.all([requestUpdateOrder, requestUpdateListMedicine])
             .then(([resOrder, resList]) => {
@@ -234,7 +234,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
   // medicine
   const debouncedFetchMedicines = debounce((searchTerm: string, id: number) => {
     const query = `?keyword=${searchTerm}`;
-    requestApi(`/posts${query}`, 'GET', [])
+    requestApi(`/medicines${query}`, 'GET', [])
       .then((response) => {
         const modifiedOptions = response.data.data.map((medicine: any) => ({
           label: medicine.title,
@@ -289,7 +289,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
     setSelectValues(updatedValues);
 
     const cloneListMedicine = [...listMedicine];
-    const findItemChange = defaultData?.details?.find((x) => x.post?.id === value.value) as IDetailOrder;
+    const findItemChange = defaultData?.details?.find((x) => x.medicine?.id === value.value) as IDetailOrder;
 
     if (findItemChange) {
       const updateCount = cloneListMedicine.map((x) => ({
@@ -356,17 +356,19 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
 
     const setOptionProducts = cloneData?.details?.map((item: IDetailOrder, index: number) => ({
       id: index,
-      value: item.post_id,
+      value: item.medicine_id,
       count: item?.count,
-      price: ((item?.post?.price_sale ? item?.post?.price_sale : item.post?.price) as number) * (item?.count as number),
+      price:
+        ((item?.medicine?.price_sale ? item?.medicine?.price_sale : item.medicine?.price) as number) *
+        (item?.count as number),
       changeAmount: 0,
     }));
     const setLoadOptionProducts = cloneData?.details?.map((item: IDetailOrder) => [
       {
-        value: item.post_id,
-        label: item.post?.title,
-        price: item?.post?.price_sale ? item?.post?.price_sale : item.post?.price,
-        imgUrl: item.post?.thumbnail,
+        value: item.medicine_id,
+        label: item.medicine?.title,
+        price: item?.medicine?.price_sale ? item?.medicine?.price_sale : item.medicine?.price,
+        imgUrl: item.medicine?.thumbnail,
       },
     ]);
     setSelectValues(setOptionProducts);
@@ -385,7 +387,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
   };
 
   const fetchListMedicine = () => {
-    requestApi(`/posts`, 'GET', [])
+    requestApi(`/medicines`, 'GET', [])
       .then((res) => {
         setListMedicine(res.data.data);
       })

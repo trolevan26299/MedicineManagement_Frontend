@@ -42,7 +42,7 @@ const MedicineAdd = () => {
     formData.append('status', data.status);
     dispatch(actions.controlLoading(true));
     try {
-      await requestApiFormData('/posts', 'POST', formData);
+      await requestApiFormData('/medicines', 'POST', formData);
       dispatch(actions.controlLoading(false));
       toast.success('Medicines has been created successfully !', { position: 'top-center', autoClose: 2000 });
       setTimeout(() => {

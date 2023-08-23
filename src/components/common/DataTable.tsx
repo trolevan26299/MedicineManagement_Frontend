@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 import LiveSearch from './LiveSearch';
 import { useState } from 'react';
-import { PERMISSIONS } from '../../constant/common';
 
 const DataTable = ({
   data,

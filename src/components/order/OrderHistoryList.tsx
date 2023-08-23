@@ -15,8 +15,8 @@ export interface IDetailOrder {
   count?: number;
   id?: number;
   order_id?: number;
-  post_id?: number;
-  post?: {
+  medicine_id?: number;
+  medicine?: {
     created_at: string;
     description: string;
     id: number;

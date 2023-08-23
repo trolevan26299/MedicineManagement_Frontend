@@ -72,7 +72,7 @@ const Sales = () => {
           price_sale: item.price,
         }));
         try {
-          await requestApi('/posts/sales', 'PATCH', newData);
+          await requestApi('/medicines/sales', 'PATCH', newData);
           toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
           setTimeout(() => {
             navigate('/medicines');
@@ -92,7 +92,7 @@ const Sales = () => {
           percent_sales: Number(item.percent_sales),
         }));
         try {
-          await requestApi('/posts/sales-category', 'PATCH', newData);
+          await requestApi('/medicines/sales-category', 'PATCH', newData);
           toast.success('Customer has been created successfully !', { position: 'top-center', autoClose: 2000 });
           setTimeout(() => {
             navigate('/medicines');
@@ -107,7 +107,7 @@ const Sales = () => {
   // medicine
   const debouncedFetchMedicines = debounce((searchTerm: string, id: number) => {
     const query = `?keyword=${searchTerm}`;
-    requestApi(`/posts${query}`, 'GET', [])
+    requestApi(`/medicines${query}`, 'GET', [])
       .then((response) => {
         const modifiedOptions = response.data.data.map((medicine: any) => ({
           label: medicine.title,

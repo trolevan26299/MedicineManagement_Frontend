@@ -33,7 +33,7 @@ const CategoryList = () => {
     },
     {
       name: 'Total Medicine',
-      element: (row: any) => row.posts.length,
+      element: (row: any) => row.medicines.length,
     },
     {
       name: 'Createred',

@@ -43,7 +43,7 @@ const MedicineUpdate = () => {
     formData.append('status', data.status);
     dispatch(actions.controlLoading(true));
     try {
-      const res = await requestApiFormData(`/posts/update/${params.id}`, 'PUT', formData);
+      const res = await requestApiFormData(`/medicines/update/${params.id}`, 'PUT', formData);
       dispatch(actions.controlLoading(false));
       toast.success('Medicine has been updated successfully !', { position: 'top-center', autoClose: 2000 });
       setTimeout(() => {
@@ -58,7 +58,7 @@ const MedicineUpdate = () => {
     dispatch(actions.controlLoading(true));
     try {
       const getMedicineDetail = async () => {
-        const res = await requestApi(`/posts/${params.id}`, 'GET');
+        const res = await requestApi(`/medicines/${params.id}`, 'GET');
         dispatch(actions.controlLoading(false));
         const fields = ['thumbnail', 'title', 'category', 'quantity', 'price', 'description', 'status'];
         fields.forEach((field) => setValue(field, res.data[field]));
