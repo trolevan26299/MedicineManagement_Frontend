@@ -31,6 +31,7 @@ import PublicRoutes from './layouts/PublicRoutes';
 import { RootState } from './Redux/reducers/globalLoading';
 import { PERMISSIONS } from './constant/common';
 import ForgotPwd from './components/ForgotPwd';
+import ChangePassword from './components/ChangePassword';
 
 function App() {
   const dispatch = useDispatch();
@@ -73,6 +74,7 @@ function App() {
             <Route path="/order/add" element={<OrderAdd />} />
             <Route path="/order/edit/:id" element={<OrderAdd />} />
             <Route path="/sale" element={<Sales />} />
+            <Route path="/change-password" element={<ChangePassword />} />
           </Route>
         </Route>
         <Route element={<PublicRoutes />}>

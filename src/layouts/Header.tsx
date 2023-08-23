@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { RootState } from '../Redux/reducers/globalLoading';
 import globalLoading from '../Redux/reducers/globalLoading';
 
@@ -51,6 +51,9 @@ const Header = () => {
               <a className="dropdown-item" href="#!" onClick={onHandleLogout}>
                 Logout
               </a>
+              <Link className="dropdown-item" to="/change-password" onClick={onHandleLogout}>
+                Change Password
+              </Link>
             </li>
           </ul>
         </li>
