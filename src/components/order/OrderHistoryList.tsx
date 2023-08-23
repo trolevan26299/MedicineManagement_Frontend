@@ -87,23 +87,23 @@ const CustomerList = () => {
   const columnsTable = [
     {
       name: 'ID Order',
-      element: (row: any) => row.id,
+      element: (row: any) => row?.id,
     },
     {
       name: 'Customer Name(ID)',
-      element: (row: any) => `${row.customer.full_name} (${row.customer.id})`,
+      element: (row: any) => `${row.customer?.full_name} (${row.customer?.id})`,
     },
     {
       name: 'Phone Number',
-      element: (row: any) => row.customer.phone_number,
+      element: (row: any) => row.customer?.phone_number,
     },
     {
       name: 'Buy Date',
-      element: (row: any) => (row.created_at ? moment(row.created_at).format('DD/MM/YYYY') : ''),
+      element: (row: any) => (row?.created_at ? moment(row?.created_at).format('DD/MM/YYYY') : ''),
     },
     {
       name: 'Total Price',
-      element: (row: any) => formatCurrency(row.total_price),
+      element: (row: any) => formatCurrency(row?.total_price),
     },
     {
       name: 'pharmacist name',
@@ -111,7 +111,7 @@ const CustomerList = () => {
     },
     {
       name: 'description',
-      element: (row: any) => row.description,
+      element: (row: any) => row?.description,
     },
     {
       name: 'Actions',
