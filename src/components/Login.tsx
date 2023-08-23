@@ -7,6 +7,7 @@ import * as actions from '../Redux/actions';
 import { requestApi } from '../helpers/api';
 import '../assets/css/stylesLogin.css';
 import signin from '../assets/images/signup.svg';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -130,7 +131,19 @@ const Login = () => {
           </form>
           <div>
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            <a style={{ color: 'blue', position: 'absolute', left: '55%', top: '100%' }}>Forget Password ?</a>
+            <Link
+              style={{
+                color: 'blue',
+                position: 'absolute',
+                left: '55%',
+                top: '100%',
+                cursor: 'pointer',
+                textDecoration: 'none',
+              }}
+              to={'/forgot-pwd'}
+            >
+              Forget Password ?
+            </Link>
           </div>
         </div>
       </div>
