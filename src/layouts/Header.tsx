@@ -51,7 +51,7 @@ const Header = () => {
               <a className="dropdown-item" href="#!" onClick={onHandleLogout}>
                 Logout
               </a>
-              <Link className="dropdown-item" to="/change-password" onClick={onHandleLogout}>
+              <Link className="dropdown-item" to="/change-password">
                 Change Password
               </Link>
             </li>
