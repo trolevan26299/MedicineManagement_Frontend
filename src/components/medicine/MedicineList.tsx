@@ -22,7 +22,9 @@ const MedicineList = () => {
   const columnsTable = [
     {
       name: 'ID',
-      element: (row: any) => row.id,
+      element: (row: any) => (
+        <div style={{ display: 'flex', alignItems: 'center', height: '100px', flexGrow: 1 }}>{row.id}</div>
+      ),
     },
 
     {
@@ -38,46 +40,76 @@ const MedicineList = () => {
     },
     {
       name: 'Name',
-      element: (row: any) => row.title,
+      element: (row: any) => (
+        <div style={{ display: 'flex', alignItems: 'center', height: '100px', flexGrow: 1 }}>{row.title}</div>
+      ),
     },
 
     {
       name: 'Category',
-      element: (row: any) => (row.category ? row.category.name : ''),
+      element: (row: any) => (
+        <div style={{ display: 'flex', alignItems: 'center', height: '100px', flexGrow: 1, justifyContent: 'center' }}>
+          {row.category ? row.category.name : ''}
+        </div>
+      ),
     },
     {
       name: 'Quantity',
-      element: (row: any) => row.quantity,
+      element: (row: any) => (
+        <div style={{ display: 'flex', alignItems: 'center', height: '100px', flexGrow: 1, justifyContent: 'center' }}>
+          {row.quantity}
+        </div>
+      ),
     },
     {
       name: 'Price',
-      element: (row: any) => formatCurrency(row.price),
+      element: (row: any) => (
+        <div style={{ display: 'flex', alignItems: 'center', height: '100px', flexGrow: 1, justifyContent: 'center' }}>
+          {formatCurrency(row.price)}
+        </div>
+      ),
     },
     {
       name: 'Sale Price',
-      element: (row: any) => (row.price_sale === 0 ? 'No Sale' : formatCurrency(row.price_sale)),
+      element: (row: any) => (
+        <div style={{ display: 'flex', alignItems: 'center', height: '100px', flexGrow: 1, justifyContent: 'center' }}>
+          {row.price_sale === 0 ? 'No Sale' : formatCurrency(row.price_sale)}
+        </div>
+      ),
     },
     {
       name: 'Description',
-      element: (row: any) => row.description,
+      element: (row: any) => (
+        <div style={{ display: 'flex', alignItems: 'center', height: '100px', flexGrow: 1, justifyContent: 'center' }}>
+          {row.description}
+        </div>
+      ),
     },
     {
       name: 'Createred',
-      element: (row: any) => (row.user ? row.user.first_name : ''),
+      element: (row: any) => (
+        <div style={{ display: 'flex', alignItems: 'center', height: '100px', flexGrow: 1, justifyContent: 'center' }}>
+          {row.user ? row.user.first_name : ''}
+        </div>
+      ),
     },
     {
       name: 'Status',
-      element: (row: any) =>
-        row.status === 1 ? (
-          <span className="badge rounded-pill bg-success">Active</span>
-        ) : (
-          <span className="badge rounded-pill bg-danger">Inactive</span>
-        ),
+      element: (row: any) => (
+        <div style={{ display: 'flex', alignItems: 'center', height: '100px', flexGrow: 1 }}>
+          <span
+            className={`badge rounded-pill ${row.status === 1 ? 'bg-success' : 'bg-danger'}`}
+            style={{ display: 'flex', alignItems: 'center' }}
+          >
+            {row.status === 1 ? 'Active' : 'Inactive'}
+          </span>
+        </div>
+      ),
     },
     {
       name: 'Actions',
       element: (row: any) => (
-        <>
+        <div style={{ display: 'flex', alignItems: 'center', height: '100px', width: '150px' }}>
           <Link className="btn btn-sm btn-warning me-1" to={`/medicine/edit/${row.id}`}>
             <i className="fa fa-pencil-alt" />
             Edit
@@ -86,7 +118,7 @@ const MedicineList = () => {
             <i className="fa fa-trash" />
             Delete
           </button>
-        </>
+        </div>
       ),
     },
   ];
