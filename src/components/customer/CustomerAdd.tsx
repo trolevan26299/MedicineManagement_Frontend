@@ -16,6 +16,8 @@ const CustomerAdd = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
+    clearErrors,
   } = useForm();
   const [birthDay, setBirthDay] = useState<Date | undefined>(undefined);
   const handleSubmitFormAdd = async (data: any) => {
@@ -30,6 +32,17 @@ const CustomerAdd = () => {
     } catch (error) {
       dispatch(actions.controlLoading(false));
     }
+  };
+
+  const onError = () => {
+    if (!birthDay) {
+      setError('birth_day', { message: 'Birth day is required !' });
+    }
+  };
+
+  const handleChangeDate = (date: Date) => {
+    setBirthDay(date);
+    clearErrors('birth_day');
   };
 
   return (
@@ -70,10 +83,12 @@ const CustomerAdd = () => {
                       <label className="form-label">Birth Day:</label>
                       <CommonDatePicker
                         selectedDate={birthDay}
-                        setSelecteDate={setBirthDay as any}
+                        setSelecteDate={(date: Date) => handleChangeDate?.(date)}
                         format="dd/MM/yyyy"
                         placeholder="DD/MM/YYYY"
+                        name="birth_day"
                       />
+                      {errors.birth_day && <p style={{ color: 'red' }}>{errors.birth_day.message}</p>}
                     </div>
                     <div className="mb-3 mt-3">
                       <label className="form-label">Phone Number:</label>
@@ -118,7 +133,11 @@ const CustomerAdd = () => {
                         <option value="2">Inactive</option>
                       </select>
                     </div>
-                    <button type="button" onClick={handleSubmit(handleSubmitFormAdd)} className="btn btn-success">
+                    <button
+                      type="button"
+                      onClick={handleSubmit(handleSubmitFormAdd, onError)}
+                      className="btn btn-success"
+                    >
                       Submit
                     </button>
                   </div>

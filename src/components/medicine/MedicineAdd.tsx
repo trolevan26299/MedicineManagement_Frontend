@@ -12,14 +12,18 @@ const MedicineAdd = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [category, setCategory] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   const handleFileChange = (event: any) => {
     setSelectedFile(event.target.files[0]);
+    const url = URL.createObjectURL(event.target.files[0]);
+    setPreviewUrl(url);
   };
   const {
     register,
     handleSubmit,
     formState: { errors },
+    clearErrors,
   } = useForm();
   const handleCategoryChange = (event: any) => {
     setSelectedCategory(event.target.value);
@@ -36,7 +40,6 @@ const MedicineAdd = () => {
     formData.append('price', data.price);
     formData.append('description', data.description);
     formData.append('status', data.status);
-    console.log(data);
     dispatch(actions.controlLoading(true));
     try {
       await requestApiFormData('/posts', 'POST', formData);
@@ -70,7 +73,6 @@ const MedicineAdd = () => {
               <Link to="/">Dashboard</Link>
             </li>
             <li className="breadcrumb-item">
-              {' '}
               <Link to="/medicines">Mediacine</Link>
             </li>
             <li className="breadcrumb-item active">Add New Medicine</li>
@@ -80,7 +82,7 @@ const MedicineAdd = () => {
               <i className="fas fa-plus me-1"></i>
               Add
             </div>
-            <div className="card-body">
+            <div className="card-body" style={{ height: '670px' }}>
               <div className="row mb-3">
                 <form>
                   <div className="col-md-6">
@@ -91,9 +93,19 @@ const MedicineAdd = () => {
                         {...register('thumbnail', { required: 'Thumbnail is required !' })}
                         className="form-control"
                         placeholder="Upload thumbnail"
-                        onChange={handleFileChange}
+                        onChange={(event) => {
+                          handleFileChange(event);
+                          clearErrors('thumbnail');
+                        }}
                         accept="image/*"
                       />
+                      {previewUrl && (
+                        <img
+                          src={previewUrl}
+                          alt="Thumbnail Preview"
+                          style={{ maxWidth: '150px', marginTop: '20px' }}
+                        />
+                      )}
                       {errors.thumbnail && <p style={{ color: 'red' }}>{errors.thumbnail.message}</p>}
                     </div>
                     <div className="mb-3 mt-3">
@@ -132,7 +144,7 @@ const MedicineAdd = () => {
                         className="form-control"
                         placeholder="Enter Quantity"
                       />
-                      {errors.Quantity && <p style={{ color: 'red' }}>{errors.Quantity.message}</p>}
+                      {errors.quantity && <p style={{ color: 'red' }}>{errors.quantity.message}</p>}
                     </div>
                     <div className="mb-3">
                       <label className="form-label">Price:</label>

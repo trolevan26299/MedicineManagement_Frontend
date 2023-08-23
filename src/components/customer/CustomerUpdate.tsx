@@ -19,9 +19,10 @@ const CustomerUpdate = () => {
     handleSubmit,
     setValue,
     formState: { errors },
+    clearErrors,
+    setError,
   } = useForm();
-
-  const [birthDay, setBirthDay] = useState<Date | undefined>(undefined);
+  const [birthDay, setBirthDay] = useState<Date | null>(null);
 
   const handleSubmitFormUpdate = async (data: any) => {
     dispatch(actions.controlLoading(true));
@@ -53,6 +54,22 @@ const CustomerUpdate = () => {
       dispatch(actions.controlLoading(false));
     }
   }, []);
+
+  const onError = () => {
+    if (!birthDay) {
+      setError('birth_day', { message: 'Birth day is required !' });
+    }
+  };
+
+  const handleChangeDate = (date: Date | null) => {
+    if (date === null) {
+      setError('birth_day', { message: 'Birth day is required !' });
+      setBirthDay(date);
+    } else {
+      setBirthDay(date);
+      clearErrors('birth_day');
+    }
+  };
 
   return (
     <div id="layoutSidenav_content">
@@ -92,19 +109,15 @@ const CustomerUpdate = () => {
                       <label className="form-label">Birth Day:</label>
                       <CommonDatePicker
                         selectedDate={birthDay}
-                        setSelecteDate={setBirthDay as any}
+                        setSelecteDate={(date: Date | null) => handleChangeDate?.(date)}
                         format="dd/MM/yyyy"
                         placeholder="DD/MM/YYYY"
+                        name="birth_day"
                       />
+                      {errors.birth_day && <p style={{ color: 'red' }}>{errors.birth_day.message}</p>}
                     </div>
                     <div className="mb-3 mt-3">
                       <label className="form-label">Phone Number:</label>
-                      {/* <input
-                        type="text"
-                        {...register('phone_number', { required: 'Phone Number is required !' })}
-                        className="form-control"
-                        placeholder="Enter Phone Number"
-                      /> */}
                       <InputMask
                         mask="+84 999 999 999"
                         maskChar="_"
@@ -146,7 +159,11 @@ const CustomerUpdate = () => {
                         <option value="2">Inactive</option>
                       </select>
                     </div>
-                    <button type="button" onClick={handleSubmit(handleSubmitFormUpdate)} className="btn btn-success">
+                    <button
+                      type="button"
+                      onClick={handleSubmit(handleSubmitFormUpdate, onError)}
+                      className="btn btn-success"
+                    >
                       Submit
                     </button>
                   </div>
