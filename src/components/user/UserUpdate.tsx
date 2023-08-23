@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import * as actions from '../../Redux/actions/index';
 import { requestApi } from '../../helpers/api';
 import { toast } from 'react-toastify';
+import { PERMISSIONS } from '../../constant/common';
 
 const UserUpdate = () => {
   const params = useParams();
@@ -14,14 +15,22 @@ const UserUpdate = () => {
     register,
     handleSubmit,
     setValue,
+    getValues,
+    trigger,
     formState: { errors },
   } = useForm();
 
   const handleSubmitFormUpdate = async (data: any) => {
-    console.log(data);
+    const filteredData = Object.keys(data)
+      .filter((key) => data[key] !== '')
+      .reduce((obj, key) => {
+        obj[key] = data[key];
+        return obj;
+      }, {});
+
     dispatch(actions.controlLoading(true));
     try {
-      const res = await requestApi(`/users/${params.id}`, 'PUT', data);
+      const res = await requestApi(`/users/${params.id}`, 'PUT', filteredData);
       dispatch(actions.controlLoading(false));
       toast.success('User has been updated successfully !', { position: 'top-center', autoClose: 2000 });
       setTimeout(() => {
@@ -40,6 +49,7 @@ const UserUpdate = () => {
         dispatch(actions.controlLoading(false));
         const fields = ['first_name', 'last_name', 'status', 'permission'];
         fields.forEach((field) => setValue(field, res.data[field]));
+        trigger('permission');
       };
       getDetailUser();
     } catch (error) {
@@ -67,7 +77,7 @@ const UserUpdate = () => {
               <i className="fas fa-plus me-1"></i>
               Update
             </div>
-            <div className="card-body">
+            <div className="card-body" style={{ height: '670px' }}>
               <div className="row mb-3">
                 <form>
                   <div className="col-md-6">
@@ -100,13 +110,15 @@ const UserUpdate = () => {
                         placeholder="Enter password"
                       />
                     </div>
-                    <div className="mt-3 mb-3">
-                      <label className="form-label">Permission:</label>
-                      <select {...register('permission')} className="form-select">
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                      </select>
-                    </div>
+                    {getValues('permission') !== PERMISSIONS.SUPERADMIN && (
+                      <div className="mt-3 mb-3">
+                        <label className="form-label">Permission:</label>
+                        <select {...register('permission')} className="form-select">
+                          <option value={PERMISSIONS.USER}>User</option>
+                          <option value={PERMISSIONS.ADMIN}>Admin</option>
+                        </select>
+                      </div>
+                    )}
 
                     <div className="mt-3 mb-3">
                       <label className="form-label">Status:</label>

@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import * as actions from '../../Redux/actions/index';
 import { requestApi } from '../../helpers/api';
 import CommonDatePicker from '../../utils/CommonDatePicker';
+import InputMask from 'react-input-mask';
 
 const CustomerAdd = () => {
   const dispatch = useDispatch();
@@ -76,11 +77,13 @@ const CustomerAdd = () => {
                     </div>
                     <div className="mb-3 mt-3">
                       <label className="form-label">Phone Number:</label>
-                      <input
-                        type="text"
+                      <InputMask
+                        mask="+84 999 999 999"
+                        maskChar="_"
+                        id="phone"
+                        placeholder="+84"
                         {...register('phone_number', { required: 'Phone Number is required !' })}
                         className="form-control"
-                        placeholder="Enter Phone Number"
                       />
                       {errors.phone_number && <p style={{ color: 'red' }}>{errors.phone_number.message}</p>}
                     </div>
@@ -95,7 +98,18 @@ const CustomerAdd = () => {
                     </div>
                     <div className="mb-3 mt-3">
                       <label className="form-label">Email:</label>
-                      <input type="email" {...register('email')} className="form-control" placeholder="Enter Email" />
+                      <input
+                        type="email"
+                        {...register('email', {
+                          pattern: {
+                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                            message: 'Invalid email format',
+                          },
+                        })}
+                        className="form-control"
+                        placeholder="Enter Email"
+                      />
+                      {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
                     </div>
                     <div className="mt-3 mb-3">
                       <label className="form-label">Status:</label>
