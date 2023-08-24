@@ -129,6 +129,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
 
   const handleSubmitFormAdd = async (data: any) => {
     dispatch(actions.controlLoading(true));
+    console.log(selectCustomer);
 
     const newData: any = {
       total_price: calculateTotalPrice(),
@@ -331,7 +332,7 @@ const OrderAdd = ({ readonly, data }: { readonly?: boolean; data?: IOrder }) => 
     return (
       <div {...innerProps} style={{ display: 'flex', alignItems: 'center' }}>
         <img
-          style={{ width: '120px', height: '120px', marginRight: '5px' }}
+          style={{ width: '120px', height: '120px', marginRight: '5px', objectFit: 'contain' }}
           src={`${apiUrl}/${data.imgUrl}`}
           alt={data.label}
         />
