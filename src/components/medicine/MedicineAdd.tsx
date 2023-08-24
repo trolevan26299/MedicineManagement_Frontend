@@ -82,7 +82,7 @@ const MedicineAdd = () => {
               <i className="fas fa-plus me-1"></i>
               Add
             </div>
-            <div className="card-body" style={{ height: '670px' }}>
+            <div className="card-body" style={{ height: '700px' }}>
               <div className="row mb-3">
                 <form>
                   <div className="col-md-6">
