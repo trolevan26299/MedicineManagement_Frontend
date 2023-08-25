@@ -7,6 +7,7 @@ export const requestApi = async (endpoint: string, method: string, body: any[] =
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
+    'ngrok-skip-browser-warning': '69420',
   };
 
   const instance = axios.create({ headers });
@@ -81,6 +82,7 @@ export const requestApiFormData = async (
     Accept: 'application/json',
     'Content-Type': 'multipart/form-data',
     'Access-Control-Allow-Origin': '*',
+    'ngrok-skip-browser-warning': '69420',
   };
 
   const instance = axios.create({ headers });
