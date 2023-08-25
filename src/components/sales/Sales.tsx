@@ -187,7 +187,7 @@ const Sales = () => {
     return (
       <div {...innerProps} style={{ display: 'flex', alignItems: 'center' }}>
         <img
-          style={{ width: '100px', height: '100px', marginRight: '5px' }}
+          style={{ width: '100px', height: '100px', marginRight: '5px', objectFit: 'contain' }}
           src={`${apiUrl}/${data.imgUrl}`}
           alt={data.label}
         />
