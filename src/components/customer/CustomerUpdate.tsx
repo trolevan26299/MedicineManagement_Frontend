@@ -123,7 +123,13 @@ const CustomerUpdate = () => {
                         maskChar="_"
                         id="phone"
                         placeholder="+84"
-                        {...register('phone_number', { required: 'Phone Number is required !' })}
+                        {...register('phone_number', {
+                          required: 'Phone Number is required !',
+                          pattern: {
+                            value: /^(\+84\s\d{3}\s\d{3}\s\d{3})$/,
+                            message: 'Please enter a valid Vietnamese phone number (+84 xxx xxx xxx)',
+                          },
+                        })}
                         className="form-control"
                       />
                       {errors.phone_number && <p style={{ color: 'red' }}>{errors.phone_number.message}</p>}
